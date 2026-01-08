@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
         if (userExists) {
             return NextResponse.json({ message: `Username '${username}' sudah digunakan.` }, { status: 409 });
         }
-        
         const assignedGroup = groupname || "default";
         const groupExists = await prisma.radgroupreply.findFirst({
             where: { groupname: assignedGroup }
@@ -89,44 +88,111 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: 'Maaf terjadi kesalahan pada server', error: error.message }, { status: 500 });
     }
 }
-
-/**
- * Melihat semua user atau mencari user (termasuk data UserInfo)
- */
 export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
-        const query = searchParams.get('q');
-        let baseUsers;
 
+        const query = searchParams.get('q');
+        const group = searchParams.get('group');
+        const department = searchParams.get('department');
+
+        let usernamesSet: Set<string> | null = null;
+
+        // =============================
+        // 1️⃣ Search (username / fullName / department)
+        // =============================
         if (query) {
-            baseUsers = await prisma.radusergroup.findMany({
-                where: { username: { contains: query } },
-                select: { username: true, groupname: true },
-                orderBy: { username: 'asc' },
-                take: 20
-            });
-        } else {
-            baseUsers = await prisma.radusergroup.findMany({
-                select: { username: true, groupname: true },
-                distinct: ['username'],
-                orderBy: { username: 'asc' }
-            });
+            const [fromUsername, fromUserInfo] = await Promise.all([
+                // Cari di username (tabel radusergroup)
+                prisma.radusergroup.findMany({
+                    where: { username: { contains: query } },
+                    select: { username: true },
+                }),
+                // Cari di fullName ATAU department (tabel userinfo)
+                prisma.userinfo.findMany({
+                    where: {
+                        OR: [
+                            { fullName: { contains: query } },
+                            { department: { contains: query } } // 👈 Tambahan di sini
+                        ]
+                    },
+                    select: { username: true },
+                }),
+            ]);
+
+            usernamesSet = new Set([
+                ...fromUsername.map(u => u.username),
+                ...fromUserInfo.map(u => u.username),
+            ]);
         }
 
-        if (baseUsers.length === 0) {
+        // =============================
+        // 2️⃣ Filter Group (Logika tetap sama)
+        // =============================
+        if (group) {
+            const fromGroup = await prisma.radusergroup.findMany({
+                where: { groupname: group },
+                select: { username: true },
+            });
+
+            const groupSet = new Set(fromGroup.map(u => u.username));
+
+            usernamesSet = usernamesSet
+                ? new Set([...usernamesSet].filter(u => groupSet.has(u)))
+                : groupSet;
+        }
+
+        // =============================
+        // 3️⃣ Filter Department (Logika tetap sama - untuk dropdown spesifik)
+        // =============================
+        if (department) {
+            const fromDepartment = await prisma.userinfo.findMany({
+                where: { department }, // Pencarian eksak
+                select: { username: true },
+            });
+
+            const deptSet = new Set(fromDepartment.map(u => u.username));
+
+            usernamesSet = usernamesSet
+                ? new Set([...usernamesSet].filter(u => deptSet.has(u)))
+                : deptSet;
+        }
+
+        const usernames = usernamesSet ? Array.from(usernamesSet) : [];
+
+        // Jika ada filter/search tapi tidak ada hasil
+        if ((query || group || department) && usernames.length === 0) {
             return NextResponse.json({ users: [] }, { status: 200 });
         }
 
-        const usernames = baseUsers.map(user => user.username);
-        const userInfoList = await prisma.userinfo.findMany({
-            where: { username: { in: usernames } }
+        // =============================
+        // 4️⃣ Ambil data final
+        // =============================
+        const baseUsers = await prisma.radusergroup.findMany({
+            where: usernames.length
+                ? { username: { in: usernames } }
+                : undefined,
+            select: { username: true, groupname: true },
+            orderBy: { username: 'asc' },
         });
 
-        const userInfoMap = new Map(userInfoList.map(info => [info.username, {
-            fullName: info.fullName,
-            department: info.department
-        }]));
+        const userInfoList = await prisma.userinfo.findMany({
+            where: {
+                username: {
+                    in: baseUsers.map(u => u.username),
+                },
+            },
+        });
+
+        const userInfoMap = new Map(
+            userInfoList.map(info => [
+                info.username,
+                {
+                    fullName: info.fullName,
+                    department: info.department,
+                },
+            ])
+        );
 
         const combinedUsers = baseUsers.map(user => ({
             ...user,
@@ -135,7 +201,11 @@ export async function GET(req: NextRequest) {
         }));
 
         return NextResponse.json({ users: combinedUsers }, { status: 200 });
+
     } catch (error: any) {
-        return NextResponse.json({ message: 'Maaf terjadi kesalahan pada server', error: error.message }, { status: 500 });
+        return NextResponse.json(
+            { message: 'Maaf terjadi kesalahan pada server', error: error.message },
+            { status: 500 }
+        );
     }
 }

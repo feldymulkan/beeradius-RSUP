@@ -1,92 +1,174 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import UserClientWrapper from "@/components/UserClientWrapper"; 
+import UserClientWrapper from "@/components/UserClientWrapper";
 import SearchInput from "@/components/SearchInput";
+import UserFilter from "@/components/UserFilter";
 
 export default async function UsersPage({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const resolvedSearchParams = await searchParams;
-  const page = Number(resolvedSearchParams?.page) || 1;
-  const pageSize = Number(resolvedSearchParams?.pageSize) || 10;
+  const params = await searchParams;
 
-  const query = resolvedSearchParams?.query as string | undefined;
+  const page = Number(params.page) || 1;
+  const pageSize = Number(params.pageSize) || 10;
 
-  const whereClause = query ? { username : { contains: query} } : {};
+  const query = params.query as string | undefined;
+  const group = params.group as string | undefined;
 
+  // =============================
+  // 1️⃣ Filter username dari search (username + fullName + DEPARTMENT)
+  // =============================
+  let filteredUsernames: string[] | undefined = undefined;
 
+  if (query) {
+    const [fromUsername, fromUserInfo] = await Promise.all([
+      // 1. Cari berdasarkan Username
+      prisma.radcheck.findMany({
+        where: { username: { contains: query } },
+        select: { username: true },
+      }),
+      // 2. Cari berdasarkan Nama Lengkap ATAU Departemen
+      prisma.userinfo.findMany({
+        where: {
+          OR: [
+            { fullName: { contains: query } },
+            { department: { contains: query } }, // 👈 Tambahan: Cari department di sini
+          ],
+        },
+        select: { username: true },
+      }),
+    ]);
 
-  // Logika pengambilan data dari server (tetap sama)
-  const groupedByUsername = await prisma.radcheck.groupBy({ 
-    by: ['username'],
-    where: whereClause,
+    // Gabungkan hasil pencarian (menghindari duplikat)
+    filteredUsernames = Array.from(
+      new Set([
+        ...fromUsername.map(u => u.username),
+        ...fromUserInfo.map(u => u.username),
+      ])
+    );
+
+    if (filteredUsernames.length === 0) {
+      return (
+        <div className="prose lg:prose-xl mb-6">
+          <div className="flex justify-between items-center">
+            <h1>Manajemen User</h1>
+            <Link href="/radius-users/create" className="btn btn-primary">
+              Tambah User Baru
+            </Link>
+          </div>
+          <div className="not-prose mt-6 flex flex-wrap gap-4 items-center">
+            <SearchInput placeholder="Cari username, nama, atau departemen..." queryKey="query" />
+             {/* Perlu merender filter agar tombol reset tetap ada jika user ingin kembali */}
+             <UserFilter groups={[]} /> 
+          </div>
+          <p className="mt-6 text-gray-500">Tidak ada data ditemukan untuk "{query}"</p>
+        </div>
+      );
+    }
+  }
+
+  // =============================
+  // 2️⃣ Filter tambahan (HANYA GROUP)
+  // =============================
+  if (group) {
+    const usersByGroup = await prisma.radusergroup.findMany({
+      where: { groupname: group },
+      select: { username: true },
+    });
+
+    const usernamesByGroup = usersByGroup.map(u => u.username);
+
+    filteredUsernames = filteredUsernames
+      ? filteredUsernames.filter(u => usernamesByGroup.includes(u))
+      : usernamesByGroup;
+  }
+
+  // =============================
+  // 3️⃣ Hitung total item
+  // =============================
+  const groupedByUsername = await prisma.radcheck.groupBy({
+    by: ["username"],
+    where: filteredUsernames
+      ? { username: { in: filteredUsernames } }
+      : undefined,
   });
-  const totalItems = groupedByUsername.length; // <-- Data ini akan kita gunakan
 
-  const uniqueRadcheckUsers = await prisma.radcheck.findMany({
-    distinct: ['username'],
+  const totalItems = groupedByUsername.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
+
+  // =============================
+  // 4️⃣ Ambil data utama (pagination)
+  // =============================
+  const radcheckUsers = await prisma.radcheck.findMany({
+    distinct: ["username"],
     select: { id: true, username: true },
-    where: whereClause,
+    where: filteredUsernames
+      ? { username: { in: filteredUsernames } }
+      : undefined,
+    orderBy: { username: "asc" },
     take: pageSize,
     skip: (page - 1) * pageSize,
-    orderBy: { username: "asc" },
   });
 
-  const usernames = uniqueRadcheckUsers.map(u => u.username);
+  const usernames = radcheckUsers.map(u => u.username);
+
+  // =============================
+  // 5️⃣ Ambil data tambahan
+  // =============================
   const [userInfos, userGroups] = await Promise.all([
     prisma.userinfo.findMany({
       where: { username: { in: usernames } },
-      select: { username: true, fullName: true, department: true }
+      select: { username: true, fullName: true, department: true },
     }),
     prisma.radusergroup.findMany({
       where: { username: { in: usernames } },
-      select: { username: true, groupname: true }
-    })
+      select: { username: true, groupname: true },
+    }),
   ]);
 
-  const userInfoMap = new Map(userInfos.map(info => [info.username, info]));
-  const userGroupMap = new Map(userGroups.map(group => [group.username, group]));
+  const userInfoMap = new Map(userInfos.map(i => [i.username, i]));
+  const userGroupMap = new Map(userGroups.map(g => [g.username, g]));
 
-  const combinedUsers = uniqueRadcheckUsers.map(radUser => {
-    const info = userInfoMap.get(radUser.username);
-    const group = userGroupMap.get(radUser.username);
-    return {
-      id: radUser.id,
-      username: radUser.username,
-      fullName: info?.fullName || "N/A",
-      department: info?.department || "N/A",
-      groupname: group?.groupname || "N/A",
-    };
+  const combinedUsers = radcheckUsers.map(user => ({
+    id: user.id,
+    username: user.username,
+    fullName: userInfoMap.get(user.username)?.fullName || "N/A",
+    department: userInfoMap.get(user.username)?.department || "N/A",
+    groupname: userGroupMap.get(user.username)?.groupname || "N/A",
+  }));
+
+  // =============================
+  // 6️⃣ Data untuk dropdown filter (HANYA GROUP)
+  // =============================
+  const groups = await prisma.radusergroup.findMany({
+    distinct: ["groupname"],
+    select: { groupname: true },
   });
 
-  const totalPages = Math.ceil(totalItems / pageSize);
+  const groupList = groups.map(g => g.groupname);
 
+  // =============================
+  // 7️⃣ Render UI
+  // =============================
   return (
     <div className="prose lg:prose-xl mb-6">
       <div className="flex justify-between items-center">
         <h1>Manajemen User</h1>
-          <Link href="/radius-users/create" className="btn btn-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+        <Link href="/radius-users/create" className="btn btn-primary">
           Tambah User Baru
         </Link>
       </div>
 
-      <div className="not-prose stats shadow mt-6">
-        <div className="stat">
-          <div className="stat-figure text-info">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.084-1.284-.23-1.857M12 12c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6zM6 20v-2c0-.653.084-1.284.23-1.857m0 0A7.988 7.988 0 0112 13a7.988 7.988 0 015.77 5.143m-5.77 1.857A10 10 0 0012 21a10 10 0 00-5.77-1.857z"></path></svg>
-          </div>
-          <div className="stat-title">Total User Terdaftar</div>
-          <div className="stat-value text-info">{totalItems}</div>
-        </div>
-
-      </div>
-      <div className="not-prose mt-6">
+      <div className="not-prose mt-6 flex flex-wrap gap-4 items-center">
         <SearchInput
-          placeholder="Cari berdasarkan username..."
+          placeholder="Cari username, nama, atau departemen..."
           queryKey="query"
+        />
+
+        <UserFilter
+          groups={groupList}
         />
       </div>
 
