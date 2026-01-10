@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { getRadiusUserDetailsById } from "@/lib/data";
-// 1. Import the new wrapper compone
 import UserDeleteAction from "@/components/UserDeleteActions";
+// 1. Import komponen baru
+import PasswordReveal from "@/components/PasswordReveal";
+
 type RadiusAttribute = {
   attribute: string;
   op: string;
@@ -28,14 +30,13 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="prose lg:prose-xl">
-      <h1>Detail User: {userData.username}</h1>
+      <h1>Detail User</h1>
       <div className="not-prose">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <div className="flex justify-end gap-2">
               <Link href={`/radius-users/edit/${resolvedParams.id}`} className="btn btn-sm btn-info">Edit</Link>
               
-              {/* 2. Replace the old button with the new wrapper */}
               <UserDeleteAction userId={userData.id} username={userData.username} />
 
               <Link href="/radius-users" className="btn btn-sm btn-ghost">← Kembali</Link>
@@ -44,6 +45,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
             <div className="space-y-4 mt-4">
               <div className="p-4 border rounded-lg bg-base-200">
                 <h3 className="font-bold text-lg">Informasi Umum</h3>
+                <p><strong>Username:</strong> {userData.username}</p>
                 <p><strong>Nama Lengkap:</strong> {userData.fullName}</p>
                 <p><strong>Departemen:</strong> {userData.department}</p>
                 <p><strong>Grup:</strong> {userData.group}</p>
@@ -61,13 +63,28 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                       </tr>
                     </thead>
                     <tbody>
-                      {userData.checkAttributes.map((attr: RadiusAttribute, index: number) => (
-                        <tr key={index}>
-                          <td>{attr.attribute}</td>
-                          <td>{attr.op}</td>
-                          <td>{attr.value}</td>
-                        </tr>
-                      ))}
+                      {userData.checkAttributes.map((attr: RadiusAttribute, index: number) => {
+                        // 2. Cek apakah atribut ini adalah password
+                        const isPassword = attr.attribute.endsWith("-Password") || attr.attribute === "User-Password";
+                        // Cek apakah ini hash (bukan cleartext)
+                        const isHashed = attr.attribute !== "Cleartext-Password";
+
+                        return (
+                          <tr key={index}>
+                            <td>{attr.attribute}</td>
+                            <td>
+                              <code className="text-xs">{attr.op}</code>
+                            </td>
+                            <td>
+                              {isPassword ? (
+                                <PasswordReveal value={attr.value} isHashed={isHashed} />
+                              ) : (
+                                attr.value
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>

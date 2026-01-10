@@ -25,7 +25,7 @@ export async function getRadiusUserDetailsById(id: number) {
     department: userInfo?.department || "N/A",
     checkAttributes: checkAttributes.map((attr) => ({
       ...attr,
-      value: attr.attribute.toLowerCase().includes("password") ? "********" : attr.value,
+      value: attr.value,
     })),
   };
 }

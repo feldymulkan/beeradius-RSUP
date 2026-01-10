@@ -18,98 +18,54 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { username } = body;
 
-    if (!username) {
-      return NextResponse.json(
-        { message: "Username diperlukan." },
-        { status: 400 }
-      );
-    }
+    if (!username) return NextResponse.json({ message: "Username required" }, { status: 400 });
 
     const cleanUsername = sanitize(username);
 
-    // 1. Cari sesi aktif user di radacct
+    // 1. Cari data sesi lengkap
     const session = await prisma.radacct.findFirst({
-      where: {
-        username: cleanUsername,
-        acctstoptime: null,
-      },
-      select: {
-        nasipaddress: true,
-      },
+      where: { username: cleanUsername, acctstoptime: null },
+      select: { nasipaddress: true, acctsessionid: true }, // Ambil Session ID!
+      orderBy: { acctstarttime: 'desc' }
     });
 
     if (!session) {
-      return NextResponse.json(
-        { message: `User ${cleanUsername} tidak sedang online.` },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "User is offline" }, { status: 404 });
     }
 
-    const cleanNasIp = sanitize(session.nasipaddress);
-
-    // 2. [PERBAIKAN] Ganti 'findUnique' menjadi 'findFirst'
-    // 'findFirst' bisa mencari berdasarkan kolom 'nasname'
+    // 2. Cari Secret NAS
     const nas = await prisma.nas.findFirst({
-      where: {
-        nasname: cleanNasIp, // 'nasname' biasanya diisi IP
-      },
-      select: {
-        secret: true,
-      },
+      where: { nasname: session.nasipaddress },
     });
 
     if (!nas || !nas.secret) {
-      return NextResponse.json(
-        { message: `Router (NAS) dengan IP ${cleanNasIp} tidak ditemukan atau tidak memiliki secret.` },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "NAS Secret not found" }, { status: 404 });
     }
 
-    const cleanNasSecret = sanitize(nas.secret);
-    const podPort = 3799; // Port standar Packet of Disconnect
+    // 3. Susun Command radclient
+    // Kita kirim Username DAN Acct-Session-Id agar Router tau siapa yg harus dikick
+    const payload = `User-Name="${cleanUsername}",Acct-Session-Id="${session.acctsessionid}"`;
+    
+    // Command: echo 'atribut' | radclient -r 3 -t 3 -x IP:3799 disconnect 'secret'
+    // -r 3: retry 3 kali, -t 3: timeout 3 detik
+    const command = `echo '${payload}' | radclient -r 2 -t 2 -x ${session.nasipaddress}:3799 disconnect '${nas.secret}'`;
 
-    // 3. Buat dan jalankan perintah radclient
-    const commandPayload = `User-Name="${cleanUsername}"`;
-    const command = `echo '${commandPayload}' | radclient -x ${cleanNasIp}:${podPort} disconnect ${cleanNasSecret}`;
-
-    console.log(`[Disconnect] Menjalankan: ${command}`);
+    console.log(`[Disconnect] Executing for ${cleanUsername} on ${session.nasipaddress}`);
 
     const { stdout, stderr } = await execAsync(command);
 
-    if (stderr) {
-      console.error(`[radclient stderr]: ${stderr}`);
-      return NextResponse.json(
-        { message: "Error saat menjalankan radclient.", error: stderr },
-        { status: 500 }
-      );
+    console.log("Output radclient:", stdout); // Cek ini di terminal VSCode
+
+    // Cek apakah Router menerima (ACK) atau menolak (NAK/Timeout)
+    if (stdout.includes("Disconnect-ACK")) {
+         return NextResponse.json({ message: "Sukses! User terputus.", output: stdout });
+    } else {
+         // NAK atau error lain (misal User-Name tidak ketemu di router)
+         return NextResponse.json({ message: "Gagal. Router menolak perintah.", output: stdout }, { status: 500 });
     }
 
-    // 4. Kirim balasan sukses
-    return NextResponse.json(
-      { message: `Permintaan disconnect untuk ${cleanUsername} terkirim.`, details: stdout },
-      { status: 200 }
-    );
-
-  } catch (error) {
-    console.error("[API Disconnect Error]:", error);
-    // Penanganan error 'unknown' dari TypeScript
-    if (error instanceof Error) {
-       // Cek jika 'radclient' tidak ditemukan
-       if (error.message.includes('ENOENT')) {
-         return NextResponse.json(
-            { message: "Server error: 'radclient' tidak ditemukan. Sudah diinstal (freeradius-utils)?" },
-            { status: 500 }
-          );
-       }
-       return NextResponse.json(
-        { message: "Gagal memproses permintaan disconnect.", error: error.message },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json(
-      { message: "Gagal memproses permintaan disconnect." },
-      { status: 500 }
-    );
+  } catch (error: any) {
+    console.error("[Disconnect Error]", error);
+    return NextResponse.json({ message: "Server Error", error: error.message }, { status: 500 });
   }
 }
