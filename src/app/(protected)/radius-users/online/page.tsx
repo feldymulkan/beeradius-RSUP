@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { formatDistanceToNow } from 'date-fns';
 import { id } from 'date-fns/locale';
 import DisconnectButton from "@/components/DisconnectButton";
 
-// Tipe data
 type OnlineUser = {
   radacctid: bigint | number;
   username: string;
@@ -17,31 +16,35 @@ type OnlineUser = {
 type ApiResponse = {
   onlineUsers: OnlineUser[];
   total: number;
-  totalPages: number;    // Tambahan dari API
-  currentPage: number;   // Tambahan dari API
+  totalPages: number;
+  currentPage: number;
 };
 
-const POLLING_INTERVAL = 10000; // 10 detik
-const ITEMS_PER_PAGE = 10;      // Jumlah baris per halaman
+const POLLING_INTERVAL = 10000;
+const ITEMS_PER_PAGE = 10; // Pastikan ini sama atau dikirim ke backend
 
 export default function OnlineUserTable() {
-  // State Data
   const [users, setUsers] = useState<OnlineUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // State Filter & Pagination
+  // State Pagination & Search
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
 
-  // Fungsi Fetch Data
-  const fetchOnlineUsers = async (currPage: number, query: string) => {
+  // Fungsi Fetch Data Utama
+  // Gunakan useCallback agar tidak re-create function setiap render
+  const fetchOnlineUsers = useCallback(async (pageNum: number, query: string) => {
     try {
-      // Kirim page dan limit ke API
-      const url = `/api/radius/users/online-users/list?q=${encodeURIComponent(query)}&page=${currPage}&limit=${ITEMS_PER_PAGE}`;
-      
-      const res = await fetch(url);
+      // Buat URL params dengan rapi
+      const params = new URLSearchParams({
+        q: query,
+        page: pageNum.toString(),
+        limit: ITEMS_PER_PAGE.toString(),
+      });
+
+      const res = await fetch(`/api/radius/users/online-users/list?${params.toString()}`);
       if (!res.ok) throw new Error("Gagal mengambil data");
       
       const data: ApiResponse = await res.json();
@@ -51,54 +54,42 @@ export default function OnlineUserTable() {
       setTotalRecords(data.total || 0);
 
     } catch (error) {
-      console.error("Error mengambil user online:", error);
-      // Jangan kosongkan data jika ini hanya polling background (agar tidak kedip)
-      if (isLoading) setUsers([]); 
+      console.error("Error fetching users:", error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  // Efek 1: Debounce Search (Reset ke Halaman 1 saat mengetik)
+  // 1. Efek Debounce Search (Reset ke Halaman 1 jika cari)
   useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      setPage(1); // PENTING: Reset ke hal 1 jika search berubah
-      fetchOnlineUsers(1, searchQuery); 
+    const timer = setTimeout(() => {
+      // Set loading true agar user tahu sedang mencari
+      // Tapi jangan set users ke [] agar tidak flickering parah
+      fetchOnlineUsers(1, searchQuery);
+      setPage(1); // Reset page tampilan ke 1
     }, 500);
 
-    return () => clearTimeout(delayDebounceFn);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
+    return () => clearTimeout(timer);
+  }, [searchQuery, fetchOnlineUsers]);
 
-  // Efek 2: Pindah Halaman
+  // 2. Efek Ganti Halaman (Ketika tombol next/prev ditekan)
   useEffect(() => {
-    // Hanya fetch jika bukan render pertama (karena sudah di-handle oleh Efek 1)
-    // Tapi untuk simplifikasi, kita biarkan fetch berjalan, React cukup pintar mengelola ini.
     fetchOnlineUsers(page, searchQuery);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]); 
+  }, [page, fetchOnlineUsers]); // Jangan masukkan searchQuery di sini untuk menghindari double fetch
 
-  // Efek 3: Polling Otomatis (Refresh data di halaman yang sedang aktif)
+  // 3. Efek Polling (Refresh otomatis data di halaman yg aktif)
   useEffect(() => {
-    const intervalId = setInterval(() => {
+    const interval = setInterval(() => {
       fetchOnlineUsers(page, searchQuery);
     }, POLLING_INTERVAL);
+    return () => clearInterval(interval);
+  }, [page, searchQuery, fetchOnlineUsers]);
 
-    return () => clearInterval(intervalId);
-  }, [page, searchQuery]);
-
-  // Format Tanggal
   const formatDuration = (startTime: string | null) => {
     if (!startTime) return "-";
     try {
-      return formatDistanceToNow(new Date(startTime), {
-        addSuffix: true,
-        locale: id,
-      });
-    } catch (error) {
-      console.error("Gagal format tanggal:", error);
-      return "-";
-    }
+      return formatDistanceToNow(new Date(startTime), { addSuffix: true, locale: id });
+    } catch { return "-"; }
   };
 
   return (
@@ -112,7 +103,9 @@ export default function OnlineUserTable() {
               User Online 
               <span className="badge badge-primary ml-2">{totalRecords}</span>
             </h2>
-            <p className="text-xs text-gray-500 mt-1">Halaman {page} dari {totalPages}</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Menampilkan {users.length} dari total {totalRecords} user
+            </p>
           </div>
 
           <div className="form-control w-full md:w-auto">
@@ -146,11 +139,9 @@ export default function OnlineUserTable() {
               </thead>
               <tbody>
                 {users.map((user, index) => {
-                  // Hitung nomor urut berdasarkan halaman (contoh: Hal 2 mulai dari 11)
                   const rowNumber = (page - 1) * ITEMS_PER_PAGE + index + 1;
-                  
                   return (
-                    <tr key={user.radacctid ? String(user.radacctid) : index}>
+                    <tr key={index}>
                       <th>{rowNumber}</th>
                       <td className="font-bold text-primary">{user.username}</td>
                       <td className="font-mono text-sm">{user.framedipaddress || "-"}</td>
@@ -165,32 +156,32 @@ export default function OnlineUserTable() {
               </tbody>
             </table>
           ) : (
-            <div className="flex flex-col items-center justify-center py-10 text-gray-500">
-              <p>Tidak ada user online yang ditemukan.</p>
+            <div className="text-center py-10 text-gray-500">
+              <p>Tidak ada data user.</p>
             </div>
           )}
         </div>
 
-        {/* PAGINATION CONTROLS */}
-        {users.length > 0 && (
+        {/* PAGINATION BUTTONS */}
+        {totalRecords > ITEMS_PER_PAGE && (
           <div className="flex justify-center mt-6">
             <div className="join">
               <button 
                 className="join-item btn btn-sm"
-                disabled={page === 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                onClick={() => setPage(p => p - 1)}
               >
                 « Prev
               </button>
               
-              <button className="join-item btn btn-sm no-animation">
-                Halaman {page}
+              <button className="join-item btn btn-sm no-animation pointer-events-none">
+                Halaman {page} / {totalPages}
               </button>
               
               <button 
                 className="join-item btn btn-sm" 
                 disabled={page >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
+                onClick={() => setPage(p => p + 1)}
               >
                 Next »
               </button>
