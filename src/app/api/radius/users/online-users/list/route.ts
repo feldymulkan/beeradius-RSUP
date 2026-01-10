@@ -3,76 +3,63 @@ import prisma from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
   try {
-    // 1. Ambil Parameter dari URL
+    // 1. Ambil Parameter
     const searchParams = req.nextUrl.searchParams;
-    
-    const query = searchParams.get('q') || ""; // Kata kunci pencarian
-    const page = parseInt(searchParams.get('page') || '1'); // Halaman ke berapa (Default 1)
-    const limit = parseInt(searchParams.get('limit') || '10'); // Data per halaman (Default 10)
+    const query = searchParams.get('q') || "";
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
 
-    // Validasi agar tidak minus
+    // Validasi
     const safePage = page > 0 ? page : 1;
-    const safeLimit = limit > 0 && limit <= 100 ? limit : 10; // Max limit 100 utk keamanan
-
-    // 2. Hitung Skip (Offset)
-    // Rumus: (Halaman - 1) * Jumlah Data Per Halaman
+    const safeLimit = limit > 0 && limit <= 100 ? limit : 10;
     const skip = (safePage - 1) * safeLimit;
 
-    // 3. Susun Filter (WHERE clause)
+    // 2. Filter Kondisi
     const whereCondition: any = {
-      acctstoptime: null, // Wajib: Hanya user yang sedang online
+      acctstoptime: null, // User yang sedang online
     };
 
-    // Jika ada pencarian, tambahkan logika OR
     if (query) {
       whereCondition.OR = [
-        {
-          username: {
-            contains: query,
-            // mode: 'insensitive', // Aktifkan baris ini jika menggunakan PostgreSQL
-          },
-        },
-        {
-          framedipaddress: {
-            contains: query,
-          },
-        },
+        { username: { contains: query } },
+        { framedipaddress: { contains: query } },
       ];
     }
 
-    // 4. Eksekusi Database (Query Data & Hitung Total secara paralel)
+    // 3. Ambil Data dari Database
     const [onlineUsers, totalCount] = await Promise.all([
-      // A. Ambil Data User (Dibatasi limit)
       prisma.radacct.findMany({
         where: whereCondition,
         select: {
-          radacctid: true,
+          radacctid: true, // INI ADALAH BIGINT
           username: true,
-          framedipaddress: true, // IP Address User
-          nasipaddress: true,    // IP Router
-          acctstarttime: true,   // Waktu Login
+          framedipaddress: true,
+          nasipaddress: true,
+          acctstarttime: true,
         },
-        orderBy: {
-          acctstarttime: 'desc', // User yang baru login paling atas
-        },
-        skip: skip,      // <--- INI KUNCI PAGINASI
-        take: safeLimit, // <--- INI KUNCI BATAS JUMLAH
+        orderBy: { acctstarttime: 'desc' },
+        skip: skip,
+        take: safeLimit,
       }),
-
-      // B. Hitung Total Data (Sesuai filter pencarian)
-      prisma.radacct.count({
-        where: whereCondition,
-      }),
+      prisma.radacct.count({ where: whereCondition }),
     ]);
 
-    // 5. Hitung Total Halaman
+    // ============================================================
+    // PERBAIKAN UTAMA: Mengubah BigInt menjadi String
+    // ============================================================
+    const serializedUsers = onlineUsers.map((user) => ({
+      ...user,
+      // Convert BigInt ke String agar JSON tidak error
+      radacctid: user.radacctid.toString(), 
+    }));
+    // ============================================================
+
     const totalPages = Math.ceil(totalCount / safeLimit);
 
-    // 6. Return Response JSON
     return NextResponse.json({ 
-      onlineUsers,      // Array data (maksimal 10 biji)
-      total: totalCount, // Total seluruh data (misal 500)
-      totalPages,       // Total halaman (misal 50)
+      onlineUsers: serializedUsers, // Kirim data yang sudah di-convert
+      total: totalCount,
+      totalPages,
       currentPage: safePage,
       limit: safeLimit
     }, { status: 200 });
@@ -86,5 +73,4 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// Wajib: Mencegah caching agar data realtime & paginasi jalan
 export const dynamic = 'force-dynamic';
