@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 
     // 4. Susun Payload Packet of Disconnect (PoD)
     // MikroTik sering menolak (NAK) jika kita tidak mengirim Framed-IP-Address
-    let payloadParts = [];
+    const payloadParts = [];
     
     // a. Username (Wajib)
     payloadParts.push(`User-Name="${cleanUsername}"`);

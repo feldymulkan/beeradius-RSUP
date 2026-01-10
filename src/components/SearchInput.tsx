@@ -8,7 +8,7 @@ type Props = {
     queryKey: string;
 };
 
-export default function SearchInput({ placeholder, queryKey }: Props) {
+export default function SearchInput({ queryKey }: Props) {
     const {replace} = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();

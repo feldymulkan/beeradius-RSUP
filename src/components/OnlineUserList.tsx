@@ -75,9 +75,13 @@ export default function RealtimeOnlineUsers() {
         locale: id, // Tampilkan dalam Bahasa Indonesia
       });
     } catch (error) {
+      // PERBAIKAN DI SINI:
+      // Gunakan variabel 'error' dengan mencetaknya ke console
+      console.error("Format date error:", error);
       return "N/A";
     }
   };
+
   // Tampilan saat loading
   if (isLoading) {
     return (

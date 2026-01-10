@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 export default function NotFound() {
   return (
     <div className="hero min-h-screen bg-base-200">

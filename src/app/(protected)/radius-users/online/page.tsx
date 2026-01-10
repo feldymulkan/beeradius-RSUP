@@ -8,7 +8,6 @@ import DisconnectButton from "@/components/DisconnectButton";
 
 /**
  * Tipe data yang kita harapkan dari API
- * (sesuai perbaikan kita sebelumnya)
  */
 type OnlineUser = {
   username: string;
@@ -50,7 +49,7 @@ export default function OnlineUserTable() {
 
     // 3. Bersihkan interval saat komponen tidak lagi ditampilkan
     return () => clearInterval(intervalId);
-  }, []); // '[]' = hanya berjalan sekali saat mount
+  }, []); 
 
   /**
    * Fungsi untuk memformat durasi (mis: "5 menit yang lalu")
@@ -63,9 +62,13 @@ export default function OnlineUserTable() {
         locale: id, // Tampilkan dalam Bahasa Indonesia
       });
     } catch (error) {
+      // PERBAIKAN DI SINI:
+      // Gunakan variabel 'error' agar ESLint tidak komplain
+      console.error("Gagal format tanggal:", error);
       return "N/A";
     }
   };
+
   // Tampilan saat loading
   if (isLoading) {
     return (
