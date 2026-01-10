@@ -1,20 +1,62 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
-/**
- * GET /api/radius/online-users
- * Mengambil jumlah pengguna yang sedang online dari tabel radacct.
- */
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    // Menghitung jumlah sesi yang belum memiliki acctstoptime (masih aktif)
-    const onlineCount = await prisma.radacct.count({
-      where: {
-        acctstoptime: null, // Kuncinya di sini
+    const searchParams = req.nextUrl.searchParams;
+    
+    // 1. Ambil parameter dari URL
+    const query = searchParams.get('q') || "";
+    const page = parseInt(searchParams.get('page') || '1'); // Default hal 1
+    const limit = parseInt(searchParams.get('limit') || '10'); // Default 10 per halaman
+
+    // Hitung offset (berapa data yang harus dilewati)
+    const skip = (page - 1) * limit;
+
+    // 2. Susun Filter (Where Condition)
+    const whereCondition: any = {
+      acctstoptime: null, // Hanya user yang sedang online
+    };
+
+    if (query) {
+      whereCondition.OR = [
+        { username: { contains: query } }, // Hapus mode: 'insensitive' jika error di MySQL
+        { framedipaddress: { contains: query } },
+      ];
+    }
+
+    // 3. Ambil Data dengan Pagination
+    const onlineUsers = await prisma.radacct.findMany({
+      where: whereCondition,
+      select: {
+        radacctid: true,
+        username: true,
+        framedipaddress: true,
+        acctstarttime: true,
+        nasipaddress: true,
       },
+      orderBy: {
+        acctstarttime: 'desc',
+      },
+      skip: skip,      // <--- Lewati data sebelumnya
+      take: limit,     // <--- Ambil sejumlah limit
     });
 
-    return NextResponse.json({ onlineCount }, { status: 200 });
+    // 4. Hitung Total Data (untuk navigasi halaman)
+    const totalCount = await prisma.radacct.count({
+      where: whereCondition,
+    });
+
+    // Hitung total halaman
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return NextResponse.json({ 
+      onlineUsers, 
+      total: totalCount,
+      totalPages: totalPages,
+      currentPage: page
+    }, { status: 200 });
+
   } catch (error) {
     console.error("[API Online Users Error]:", error);
     return NextResponse.json(
@@ -24,6 +66,4 @@ export async function GET() {
   }
 }
 
-// Tambahkan baris ini agar Next.js tidak meng-cache hasilnya
-// Kita ingin data ini selalu baru setiap kali diminta
 export const dynamic = 'force-dynamic';

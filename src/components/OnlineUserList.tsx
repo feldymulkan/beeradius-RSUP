@@ -1,25 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-// Impor 'date-fns' untuk memformat durasi
 import { formatDistanceToNow } from 'date-fns';
-import { id } from 'date-fns/locale'; // Untuk bahasa Indonesia
+import { id } from 'date-fns/locale';
 
 /**
- * Tipe data yang akan kita olah di internal komponen
+ * Tipe data disesuaikan dengan Output API Baru
+ * (API sekarang mengirim object lengkap, bukan array terpisah)
  */
 type OnlineUser = {
+  radacctid: number;
   username: string;
-  startTime: string; // ISO string date
+  acctstarttime: string; // ISO string date
+  framedipaddress: string | null; // Tambahan info IP (opsional ditampilkan)
 };
 
-/**
- * Tipe data yang kita harapkan dari API Anda
- * (berdasarkan struktur JSON yang Anda kirim)
- */
 type ApiResponse = {
-  usernames: string[];
-  startTime: (Date | null)[]; // API Anda mengirim array terpisah
+  onlineUsers: OnlineUser[];
+  total: number;
 };
 
 // Atur seberapa sering data di-refresh
@@ -31,97 +29,91 @@ export default function RealtimeOnlineUsers() {
 
   const fetchOnlineUsers = async () => {
     try {
-      // Panggil API yang Anda buat
-      const res = await fetch('/api/radius/users/online-users/list');
+      // Pastikan URL ini sesuai dengan lokasi file route.ts backend Anda
+      // (Bisa jadi '/api/radius/online-users' atau '/api/radius/users/online-users/list')
+      const res = await fetch('/api/radius/users/online-users/list'); 
+      
       if (!res.ok) throw new Error("Gagal mengambil data");
+      
       const data: ApiResponse = await res.json();
 
-      // --- Menggabungkan Dua Array Terpisah ---
-      // API Anda mengirim: { usernames: ['a', 'b'], startTime: ['9:00', '9:05'] }
-      // Kita ubah menjadi: [ { username: 'a', startTime: '9:00' }, ... ]
-      const combinedUsers = data.usernames.map((username, index) => ({
-        username: username,
-        // Ambil startTime di indeks yang sama
-        startTime: data.startTime[index]?.toString() || new Date().toISOString(), 
-      }));
+      // PERUBAHAN PENTING:
+      // Kita tidak perlu lagi mapping/menggabungkan array manual.
+      // Backend sekarang sudah mengirim array object yang rapi.
+      setUsers(data.onlineUsers || []);
 
-      setUsers(combinedUsers);
     } catch (error) {
       console.error("Error mengambil user online:", error);
-      setUsers([]); // Kosongkan jika error
+      setUsers([]); 
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // 1. Ambil data saat komponen pertama kali dimuat
     fetchOnlineUsers();
-
-    // 2. Atur interval untuk mengambil data secara berkala (polling)
     const intervalId = setInterval(fetchOnlineUsers, POLLING_INTERVAL);
-
-    // 3. Bersihkan interval saat komponen tidak lagi ditampilkan
     return () => clearInterval(intervalId);
-  }, []); // '[]' = hanya berjalan sekali saat mount
+  }, []); 
 
-  /**
-   * Fungsi untuk memformat durasi (mis: "5 menit yang lalu")
-   */
   const formatDuration = (startTime: string) => {
     try {
       return formatDistanceToNow(new Date(startTime), {
         addSuffix: true,
-        locale: id, // Tampilkan dalam Bahasa Indonesia
+        locale: id, 
       });
     } catch (error) {
-      // PERBAIKAN DI SINI:
-      // Gunakan variabel 'error' dengan mencetaknya ke console
       console.error("Format date error:", error);
-      return "N/A";
+      return "-";
     }
   };
 
-  // Tampilan saat loading
   if (isLoading) {
     return (
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
           <h2 className="card-title">User Online</h2>
           <div className="flex justify-center items-center h-24">
-            <span className="loading loading-spinner"></span>
+            <span className="loading loading-spinner text-primary"></span>
           </div>
         </div>
       </div>
     );
   }
 
-  // Tampilan utama
   return (
     <div className="card bg-base-100 shadow-xl">
       <div className="card-body">
-        <h2 className="card-title">User Online ({users.length})</h2>
-        {/* Batasi tinggi dan beri scroll jika daftar terlalu panjang */}
+        <h2 className="card-title justify-between">
+          User Online 
+          <span className="badge badge-primary">{users.length}</span>
+        </h2>
+        
         <div className="overflow-x-auto max-h-96">
           {users.length > 0 ? (
-            <table className="table table-sm table-zebra">
+            <table className="table table-sm table-zebra w-full">
               <thead>
                 <tr>
                   <th>Username</th>
+                  <th>IP Address</th>
                   <th>Login Sejak</th>
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
-                  <tr key={user.username}>
-                    <td className="font-medium">{user.username}</td>
-                    <td>{formatDuration(user.startTime)}</td>
+                {users.map((user, index) => (
+                  // Gunakan radacctid sebagai key jika ada, atau fallback ke index
+                  <tr key={user.radacctid || index}>
+                    <td className="font-medium text-primary">{user.username}</td>
+                    <td className="font-mono text-xs">{user.framedipaddress || "-"}</td>
+                    <td className="text-sm">{formatDuration(user.acctstarttime)}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            <p className="text-center p-4">Tidak ada user yang online.</p>
+            <div className="text-center py-4 text-gray-500">
+              <p>Tidak ada user yang online.</p>
+            </div>
           )}
         </div>
       </div>
