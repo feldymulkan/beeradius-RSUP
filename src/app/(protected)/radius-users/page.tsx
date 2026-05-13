@@ -3,6 +3,7 @@ import Link from "next/link";
 import UserClientWrapper from "@/components/UserClientWrapper";
 import SearchInput from "@/components/SearchInput";
 import UserFilter from "@/components/UserFilter";
+import ImportUser from "@/components/ImportUser";
 
 export default async function UsersPage({
   searchParams,
@@ -120,7 +121,7 @@ export default async function UsersPage({
   const [userInfos, userGroups] = await Promise.all([
     prisma.userinfo.findMany({
       where: { username: { in: usernames } },
-      select: { username: true, fullName: true, department: true },
+      select: { username: true, fullName: true, department: true, createdBy: true },
     }),
     prisma.radusergroup.findMany({
       where: { username: { in: usernames } },
@@ -137,6 +138,7 @@ export default async function UsersPage({
     fullName: userInfoMap.get(user.username)?.fullName || "N/A",
     department: userInfoMap.get(user.username)?.department || "N/A",
     groupname: userGroupMap.get(user.username)?.groupname || "N/A",
+    createdBy: userInfoMap.get(user.username)?.createdBy || "N/A",
   }));
 
   // =============================
@@ -156,20 +158,30 @@ export default async function UsersPage({
     <div className="prose lg:prose-xl mb-6">
       <div className="flex justify-between items-center">
         <h1>Manajemen User</h1>
-        <Link href="/radius-users/create" className="btn btn-primary">
-          Tambah User Baru
-        </Link>
+        <div className="dropdown dropdown-end not-prose">
+          <label tabIndex={0} className="btn btn-primary m-1">Tambah User Baru</label>
+          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+            <li><Link href="/radius-users/create/hotspot">User Hotspot</Link></li>
+            <li><Link href="/radius-users/create/vpn">User VPN (PPP)</Link></li>
+          </ul>
+        </div>
       </div>
 
-      <div className="not-prose mt-6 flex flex-wrap gap-4 items-center">
-        <SearchInput
-          placeholder="Cari username, nama, atau departemen..."
-          queryKey="query"
-        />
+      <div className="not-prose mt-6 flex flex-wrap gap-4 items-center justify-between">
+        <div className="flex flex-wrap gap-4 items-center">
+          <SearchInput
+            placeholder="Cari username, nama, atau departemen..."
+            queryKey="query"
+          />
 
-        <UserFilter
-          groups={groupList}
-        />
+          <UserFilter
+            groups={groupList}
+          />
+        </div>
+
+        <div className="card bg-base-200 p-2 shadow-sm">
+          <ImportUser />
+        </div>
       </div>
 
       <div className="not-prose mt-6">

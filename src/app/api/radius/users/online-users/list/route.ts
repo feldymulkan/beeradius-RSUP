@@ -31,11 +31,12 @@ export async function GET(req: NextRequest) {
       prisma.radacct.findMany({
         where: whereCondition,
         select: {
-          radacctid: true, // INI ADALAH BIGINT
+          radacctid: true, 
           username: true,
           framedipaddress: true,
           nasipaddress: true,
           acctstarttime: true,
+          acctupdatetime: true,
         },
         orderBy: { acctstarttime: 'desc' },
         skip: skip,
@@ -44,20 +45,30 @@ export async function GET(req: NextRequest) {
       prisma.radacct.count({ where: whereCondition }),
     ]);
 
+    // Threshold untuk stale session (15 menit)
+    const STALE_THRESHOLD_MS = 15 * 60 * 1000;
+    const now = new Date();
+
     // ============================================================
-    // PERBAIKAN UTAMA: Mengubah BigInt menjadi String
+    // PERBAIKAN UTAMA: Mengubah BigInt menjadi String & Deteksi Stale
     // ============================================================
-    const serializedUsers = onlineUsers.map((user) => ({
-      ...user,
-      // Convert BigInt ke String agar JSON tidak error
-      radacctid: user.radacctid.toString(), 
-    }));
+    const serializedUsers = onlineUsers.map((user) => {
+      const lastUpdate = user.acctupdatetime ? new Date(user.acctupdatetime) : (user.acctstarttime ? new Date(user.acctstarttime) : now);
+      const isStale = (now.getTime() - lastUpdate.getTime()) > STALE_THRESHOLD_MS;
+
+      return {
+        ...user,
+        // Convert BigInt ke String agar JSON tidak error
+        radacctid: user.radacctid.toString(),
+        isStale,
+      };
+    });
     // ============================================================
 
     const totalPages = Math.ceil(totalCount / safeLimit);
 
     return NextResponse.json({ 
-      onlineUsers: serializedUsers, // Kirim data yang sudah di-convert
+      onlineUsers: serializedUsers,
       total: totalCount,
       totalPages,
       currentPage: safePage,

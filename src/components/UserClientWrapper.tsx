@@ -11,6 +11,7 @@ type User = {
   username: string;
   fullName: string;
   department: string;
+  createdBy: string;
 };
 
 type Props = {
@@ -34,6 +35,10 @@ export default function UserClientWrapper({ users, page, pageSize, totalPages }:
     { 
       header: "Departemen", 
       accessorKey: "department" 
+    },
+    { 
+      header: "Dibuat Oleh", 
+      accessorKey: "createdBy" 
     },
     {
       header: "Actions",

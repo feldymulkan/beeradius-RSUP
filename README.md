@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BeeRadius
 
-## Getting Started
+BeeRadius adalah aplikasi manajemen RADIUS berbasis web yang dibangun dengan Next.js 15. Aplikasi ini dirancang untuk memudahkan administrator dalam mengelola pengguna, grup, dan memantau sesi aktif pada server RADIUS (seperti FreeRADIUS) yang menggunakan database MySQL.
 
-First, run the development server:
+## 🚀 Fitur Utama
+
+- **Manajemen Pengguna RADIUS (Hotspot & VPN)**:
+  - Halaman terpisah untuk pembuatan user Hotspot dan VPN.
+  - Tambah, edit, dan hapus pengguna.
+  - Detail informasi profil pengguna (Nama Lengkap, Departemen).
+  - Pelacakan admin pembuat akun (`createdBy`).
+  - Pengaturan atribut `radcheck` dan `radreply`.
+- **Manajemen Grup RADIUS**:
+  - Pembuatan dan pengelolaan grup.
+  - Pengaturan atribut `radgroupcheck` dan `radgroupreply`.
+  - Penugasan pengguna ke grup tertentu.
+- **Monitoring & Analitik**:
+  - Pantau pengguna yang sedang aktif secara real-time.
+  - Fitur untuk memutuskan koneksi pengguna (*Disconnect*) dan pembersihan sesi menggantung (*Clear Stale Sessions*).
+  - Laporan penggunaan bandwidth terbanyak (Top Usage) berdasarkan User/IP.
+- **Autentikasi & RBAC**:
+  - Sistem login aman menggunakan NextAuth.js.
+  - Role-Based Access Control: `superadmin` dan `admin`.
+- **Fitur Enterprise Lainnya**:
+  - Import massal user menggunakan file CSV.
+  - Validasi data ketat menggunakan Zod.
+- **Antarmuka Modern**:
+  - Tema *dark/light mode* yang responsif menggunakan DaisyUI.
+  - Tabel data dengan fitur pencarian dan paginasi.
+
+## 🛠️ Teknologi
+
+- **Framework**: [Next.js 15](https://nextjs.org/) (App Router & Turbopack)
+- **Bahasa**: [TypeScript](https://www.typescriptlang.org/)
+- **Database ORM**: [Prisma](https://www.prisma.io/) (MySQL)
+- **Autentikasi**: [NextAuth.js](https://next-auth.js.org/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) & [DaisyUI](https://daisyui.com/)
+- **Form Management**: [React Hook Form](https://react-hook-form.com/) & [Zod](https://zod.dev/)
+
+## 📋 Prasyarat
+
+Sebelum memulai, pastikan Anda telah menginstal:
+- Node.js (versi 20 atau terbaru)
+- MySQL Server
+- Server FreeRADIUS (yang sudah dikonfigurasi untuk menggunakan MySQL)
+
+## ⚙️ Instalasi & Persiapan
+
+1. **Clone repositori:**
+   ```bash
+   git clone <repository-url>
+   cd beeradius
+   ```
+
+2. **Instal dependensi:**
+   ```bash
+   npm install
+   ```
+
+3. **Konfigurasi Environment:**
+   Buat file `.env` di direktori akar dan sesuaikan dengan environment Anda:
+   ```env
+   DATABASE_URL="mysql://user:password@localhost:3306/radius"
+   NEXTAUTH_SECRET="your-secret-key"
+   NEXTAUTH_URL="http://localhost:3000"
+   ```
+
+4. **Sinkronisasi Database:**
+   Jalankan migrasi Prisma untuk menyesuaikan skema database:
+   ```bash
+   npx prisma generate
+   # Jika database belum ada isinya, Anda mungkin perlu menjalankan:
+   # npx prisma db push
+   ```
+
+5. **Seeding (Opsional):**
+   Untuk membuat data awal atau user admin default:
+   ```bash
+   npx prisma db seed
+   ```
+
+## 🏃 Memulai Pengembangan
+
+Jalankan server pengembangan:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Struktur Proyek
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `src/app`: Route, page, dan API handler (Next.js App Router).
+- `src/components`: Komponen UI yang dapat digunakan kembali.
+- `src/lib`: Utilitas dan konfigurasi (Prisma, Auth).
+- `src/types`: Definisi tipe TypeScript.
+- `prisma`: Skema database dan skrip migrasi.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+Dibuat dengan ❤️ untuk pengelolaan RADIUS yang lebih mudah.

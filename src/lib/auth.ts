@@ -30,10 +30,10 @@ export const authOptions: NextAuthOptions = {
                 const passwordMatch = await bcrypt.compare(credentials.password, user.password);
 
                 if (passwordMatch) {
-                    // Pastikan ID dikembalikan sebagai string
                     return {
                         id: user.id.toString(),
                         name: user.username,
+                        role: user.role,
                     };
                 }
                 return null;
@@ -41,30 +41,24 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
 
-    // --- INI BAGIAN PENTING YANG DITAMBAHKAN ---
     callbacks: {
-        // Callback ini menambahkan ID ke token JWT setelah login
         jwt({ token, user }) {
             if (user) {
-                token.id = user.id; // Ambil 'id' dari objek user dan masukkan ke token
+                token.id = user.id;
+                token.role = (user as any).role;
             }
             return token;
         },
-        // Callback ini menambahkan ID ke objek sesi dari token
         session({ session, token }) {
             if (session.user) {
-                session.user.id = token.id as string; // Ambil 'id' dari token dan masukkan ke sesi
+                session.user.id = token.id as string;
+                (session.user as any).role = token.role as string;
             }
             return session;
         },
     },
-    // ---------------------------------------------
 
     pages: {
         signIn: "/login",
     },
 };
-
-// Bagian ini mungkin berbeda jika Anda menggunakan NextAuth v5.
-// Jika Anda punya `export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);`, itu tidak masalah.
-// Yang terpenting adalah objek `authOptions` di atas.

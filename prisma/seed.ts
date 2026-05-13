@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../src/generated/client";
 import * as bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
@@ -12,14 +12,16 @@ async function main() {
     const admin = await prisma.admin.upsert({
         where: { username: username },
         update: {
-            password: hashedPassword
+            password: hashedPassword,
+            role: "superadmin"
         },
         create: {
             username: username,
             password: hashedPassword,
+            role: "superadmin"
         },
     });
-    console.log(`Username ${admin.username} was created`);
+    console.log(`Username ${admin.username} (Role: ${admin.role}) was created/updated`);
 }
 
 main()
