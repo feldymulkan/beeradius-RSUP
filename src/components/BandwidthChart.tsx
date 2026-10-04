@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { formatBytes } from '@/lib/utils';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
 interface BandwidthData {
   date: string;
-  upload: string | number;
-  download: string | number;
+  upload: number;
+  download: number;
 }
 
 export default function BandwidthChart() {
@@ -46,70 +46,89 @@ export default function BandwidthChart() {
   }, []);
 
   return (
-    <div className="card bg-base-100 shadow-xl h-full border border-base-200">
-      <div className="card-body">
-        <h2 className="card-title text-lg font-bold mb-4">Bandwidth 7 Hari Terakhir</h2>
+    <div className="card relative overflow-hidden h-full">
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/50 to-transparent" />
+      <div className="card-body p-5 flex flex-col justify-between">
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <p className="font-mono text-[10px] font-semibold tracking-[0.08em] uppercase text-slate-400">Trafik Jaringan</p>
+            <h3 className="text-base font-bold tracking-tight">Penggunaan Bandwidth 7 Hari</h3>
+          </div>
+          <span className="badge badge-sm badge-ghost font-mono text-[10px] text-slate-400">Rx / Tx</span>
+        </div>
         
         {loading ? (
-          <div className="flex justify-center items-center h-[300px]">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
+          <div className="flex justify-center items-center h-[280px]">
+            <span className="loading loading-spinner loading-md text-primary"></span>
           </div>
         ) : error ? (
-          <div className="flex justify-center items-center h-[300px] text-error">
-            Gagal memuat data
+          <div className="flex justify-center items-center h-[280px] text-error text-sm">
+            Gagal memuat data bandwidth
+          </div>
+        ) : data.length === 0 ? (
+          <div className="flex justify-center items-center h-[280px] text-slate-500 text-sm">
+            Belum ada catatan log bandwidth
           </div>
         ) : (
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={300}>
-              <AreaChart
-                data={data}
-                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-              >
+          <div className="h-[280px] w-full pt-2">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="colorUpload" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                  <linearGradient id="chartDownload" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.0} />
                   </linearGradient>
-                  <linearGradient id="colorDownload" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#22c55e" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#22c55e" stopOpacity={0}/>
+                  <linearGradient id="chartUpload" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" opacity={0.1} />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(148, 163, 184, 0.08)" />
                 <XAxis 
                   dataKey="date" 
                   tickLine={false} 
                   axisLine={false}
-                  tick={{ fill: 'currentColor', opacity: 0.6, fontSize: 12 }}
+                  tick={{ fill: '#94a3b8', fontSize: 11, fontFamily: 'monospace' }}
                 />
                 <YAxis 
                   tickFormatter={(val) => formatBytes(val)}
                   tickLine={false} 
                   axisLine={false}
-                  tick={{ fill: 'currentColor', opacity: 0.6, fontSize: 12 }}
-                  width={80}
+                  tick={{ fill: '#94a3b8', fontSize: 10, fontFamily: 'monospace' }}
+                  width={75}
                 />
                 <Tooltip 
-                  formatter={(value: any) => formatBytes(value)}
-                  contentStyle={{ backgroundColor: 'hsl(var(--b1))', borderColor: 'hsl(var(--b2))', borderRadius: '8px' }}
+                  formatter={(value: any) => [formatBytes(Number(value)), '']}
+                  contentStyle={{ 
+                    backgroundColor: 'rgba(15, 23, 42, 0.95)', 
+                    borderColor: 'rgba(56, 189, 248, 0.25)', 
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontFamily: 'monospace'
+                  }}
                 />
-                <Legend verticalAlign="bottom" height={36} />
-                <Area 
-                  type="monotone" 
-                  dataKey="upload" 
-                  name="Upload"
-                  stroke="#3b82f6" 
-                  fillOpacity={1} 
-                  fill="url(#colorUpload)" 
-                  strokeWidth={2}
+                <Legend 
+                  verticalAlign="top" 
+                  align="right" 
+                  height={32}
+                  wrapperStyle={{ fontSize: '11px', fontFamily: 'monospace' }}
                 />
                 <Area 
                   type="monotone" 
                   dataKey="download" 
-                  name="Download"
-                  stroke="#22c55e" 
+                  name="Download (Rx)"
+                  stroke="#38bdf8" 
                   fillOpacity={1} 
-                  fill="url(#colorDownload)" 
+                  fill="url(#chartDownload)" 
+                  strokeWidth={2}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="upload" 
+                  name="Upload (Tx)"
+                  stroke="#10b981" 
+                  fillOpacity={1} 
+                  fill="url(#chartUpload)" 
                   strokeWidth={2}
                 />
               </AreaChart>

@@ -15,21 +15,21 @@ export default function NasStatusWidget() {
   const [healthData, setHealthData] = useState<NasHealth[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchHealth = async () => {
-      try {
-        const res = await fetch('/api/radius/nas/health');
-        if (res.ok) {
-          const data = await res.json();
-          setHealthData(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch NAS health data', error);
-      } finally {
-        setLoading(false);
+  const fetchHealth = async () => {
+    try {
+      const res = await fetch('/api/radius/nas/health');
+      if (res.ok) {
+        const data = await res.json();
+        setHealthData(data);
       }
-    };
+    } catch (error) {
+      console.error('Failed to fetch NAS health data', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchHealth();
     const interval = setInterval(fetchHealth, 30000);
     return () => clearInterval(interval);
@@ -37,57 +37,67 @@ export default function NasStatusWidget() {
 
   const total = healthData.length;
   const onlineCount = healthData.filter(h => h.status === 'online').length;
-  const offlineCount = healthData.filter(h => h.status === 'offline').length;
-  const unknownCount = healthData.filter(h => h.status === 'unknown').length;
 
   return (
-    <div className="card bg-base-100 shadow-sm border border-base-200 border-t-4 border-t-warning flex flex-col h-full">
-      <div className="card-body p-6 flex flex-col h-full">
-        <h3 className="card-title text-base text-base-content/70">Status Router</h3>
-        
-        {loading ? (
-          <div className="flex-grow flex items-center justify-center">
-            <span className="loading loading-spinner text-warning"></span>
+    <div className="card relative overflow-hidden h-full">
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-accent/50 to-transparent" />
+      <div className="card-body p-5 flex flex-col justify-between">
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="font-mono text-[10px] font-semibold tracking-[0.08em] uppercase text-slate-400">Infrastruktur Router</p>
+              <h3 className="text-base font-bold tracking-tight">Status Router &amp; NAS</h3>
+            </div>
+            <span className="badge badge-sm badge-ghost font-mono text-[10px] text-slate-400">
+              {onlineCount}/{total} Online
+            </span>
           </div>
-        ) : (
-          <>
-            <div className="flex items-center gap-4 my-2">
-              <span className="text-4xl font-bold text-base-content">{onlineCount}</span>
-              <div className="flex flex-col">
-                <span className="text-sm font-medium text-base-content/70">{onlineCount}/{total} Router Aktif</span>
-                {offlineCount > 0 && (
-                  <span className="badge badge-error badge-sm mt-1">{offlineCount} Offline</span>
-                )}
-              </div>
-            </div>
 
-            <div className="mt-4 flex-grow">
-              <ul className="flex flex-col gap-2">
-                {healthData.slice(0, 5).map((nas) => (
-                  <li key={nas.nasId} className="flex items-center justify-between text-sm">
-                    <span className="truncate max-w-[150px]" title={nas.shortname || nas.nasname}>
-                      {nas.shortname || nas.nasname}
-                    </span>
-                    <span className="flex items-center gap-1.5">
-                      {nas.status === 'online' && <span className="w-2 h-2 rounded-full bg-success inline-block"></span>}
-                      {nas.status === 'offline' && <span className="w-2 h-2 rounded-full bg-error inline-block"></span>}
-                      {nas.status === 'unknown' && <span className="w-2 h-2 rounded-full bg-base-300 inline-block"></span>}
-                    </span>
-                  </li>
-                ))}
-                {total > 5 && (
-                  <li className="text-xs text-base-content/50 italic mt-1">
-                    + {total - 5} router lainnya
-                  </li>
-                )}
-              </ul>
+          {loading ? (
+            <div className="flex justify-center items-center h-[180px]">
+              <span className="loading loading-spinner loading-md text-primary"></span>
             </div>
-            
-            <div className="card-actions justify-end mt-4 pt-4 border-t border-base-200">
-              <Link href="/nas" className="btn btn-sm btn-ghost w-full">Lihat Detail</Link>
+          ) : healthData.length === 0 ? (
+            <div className="flex justify-center items-center h-[180px] text-slate-500 text-sm italic">
+              Belum ada perangkat NAS terdaftar
             </div>
-          </>
-        )}
+          ) : (
+            <div className="space-y-2.5 my-2">
+              {healthData.slice(0, 4).map((nas) => (
+                <div key={nas.nasId} className="flex items-center justify-between p-2 rounded-lg bg-base-200/50 border border-primary/5 text-xs">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span 
+                      className={`w-2 h-2 rounded-full shrink-0 ${
+                        nas.status === 'online' ? 'bg-success shadow-[0_0_6px_#10b981]' : 
+                        nas.status === 'offline' ? 'bg-error shadow-[0_0_6px_#ef4444]' : 'bg-slate-500'
+                      }`} 
+                    />
+                    <div className="truncate">
+                      <p className="font-medium text-slate-200 truncate">{nas.shortname || nas.nasname}</p>
+                      <p className="font-mono text-[10px] text-slate-500">{nas.nasname}</p>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="font-mono text-[11px] text-slate-400">
+                      {nas.latencyMs ? `${nas.latencyMs}ms` : nas.status === 'online' ? 'Aktif' : 'Offline'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+              {total > 4 && (
+                <p className="text-center text-[11px] text-slate-500 font-mono pt-1">
+                  +{total - 4} router/perangkat lainnya
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="pt-3 border-t border-primary/10 flex justify-end">
+          <Link href="/nas" className="text-xs text-primary hover:text-primary-focus font-mono inline-flex items-center gap-1 transition-colors">
+            Kelola Semua Perangkat →
+          </Link>
+        </div>
       </div>
     </div>
   );

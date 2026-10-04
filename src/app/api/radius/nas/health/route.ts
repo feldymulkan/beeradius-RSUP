@@ -1,7 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
 import prisma from '@/lib/prisma';
 import { mikrotikRequest } from '@/lib/mikrotik';
-import type { MikrotikConfig } from '@/lib/mikrotik';
 
 type NasHealth = {
   nasId: number;

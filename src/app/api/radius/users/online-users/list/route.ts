@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
-import { fixPrismaDate, toPrismaDate, serializeBigInt } from "@/lib/utils";
+import { fixPrismaDate, toPrismaDate } from "@/lib/utils";
 
 export async function GET(req: NextRequest) {
   try {

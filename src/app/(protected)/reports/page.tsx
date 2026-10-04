@@ -38,7 +38,7 @@ export default async function ReportsPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 md:p-8">
+    <div className="space-y-6">
       <ReportClient 
         usageData={usageRes.data || []}
         loginData={loginRes.data || []}

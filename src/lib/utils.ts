@@ -8,7 +8,7 @@ export function safeBigInt(value: any): bigint {
     if (value === null || value === undefined || value === '') return BigInt(0);
     try {
         return BigInt(value);
-    } catch (_e) {
+    } catch {
         return BigInt(0);
     }
 }
@@ -137,10 +137,7 @@ export function formatDate(date: Date | string | number | null, formatStr: strin
         
         const zonedDate = toZonedTime(d, SERVER_TZ);
         return format(zonedDate, formatStr);
-    } catch (_e) {
+    } catch {
         return '-';
     }
 }
-
-/** @deprecated Gunakan formatDate — alias untuk backward compatibility */
-export const formatWITA = formatDate;

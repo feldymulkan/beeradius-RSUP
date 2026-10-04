@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { FaSync, FaTrashAlt, FaWifi, FaUserClock, FaNetworkWired } from "react-icons/fa";

@@ -1,5 +1,3 @@
-import OnlineUserCount from "./OnlineUserCount";
-
 export default function TableSkeleton() {
   const skeletonRows = Array.from({ length: 10 });
 
@@ -85,45 +83,6 @@ export default function TableSkeleton() {
   );
 }
 
-export function DetailSkeleton() {
-  return (
-    <div className="prose lg:prose-xl">
-      {/* Skeleton untuk Judul */}
-      <div className="skeleton h-10 w-1/2"></div>
-
-      <div className="not-prose">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            {/* Skeleton untuk Tombol */}
-            <div className="flex justify-end gap-2">
-              <div className="skeleton h-8 w-20"></div>
-              <div className="skeleton h-8 w-24"></div>
-              <div className="skeleton h-8 w-28"></div>
-            </div>
-
-            <div className="space-y-4 mt-4">
-              {/* Skeleton untuk Info Umum */}
-              <div className="p-4 border rounded-lg bg-base-200">
-                <div className="skeleton h-7 w-48 mb-4"></div>
-                <div className="skeleton h-4 w-full mb-2"></div>
-                <div className="skeleton h-4 w-full mb-2"></div>
-                <div className="skeleton h-4 w-3/4"></div>
-              </div>
-
-              {/* Skeleton untuk Tabel Atribut */}
-              <div className="p-4 border rounded-lg bg-base-200">
-                <div className="skeleton h-7 w-56 mb-4"></div>
-                <div className="skeleton h-4 w-full mb-2"></div>
-                <div className="skeleton h-4 w-full mb-2"></div>
-                <div className="skeleton h-4 w-full"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function EditFormSkeleton() {
   return (
@@ -176,8 +135,14 @@ export function DashboardLoading() {
       <div className="flex justify-center mt-6">
         <div className="not-prose stats stats-vertical lg:stats-horizontal shadow">
 
-          {/* 1. Komponen User Online */}
-          <OnlineUserCount />
+          {/* 1. Sesi Online */}
+          <div className="stat">
+            <div className="stat-title">Sesi Online</div>
+            <div className="stat-value text-primary">
+              <span className="skeleton h-8 w-24"></span>
+            </div>
+            <div className="stat-desc">User terhubung</div>
+          </div>
 
           {/* 2. Total User */}
           <div className="stat">

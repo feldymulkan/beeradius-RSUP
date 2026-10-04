@@ -128,7 +128,7 @@ export default function WireguardPeerClient() {
         if (iface["public-key"]) setServerPubKey(iface["public-key"]);
         if (iface["listen-port"]) setServerEndpoint(`${host}:${iface["listen-port"]}`);
       }
-    } catch (_err) {}
+    } catch {}
   };
 
   const handleShowConfig = async (peer: WireguardPeer) => {

@@ -36,26 +36,39 @@ export default async function TypedUsersPage({
   const targetGroupNames = targetGroups.map(g => g.groupname);
 
   return (
-    <div className="prose lg:prose-xl mb-6 max-w-none">
-      <div className="flex justify-between items-center">
-        <h1>Manajemen User {type.toUpperCase()}</h1>
-        <Link href={`/radius-users/create/${type}`} className="btn btn-primary">Tambah User {type.toUpperCase()}</Link>
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+            Manajemen User <span className="text-primary">{type.toUpperCase()}</span>
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Kelola akun autentikasi {type.toUpperCase()}, hak akses bandwidth, dan masa aktif jaringan RSUD NTB.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 flex-wrap">
+          <ImportUser />
+          <ExportCSV type={type} />
+          <Link
+            href={`/radius-users/create/${type}`}
+            className="btn btn-primary btn-sm gap-1.5 shadow-[0_0_12px_rgba(56,189,248,0.25)]"
+          >
+            <span>+</span> Tambah User {type.toUpperCase()}
+          </Link>
+        </div>
       </div>
 
-      <div className="not-prose mt-6 flex flex-wrap gap-4 items-center justify-between">
-        <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput placeholder="Cari username, nama, atau departemen..." />
+      {/* Unified Search & Filter Toolbar */}
+      <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2.5 flex-1">
+          <SearchInput placeholder={`Cari user ${type}...`} />
+          <div className="h-5 w-px bg-slate-700/50 hidden md:block"></div>
           <UserFilter groups={targetGroupNames} />
         </div>
-        <div className="flex gap-2 items-center">
-          <ExportCSV type={type} />
-          <div className="card bg-base-200 p-2 shadow-sm">
-            <ImportUser />
-          </div>
-        </div>
       </div>
 
-      <Suspense key={key} fallback={<div className="mt-6"><TableSkeleton /></div>}>
+      <Suspense key={key} fallback={<div className="mt-4"><TableSkeleton /></div>}>
         <UsersData params={sParams} type={type} targetGroupNames={targetGroupNames} />
       </Suspense>
     </div>

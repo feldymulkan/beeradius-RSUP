@@ -47,7 +47,7 @@ export default function UserClientWrapper({ users, page, pageSize, totalPages, t
         toast.success(res.message || "Status berhasil diperbarui");
         router.refresh();
       }
-    } catch (_error: any) {
+    } catch {
       toast.error("Terjadi kesalahan");
     } finally {
       setIsUpdating(null);

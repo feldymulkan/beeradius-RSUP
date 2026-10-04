@@ -120,7 +120,7 @@ export default function MikrotikConfigClient() {
       } else {
         toast.error(data.message);
       }
-    } catch (_err: any) {
+    } catch {
       toast.error("Gagal melakukan tes koneksi");
     } finally {
       setIsTesting(null);

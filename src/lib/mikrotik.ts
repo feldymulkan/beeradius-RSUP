@@ -46,7 +46,7 @@ export async function mikrotikRequest(config: MikrotikConfig, path: string, meth
           } else {
             try {
               resolve(JSON.parse(responseBody));
-            } catch (_e) {
+            } catch {
               resolve(responseBody);
             }
           }

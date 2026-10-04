@@ -5,12 +5,14 @@ BeeRadius adalah aplikasi manajemen RADIUS berbasis web yang dibangun dengan Nex
 ## 🚀 Fitur Utama
 
 - **Manajemen Pengguna RADIUS (Hotspot & VPN)**:
-  - Halaman terpisah untuk pembuatan user Hotspot dan VPN.
-  - Panduan konfigurasi manual VPN (L2TP/IPSec) untuk Windows, macOS, dan Linux.
-  - Tambah, edit, dan hapus pengguna.
-  - Detail informasi profil pengguna (Nama Lengkap, Departemen).
+  - Halaman terpisah dan terpadu untuk user Hotspot dan VPN.
+  - Tampilan modern dengan **Single-Row Unified Dark Glass Toolbar** yang responsif dan bebas dari elemen bertumpuk (*stacked clutter*).
+  - Panduan konfigurasi manual VPN (L2TP/IPSec & WireGuard) untuk Windows, macOS, dan Linux.
+  - Tambah, edit, toggle status aktif/nonaktif, dan hapus pengguna (termasuk aksi massal *Batch Actions*).
+  - Detail informasi profil pengguna (Nama Lengkap, Departemen, Grup Profil).
   - Pelacakan admin pembuat akun (`createdBy`).
   - Pengaturan atribut `radcheck` dan `radreply`.
+  - **Import & Export CSV**: Fitur import massal via **Modal Dialog Interaktif** dengan validasi format dan sanitasi ekspor.
 - **Manajemen Grup RADIUS**:
   - Pembuatan dan pengelolaan grup.
   - Pengaturan atribut `radgroupcheck` dan `radgroupreply`.
@@ -19,16 +21,16 @@ BeeRadius adalah aplikasi manajemen RADIUS berbasis web yang dibangun dengan Nex
   - Pantau pengguna yang sedang aktif dan durasi online secara real-time.
   - Filter sesi berdasarkan status (Aktif / Gantung / Semua) pada halaman Online User.
   - Fitur untuk memutuskan koneksi pengguna (*Disconnect*) dan pembersihan massal sesi gantung (*Clear Stale Sessions*).
-  - Laporan penggunaan bandwidth terbanyak (Top Usage) berdasarkan User/IP.
+  - Laporan penggunaan bandwidth terbanyak (Top Usage) berdasarkan User/IP dan antarmuka router MikroTik.
 - **Autentikasi & RBAC**:
   - Sistem login aman menggunakan NextAuth.js.
   - Role-Based Access Control: `superadmin` dan `admin`.
 - **Fitur Enterprise Lainnya**:
-  - Import massal user menggunakan file CSV.
+  - Import massal user menggunakan file CSV berbasis modal interaktif.
   - Validasi data ketat menggunakan Zod.
 - **Antarmuka Modern**:
-  - Tema *dark/light mode* yang responsif menggunakan DaisyUI.
-  - Tabel data dengan fitur pencarian dan paginasi.
+  - Desain bertema **Telemetry Dark Glass** berdensitas tinggi untuk kebutuhan Network Operations Center (NOC) RSUD NTB.
+  - Tabel data dengan fitur pencarian cepat (`⌘K`), filter dinamis, dan paginasi terstruktur.
 
 ## 🛠️ Teknologi
 

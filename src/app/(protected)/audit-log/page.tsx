@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import toast from 'react-hot-toast';
-import { FaSearch, FaFilter, FaSync } from 'react-icons/fa';
+import { FaSearch, FaSync } from 'react-icons/fa';
 
 export default function AuditLogPage() {
   const { data: session, status } = useSession();
@@ -34,7 +34,7 @@ export default function AuditLogPage() {
     }
   }, [status, session, router]);
 
-  const fetchAdmins = async () => {
+  const fetchAdmins = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/manage');
       if (res.ok) {
@@ -44,9 +44,9 @@ export default function AuditLogPage() {
     } catch (error) {
       console.error('Error fetching admins:', error);
     }
-  };
+  }, []);
 
-  const fetchLogs = async (page = 1) => {
+  const fetchLogs = useCallback(async (page = 1) => {
     try {
       setIsLoading(true);
       const queryParams = new URLSearchParams({
@@ -73,18 +73,18 @@ export default function AuditLogPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filters]);
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.role === 'superadmin') {
       fetchAdmins();
-      fetchLogs();
+      fetchLogs(currentPage);
       const interval = setInterval(() => {
         fetchLogs(currentPage);
       }, 30000);
       return () => clearInterval(interval);
     }
-  }, [status, session, filters, currentPage]);
+  }, [status, session, fetchAdmins, fetchLogs, currentPage]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
@@ -106,7 +106,10 @@ export default function AuditLogPage() {
     <div className="p-4 max-w-full">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Audit Log</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold">Audit Log</h1>
+            <span className="badge badge-sm font-mono">{total} Log</span>
+          </div>
           <p className="text-sm text-gray-500 dark:text-gray-400">Log aktivitas admin dalam sistem</p>
         </div>
         <button className="btn btn-sm btn-ghost" onClick={() => fetchLogs(currentPage)}>

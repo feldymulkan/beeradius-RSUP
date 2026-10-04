@@ -1,9 +1,9 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { toPrismaDate } from "@/lib/utils";
 import { logAudit } from '@/lib/audit';
 
-export async function POST(_req: NextRequest) {
+export async function POST() {
   try {
     const STALE_THRESHOLD_MS = 15 * 60 * 1000;
     const now = new Date();

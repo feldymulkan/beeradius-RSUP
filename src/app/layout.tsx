@@ -1,30 +1,20 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/Providers";
 import { Toaster } from 'react-hot-toast';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
 
 export const metadata: Metadata = {
   title: "BeeRadius Admin",
   description: "RADIUS Management Panel",
 };
 
-// Skrip pemuat tema untuk mencegah flash
+// Tema tunggal "beeradius" (Telemetry Dark Glass)
 const ThemeLoaderScript = () => {
-  const script = `
-    (function() {
-      const THEME_KEY = 'theme';
-      const savedTheme = localStorage.getItem(THEME_KEY);
-      const fallbackTheme = 'dark';
-      if (savedTheme) {
-        document.documentElement.setAttribute('data-theme', savedTheme);
-      } else {
-        document.documentElement.setAttribute('data-theme', fallbackTheme);
-      }
-    })();
-  `;
+  const script = `document.documentElement.setAttribute('data-theme', 'beeradius');`;
   return <script dangerouslySetInnerHTML={{ __html: script }} />;
 };
 
@@ -70,8 +60,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="id" data-theme="beeradius" suppressHydrationWarning>
+      <body className={`${inter.variable} ${jetbrains.variable} ${inter.className}`}>
         <ThemeLoaderScript />
         <ChunkErrorRecoveryScript />
 

@@ -50,14 +50,14 @@ export default function SearchInput({ placeholder = "Cari...", queryKey = "q" }:
     };
 
     return (
-        <div className="form-control w-full max-w-md">
+        <div className="form-control w-full sm:w-72">
             <div className="relative group">
-                <span className="absolute inset-y-0 left-3 flex items-center text-gray-400 group-focus-within:text-primary transition-colors">
-                    <FaSearch size={14} />
+                <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 group-focus-within:text-primary transition-colors">
+                    <FaSearch size={13} />
                 </span>
                 <input
                     type="text"
-                    className="input input-bordered w-full pl-10 pr-10 focus:input-primary transition-all shadow-sm"
+                    className="input input-sm bg-base-200/80 border border-primary/20 w-full pl-9 pr-8 text-xs rounded-lg focus:border-primary focus:outline-none transition-all"
                     placeholder={placeholder}
                     value={term}
                     onChange={(e) => setTerm(e.target.value)}
@@ -65,15 +65,15 @@ export default function SearchInput({ placeholder = "Cari...", queryKey = "q" }:
                 {term && (
                     <button
                         onClick={clearSearch}
-                        className="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-error transition-colors"
+                        className="absolute inset-y-0 right-2.5 flex items-center text-slate-400 hover:text-error transition-colors"
                         title="Hapus Pencarian"
                     >
-                        <FaTimes size={14} />
+                        <FaTimes size={12} />
                     </button>
                 )}
             </div>
             {debouncedTerm && debouncedTerm === term && (
-                <div className="absolute -bottom-5 left-0 text-[10px] text-gray-400 font-bold uppercase tracking-widest px-2 animate-pulse">
+                <div className="text-[10px] text-cyan-400/80 font-mono mt-0.5 px-1 animate-pulse">
                     Mencari: {debouncedTerm}
                 </div>
             )}

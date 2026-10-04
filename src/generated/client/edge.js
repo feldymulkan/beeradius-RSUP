@@ -466,7 +466,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/home/sirs/beeradius-RSUP/src/generated/client",
+      "value": "C:\\Users\\feldy\\Downloads\\Project\\beeradius-RSUP\\src\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -475,12 +475,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "debian-openssl-3.0.x",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/home/sirs/beeradius-RSUP/prisma/schema.prisma",
+    "sourceFilePath": "C:\\Users\\feldy\\Downloads\\Project\\beeradius-RSUP\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -494,6 +494,7 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {

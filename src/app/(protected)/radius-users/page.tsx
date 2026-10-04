@@ -36,33 +36,45 @@ export default async function UsersPage({
   const groupList = groups.map(g => g.groupname);
 
   return (
-    <div className="prose lg:prose-xl mb-6 max-w-none">
-      <div className="flex justify-between items-center">
-        <h1>Manajemen User</h1>
-        <div className="dropdown dropdown-end not-prose">
-          <label tabIndex={0} className="btn btn-primary m-1">Tambah User Baru</label>
-          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-            <li><Link href="/radius-users/create/hotspot">User Hotspot</Link></li>
-            <li><Link href="/radius-users/create/vpn">User VPN (PPP)</Link></li>
-          </ul>
+    <div className="space-y-6">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">
+            Manajemen Pengguna RADIUS
+          </h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Kelola seluruh akun autentikasi Hotspot dan VPN (PPP) jaringan RSUD NTB.
+          </p>
         </div>
-      </div>
-
-      <div className="not-prose mt-6 flex flex-wrap gap-4 items-center justify-between">
-        <div className="flex flex-wrap gap-4 items-center">
-          <SearchInput placeholder="Cari username, nama, atau departemen..." />
-          <UserFilter groups={groupList} />
-        </div>
-
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2 flex-wrap">
+          <ImportUser />
           <ExportCSV />
-          <div className="card bg-base-200 p-2 shadow-sm">
-            <ImportUser />
+          <div className="dropdown dropdown-end">
+            <label tabIndex={0} className="btn btn-primary btn-sm gap-1.5 shadow-[0_0_12px_rgba(56,189,248,0.25)]">
+              <span>+</span> Tambah User Baru
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </label>
+            <ul tabIndex={0} className="dropdown-content z-10 menu p-2 shadow-2xl bg-base-100 border border-primary/20 rounded-xl w-48 mt-1">
+              <li><Link href="/radius-users/create/hotspot" className="text-xs py-2">User Hotspot</Link></li>
+              <li><Link href="/radius-users/create/vpn" className="text-xs py-2">User VPN (PPP)</Link></li>
+            </ul>
           </div>
         </div>
       </div>
 
-      <Suspense key={key} fallback={<div className="mt-6"><TableSkeleton /></div>}>
+      {/* Unified Search & Filter Toolbar */}
+      <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+        <div className="flex flex-wrap items-center gap-2.5 flex-1">
+          <SearchInput placeholder="Cari username, nama, atau departemen..." />
+          <div className="h-5 w-px bg-slate-700/50 hidden md:block"></div>
+          <UserFilter groups={groupList} />
+        </div>
+      </div>
+
+      <Suspense key={key} fallback={<div className="mt-4"><TableSkeleton /></div>}>
         <UsersData params={params} />
       </Suspense>
     </div>

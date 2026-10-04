@@ -1,6 +1,245 @@
-/* @tailwind base;
-@tailwind components;
-@tailwind utilities; */
-
 @import "tailwindcss";
-@plugin "daisyui";
+
+@plugin "daisyui" {
+  themes: beeradius --default --prefersdark;
+}
+
+/* ------------------------------------------------------------------
+   Tema "Telemetry Dark Glass" (mengikuti desain Google Stitch)
+   Canvas #0b1326 · Cyan #38bdf8 · Cobalt #2563eb · Emerald #10b981
+------------------------------------------------------------------- */
+@plugin "daisyui/theme" {
+  name: "beeradius";
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+
+  --color-base-100: #131b2e;
+  --color-base-200: #0b1326;
+  --color-base-300: #222a3d;
+  --color-base-content: #dae2fd;
+
+  --color-primary: #38bdf8;
+  --color-primary-content: #00354a;
+  --color-secondary: #2563eb;
+  --color-secondary-content: #ffffff;
+  --color-accent: #10b981;
+  --color-accent-content: #002113;
+  --color-neutral: #171f33;
+  --color-neutral-content: #dae2fd;
+
+  --color-info: #38bdf8;
+  --color-info-content: #00354a;
+  --color-success: #10b981;
+  --color-success-content: #002113;
+  --color-warning: #f59e0b;
+  --color-warning-content: #2a1700;
+  --color-error: #ef4444;
+  --color-error-content: #ffffff;
+
+  --radius-selector: 0.25rem;
+  --radius-field: 0.375rem;
+  --radius-box: 0.75rem;
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+}
+
+:root {
+  --glass-border: rgba(56, 189, 248, 0.12);
+  --glass-border-strong: rgba(56, 189, 248, 0.3);
+  --divider: rgba(148, 163, 184, 0.1);
+}
+
+html,
+body {
+  background: #0b1326;
+  color: #dae2fd;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Latar belakang dengan cahaya halus */
+body {
+  background-image:
+    radial-gradient(ellipse 60% 40% at 10% -10%, rgba(56, 189, 248, 0.07), transparent),
+    radial-gradient(ellipse 50% 40% at 100% 0%, rgba(37, 99, 235, 0.06), transparent);
+  background-attachment: fixed;
+}
+
+/* ---------- Kartu & panel (glass) ---------- */
+.card {
+  background-color: rgba(19, 27, 46, 0.75);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(16px);
+  transition: border-color 0.2s ease;
+}
+.card:hover {
+  border-color: rgba(56, 189, 248, 0.2);
+}
+.card.shadow-xl,
+.card.shadow-md,
+.card.shadow-sm,
+.card.shadow-2xl {
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+}
+/* Hilangkan border-top berwarna ala tema lama */
+.card[class*="border-t-4"] {
+  border-top-width: 1px;
+}
+
+/* ---------- Tabel ---------- */
+.table {
+  --color-base-200: transparent;
+}
+.table thead tr,
+.table :where(thead, tfoot) {
+  background: transparent;
+}
+.table th {
+  color: #94a3b8;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--divider);
+  background: rgba(11, 19, 38, 0.5);
+}
+.table td {
+  border-bottom: 1px solid var(--divider);
+}
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+.table-zebra tbody tr:nth-child(even),
+.table-zebra tbody tr:nth-child(even) > * {
+  background-color: transparent;
+}
+.table tbody tr.hover:hover,
+.table tbody tr:hover {
+  background-color: rgba(56, 189, 248, 0.05);
+}
+
+/* ---------- Form ---------- */
+.input,
+.select,
+.textarea {
+  background-color: rgba(11, 19, 38, 0.7);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+.input:focus,
+.input:focus-within,
+.select:focus,
+.textarea:focus {
+  border-color: #38bdf8;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+.input::placeholder,
+.textarea::placeholder {
+  color: #64748b;
+}
+
+/* ---------- Tombol ---------- */
+.btn {
+  font-weight: 500;
+  letter-spacing: 0;
+  transition: all 0.15s ease;
+}
+.btn-primary {
+  background-color: #2563eb;
+  border-color: rgba(56, 189, 248, 0.4);
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: #1d4ed8;
+  border-color: #38bdf8;
+}
+.btn-error {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+.btn-error:hover {
+  background-color: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+.btn-ghost:hover {
+  background-color: rgba(56, 189, 248, 0.08);
+}
+.btn:not(.btn-primary):not(.btn-error):not(.btn-ghost):not(.btn-warning):not(.btn-success):not(.btn-secondary):not(.btn-accent):not(.btn-info):not(.btn-link):not(.btn-outline) {
+  background-color: rgba(30, 41, 59, 0.6);
+  border-color: rgba(148, 163, 184, 0.2);
+  color: #e2e8f0;
+}
+
+/* ---------- Badge ---------- */
+.badge {
+  font-weight: 500;
+}
+.badge-success {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #34d399;
+}
+.badge-warning {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+}
+.badge-error {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #f87171;
+}
+
+/* ---------- Tab, modal, dropdown ---------- */
+.tabs-boxed,
+.tabs-box {
+  background: rgba(19, 27, 46, 0.75);
+  border: 1px solid var(--glass-border);
+}
+.modal-box,
+.dropdown-content {
+  background-color: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--glass-border-strong);
+  backdrop-filter: blur(24px);
+}
+
+/* ---------- Util ---------- */
+.mono {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+}
+.font-mono {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+/* Scrollbar tipis */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2d3449 transparent;
+}
+
+/* Pulse dot status */
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  50% { box-shadow: 0 0 0 5px rgba(16, 185, 129, 0); }
+}
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #10b981;
+  animation: status-pulse 2s infinite;
+}
