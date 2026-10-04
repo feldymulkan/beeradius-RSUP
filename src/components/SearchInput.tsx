@@ -1,84 +1,110 @@
-"use client"
+"use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
-import { useDebounce } from "use-debounce";
+import { useState, useEffect, FormEvent } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
 
 type Props = {
-    placeholder?: string;
-    queryKey?: string;
+  placeholder?: string;
+  queryKey?: string;
+  className?: string;
 };
 
-export default function SearchInput({ placeholder = "Cari...", queryKey = "q" }: Props) {
-    const { replace } = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
+export default function SearchInput({
+  placeholder = "Cari...",
+  queryKey = "q",
+  className = "",
+}: Props) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-    const [term, setTerm] = useState(searchParams.get(queryKey)?.toString() || "");
-    const [debouncedTerm] = useDebounce(term, 500);
+  const urlQuery = searchParams.get(queryKey)?.toString() || "";
+  const [term, setTerm] = useState(urlQuery);
 
-    const handleSearch = useCallback((value: string) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set("page", "1");
-        if (value) {
-            params.set(queryKey, value);
-        } else {
-            params.delete(queryKey);
-        }
-        replace(`${pathname}?${params.toString()}`);
-    }, [pathname, replace, searchParams, queryKey]);
+  // Sync state with URL parameter when URL changes externally (navigation, reset)
+  useEffect(() => {
+    setTerm(urlQuery);
+  }, [urlQuery]);
 
-    // Sync state with URL only on initial load or external URL changes
-    useEffect(() => {
-        const urlTerm = searchParams.get(queryKey)?.toString() || "";
-        if (urlTerm !== term && !term) {
-            setTerm(urlTerm);
-        }
-    }, [searchParams, queryKey, term]);
+  const executeSearch = (valueToSearch: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", "1"); // Always reset to page 1 on new search
+    const trimmed = valueToSearch.trim();
+    if (trimmed) {
+      params.set(queryKey, trimmed);
+    } else {
+      params.delete(queryKey);
+    }
+    const newQuery = params.toString();
+    router.replace(newQuery ? `${pathname}?${newQuery}` : pathname);
+  };
 
-    // Debounced search trigger
-    useEffect(() => {
-        if (debouncedTerm !== (searchParams.get(queryKey) || "")) {
-            handleSearch(debouncedTerm);
-        }
-    }, [debouncedTerm, handleSearch, searchParams, queryKey]);
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    executeSearch(term);
+  };
 
-    const clearSearch = () => {
-        setTerm("");
-        handleSearch("");
-    };
+  const handleClear = () => {
+    setTerm("");
+    executeSearch("");
+  };
 
-    return (
-        <div className="form-control w-full sm:w-72">
-            <div className="relative group">
-                <span className="absolute inset-y-0 left-3 flex items-center text-slate-400 group-focus-within:text-primary transition-colors">
-                    <FaSearch size={13} />
-                </span>
-                <input
-                    type="text"
-                    className="input input-sm bg-base-200/80 border border-primary/20 w-full pl-9 pr-8 text-xs rounded-lg focus:border-primary focus:outline-none transition-all"
-                    placeholder={placeholder}
-                    value={term}
-                    onChange={(e) => setTerm(e.target.value)}
-                />
-                {term && (
-                    <button
-                        onClick={clearSearch}
-                        className="absolute inset-y-0 right-2.5 flex items-center text-slate-400 hover:text-error transition-colors"
-                        title="Hapus Pencarian"
-                    >
-                        <FaTimes size={12} />
-                    </button>
-                )}
-            </div>
-            {debouncedTerm && debouncedTerm === term && (
-                <div className="text-[10px] text-cyan-400/80 font-mono mt-0.5 px-1 animate-pulse">
-                    Mencari: {debouncedTerm}
-                </div>
-            )}
+  const isQueryApplied = Boolean(urlQuery);
+
+  return (
+    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+      <form onSubmit={handleSubmit} className="flex items-center gap-1.5 w-full sm:w-auto">
+        <div className="relative group w-full sm:w-64">
+          <span className="absolute inset-y-0 left-2.5 flex items-center text-base-content/40 group-focus-within:text-primary transition-colors pointer-events-none">
+            <FaSearch size={12} />
+          </span>
+          <input
+            type="text"
+            className="input input-sm bg-base-100 border border-base-300 w-full pl-8 pr-7 text-xs rounded-lg focus:border-primary focus:outline-none transition-all placeholder:text-base-content/40"
+            placeholder={placeholder}
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+          />
+          {term && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className="absolute inset-y-0 right-2 flex items-center text-base-content/40 hover:text-error transition-colors cursor-pointer"
+              title="Hapus teks pencarian"
+            >
+              <FaTimes size={11} />
+            </button>
+          )}
         </div>
-    );
+
+        <button
+          type="submit"
+          className="btn btn-sm btn-primary text-xs px-3 shadow-xs gap-1.5 font-medium flex items-center shrink-0 cursor-pointer"
+          title="Terapkan pencarian (atau tekan Enter)"
+        >
+          <FaSearch size={11} />
+          <span>Cari</span>
+        </button>
+      </form>
+
+      {/* Indikator query aktif jika sedang menyaring hasil */}
+      {isQueryApplied && (
+        <div className="flex items-center gap-1 text-[11px] font-mono animate-in fade-in duration-200">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-primary/10 border border-primary/30 text-primary font-semibold">
+            <span>Hasil:</span>
+            <span className="max-w-[120px] truncate">"{urlQuery}"</span>
+            <button
+              type="button"
+              onClick={handleClear}
+              className="hover:text-rose-400 ml-0.5 text-xs font-bold cursor-pointer"
+              title="Batalkan filter pencarian ini"
+            >
+              ×
+            </button>
+          </span>
+        </div>
+      )}
+    </div>
+  );
 }
-
-

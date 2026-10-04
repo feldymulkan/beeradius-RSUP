@@ -16,6 +16,7 @@ import {
   FaMicrochip,
   FaClock,
   FaMapMarkerAlt,
+  FaTimes,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 
@@ -391,22 +392,44 @@ export default function SwitchesPage() {
 
       {/* Unified Toolbar */}
       <div className="card p-3 flex flex-col md:flex-row items-center gap-3">
-        <div className="relative flex-1 w-full">
-          <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 h-3.5 w-3.5" />
-          <input
-            type="text"
-            placeholder="Cari berdasarkan IP, Nama Switch, Brand, atau Lokasi..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="input input-sm w-full pl-9 text-xs"
-          />
-        </div>
+        <form
+          onSubmit={(e) => e.preventDefault()}
+          className="relative flex-1 w-full flex items-center gap-2"
+        >
+          <div className="relative flex-1">
+            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 h-3.5 w-3.5" />
+            <input
+              type="text"
+              placeholder="Cari berdasarkan IP, Nama Switch, Brand, atau Lokasi..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="input input-sm w-full pl-9 pr-8 text-xs bg-base-100 border border-base-300 rounded-lg focus:border-primary focus:outline-none"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-base-content/40 hover:text-error cursor-pointer"
+                title="Hapus pencarian"
+              >
+                <FaTimes size={12} />
+              </button>
+            )}
+          </div>
+          <button
+            type="submit"
+            className="btn btn-sm btn-primary text-xs px-3 gap-1.5 shadow-xs shrink-0 cursor-pointer"
+          >
+            <FaSearch size={11} />
+            <span>Cari</span>
+          </button>
+        </form>
 
         <div className="flex items-center gap-2 w-full md:w-auto">
           <select
             value={selectedBrand}
             onChange={(e) => setSelectedBrand(e.target.value)}
-            className="select select-sm text-xs"
+            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg"
           >
             <option value="all">Semua Brand</option>
             <option value="ruijie">Ruijie / Reyee</option>
@@ -420,12 +443,27 @@ export default function SwitchesPage() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="select select-sm text-xs"
+            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg"
           >
             <option value="all">Semua Status</option>
             <option value="online">Online</option>
             <option value="offline">Offline</option>
           </select>
+
+          {(searchQuery || selectedBrand !== "all" || selectedStatus !== "all") && (
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedBrand("all");
+                setSelectedStatus("all");
+              }}
+              className="btn btn-sm btn-ghost text-xs gap-1 border border-base-300 hover:text-rose-400"
+              title="Reset semua filter dan pencarian"
+            >
+              <FaTimes size={10} />
+              <span>Reset</span>
+            </button>
+          )}
         </div>
       </div>
 

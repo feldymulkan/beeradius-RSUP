@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
 
 export type ColumnDef<T> = {
@@ -35,6 +35,7 @@ export default function DataTable<T extends { [key: string]: any }>({
   idKey = "id" as keyof T,
 }: DataTableProps<T>) {
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedIds, setSelectedIds] = useState<any[]>([]);
 
@@ -69,7 +70,7 @@ export default function DataTable<T extends { [key: string]: any }>({
     const params = new URLSearchParams(searchParams.toString());
     params.set("pageSize", newSize);
     params.set("page", "1");
-    window.location.href = `${pathname}?${params.toString()}`;
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const createSortURL = (sortKey: string) => {

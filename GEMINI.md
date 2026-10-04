@@ -48,6 +48,7 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - Menggunakan tata letak **Single-Row Unified Dark Glass Toolbar** (`#131b2e` border `primary/10`) yang menyatukan `SearchInput` dan `UserFilter` tanpa *stacked clutter*.
   - Menghapus pembungkus `prose` Tailwind agar hierarki margin dan tombol aksi tetap rapi.
   - Komponen `ImportUser.tsx` menggunakan **Modal Dialog Interaktif** (DaisyUI modal) sehingga kotak upload file mentah tidak lagi merusak tampilan toolbar utama.
+  - **Sistem Pencarian & Filter Stabil**: Komponen `SearchInput` menggunakan form eksplisit dengan tombol *Cari* (dan submit tombol *Enter*) menggantikan debounce otomatis untuk mencegah lag, race condition, dan hilangnya filter aktif. Filter dropdown (`UserFilter`) dan pencarian kata kunci saling mempertahankan parameter URL masing-masing (`q`, `group`, `status`, `never_logged_in`).
   - Tombol aksi utama diletakkan di header kanan: `+ Tambah User`, `Import CSV`, dan `Export CSV`.
 - **Form Tambah User Hotspot & VPN (`/radius-users/create/hotspot` & `/radius-users/create/vpn`)**:
   - Mengadopsi arsitektur layout 2-kolom terpadu sesuai standar **Stitch UI/UX**:

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { FaSync, FaTrashAlt, FaWifi, FaUserClock, FaNetworkWired } from "react-icons/fa";
+import { FaSync, FaTrashAlt, FaWifi, FaUserClock, FaNetworkWired, FaSearch, FaTimes } from "react-icons/fa";
 import { formatDate } from "@/lib/utils";
 import DisconnectButton from "@/components/DisconnectButton";
 
@@ -38,7 +38,8 @@ export default function OnlineUserTable() {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   // State Pagination, Search & Filter
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [appliedQuery, setAppliedQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("active");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -74,27 +75,41 @@ export default function OnlineUserTable() {
     }
   }, [type]);
 
-  // Debounce search & reset page
+  // Initial load and refetch on state change
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchOnlineUsers(1, searchQuery, pageSize, statusFilter);
-      setPage(1);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [searchQuery, pageSize, statusFilter, fetchOnlineUsers]);
+    fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter);
+  }, [page, appliedQuery, pageSize, statusFilter, fetchOnlineUsers]);
 
-  // Refetch on page change
-  useEffect(() => {
-    fetchOnlineUsers(page, searchQuery, pageSize, statusFilter);
-  }, [page, searchQuery, pageSize, statusFilter, fetchOnlineUsers]);
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const q = searchInput.trim();
+    setAppliedQuery(q);
+    setPage(1);
+  };
 
-  // Polling interval
+  const handleSearchClear = () => {
+    setSearchInput("");
+    setAppliedQuery("");
+    setPage(1);
+  };
+
+  const handleStatusFilterChange = (newStatus: string) => {
+    setStatusFilter(newStatus);
+    setPage(1);
+  };
+
+  const handlePageSizeChange = (newSize: number) => {
+    setPageSize(newSize);
+    setPage(1);
+  };
+
+  // Polling interval uses appliedQuery
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchOnlineUsers(page, searchQuery, pageSize, statusFilter);
+      fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter);
     }, POLLING_INTERVAL);
     return () => clearInterval(interval);
-  }, [page, searchQuery, pageSize, statusFilter, fetchOnlineUsers]);
+  }, [page, appliedQuery, pageSize, statusFilter, fetchOnlineUsers]);
 
   // Realtime clock tick for duration counter
   useEffect(() => {
@@ -137,7 +152,7 @@ export default function OnlineUserTable() {
       const data = await res.json();
       if (res.ok) {
         toast.success(data.message);
-        fetchOnlineUsers(page, searchQuery, pageSize, statusFilter);
+        fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter);
       } else {
         throw new Error(data.message);
       }
@@ -177,46 +192,85 @@ export default function OnlineUserTable() {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 justify-center lg:justify-end">
+        <div className="flex flex-wrap items-center gap-2 justify-center lg:justify-end">
           {/* STATUS FILTER */}
           <div className="flex gap-1 bg-base-200 p-1 rounded-lg">
             <button
-              onClick={() => setStatusFilter("all")}
+              onClick={() => handleStatusFilterChange("all")}
               className={`btn btn-xs ${statusFilter === "all" ? "btn-primary" : "btn-ghost"}`}
             >
               Semua
             </button>
             <button
-              onClick={() => setStatusFilter("active")}
+              onClick={() => handleStatusFilterChange("active")}
               className={`btn btn-xs ${statusFilter === "active" ? "btn-success" : "btn-ghost"}`}
             >
               Aktif
             </button>
             <button
-              onClick={() => setStatusFilter("stale")}
+              onClick={() => handleStatusFilterChange("stale")}
               className={`btn btn-xs ${statusFilter === "stale" ? "btn-warning" : "btn-ghost"}`}
             >
               Gantung
             </button>
           </div>
 
-          {/* SEARCH */}
-          <input
-            type="text"
-            placeholder="Cari Username / IP..."
-            className="input input-bordered input-sm w-full md:w-48"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+          {/* SEARCH FORM WITH CARI BUTTON */}
+          <form onSubmit={handleSearchSubmit} className="flex items-center gap-1.5">
+            <div className="relative w-full sm:w-48">
+              <span className="absolute inset-y-0 left-2.5 flex items-center text-base-content/40 pointer-events-none">
+                <FaSearch size={11} />
+              </span>
+              <input
+                type="text"
+                placeholder="Cari Username / IP..."
+                className="input input-sm bg-base-100 border border-base-300 w-full pl-8 pr-7 text-xs rounded-lg focus:border-primary focus:outline-none"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={handleSearchClear}
+                  className="absolute inset-y-0 right-2 flex items-center text-base-content/40 hover:text-error cursor-pointer"
+                  title="Hapus pencarian"
+                >
+                  <FaTimes size={10} />
+                </button>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-sm btn-primary text-xs px-2.5 shadow-xs gap-1 font-medium flex items-center shrink-0 cursor-pointer"
+              title="Terapkan pencarian (Enter)"
+            >
+              <FaSearch size={10} />
+              <span>Cari</span>
+            </button>
+          </form>
+
+          {/* APPLIED QUERY TAG */}
+          {appliedQuery && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-primary/10 border border-primary/30 text-primary text-[11px] font-mono font-semibold">
+              <span>Hasil:</span>
+              <span className="max-w-[100px] truncate">"{appliedQuery}"</span>
+              <button
+                type="button"
+                onClick={handleSearchClear}
+                className="hover:text-rose-400 ml-0.5 cursor-pointer text-xs"
+                title="Hapus filter pencarian"
+              >
+                ×
+              </button>
+            </span>
+          )}
 
           {/* PAGE SIZE */}
           <select
-            className="select select-bordered select-sm"
+            className="select select-sm bg-base-100 border border-base-300 text-xs rounded-lg"
             value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-              setPage(1);
-            }}
+            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
           >
             <option value="10">10 / hal</option>
             <option value="20">20 / hal</option>
@@ -226,8 +280,8 @@ export default function OnlineUserTable() {
 
           {/* REFRESH */}
           <button
-            onClick={() => fetchOnlineUsers(page, searchQuery, pageSize, statusFilter)}
-            className="btn btn-sm btn-ghost gap-1"
+            onClick={() => fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter)}
+            className="btn btn-sm btn-ghost border border-base-300 gap-1"
             title="Refresh data"
           >
             <FaSync className={isLoading ? "animate-spin" : ""} />
