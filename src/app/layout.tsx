@@ -12,9 +12,19 @@ export const metadata: Metadata = {
   description: "RADIUS Management Panel",
 };
 
-// Tema tunggal "beeradius" (Telemetry Dark Glass)
+// Tema dinamis (beeradius / beeradius-light) dengan pencegahan flash (FOUC)
 const ThemeLoaderScript = () => {
-  const script = `document.documentElement.setAttribute('data-theme', 'beeradius');`;
+  const script = `
+    (function() {
+      try {
+        var stored = localStorage.getItem('theme');
+        var theme = (stored === 'beeradius-light') ? 'beeradius-light' : 'beeradius';
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'beeradius');
+      }
+    })();
+  `;
   return <script dangerouslySetInnerHTML={{ __html: script }} />;
 };
 

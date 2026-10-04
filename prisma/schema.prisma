@@ -237,3 +237,28 @@ model AuditLog {
   @@index([adminUser])
   @@index([action])
 }
+
+model SwitchDevice {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(128)
+  ip          String    @unique @db.VarChar(45)
+  community   String    @default("public") @db.VarChar(100)
+  snmpVersion String    @default("2c") @db.VarChar(10)
+  port        Int       @default(161)
+  brand       String?   @default("Unknown") @db.VarChar(64)
+  model       String?   @db.VarChar(128)
+  sysDescr    String?   @db.Text
+  location    String?   @db.VarChar(128)
+  status      String    @default("online") @db.VarChar(20)
+  uptime      String?   @db.VarChar(64)
+  vlans       String?   @db.LongText
+  ports       String?   @db.LongText
+  lastPolled  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([ip])
+  @@index([brand])
+  @@index([status])
+}
+

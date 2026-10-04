@@ -22,14 +22,20 @@ BeeRadius adalah aplikasi manajemen RADIUS berbasis web yang dibangun dengan Nex
   - Filter sesi berdasarkan status (Aktif / Gantung / Semua) pada halaman Online User.
   - Fitur untuk memutuskan koneksi pengguna (*Disconnect*) dan pembersihan massal sesi gantung (*Clear Stale Sessions*).
   - Laporan penggunaan bandwidth terbanyak (Top Usage) berdasarkan User/IP dan antarmuka router MikroTik.
+- **Manajemen Switch & SNMP VLAN Discovery (`/switches`)**:
+  - Deteksi otomatis perangkat switch jaringan (Ruijie, ZTE, TP-Link, Cisco, Huawei, MikroTik) via SNMP.
+  - Pemetaan otomatis seluruh VLAN dan keanggotaan port (*Access / Untagged* vs *Trunk / Tagged*) mendukung standar RFC 2674 (Q-BRIDGE-MIB) dan Private Vendor MIB (seperti `TPLINK-DOT1Q-VLAN-MIB`).
+  - **Visual Port Matrix**: Tampilan visual status fisik port (1..24/48), status link Up/Down, PVID, dan link speed.
+  - **Uji Cepat Probe SNMP**: Alat diagnostik konektivitas SNMP langsung tanpa harus menyimpan ke database.
 - **Autentikasi & RBAC**:
   - Sistem login aman menggunakan NextAuth.js.
   - Role-Based Access Control: `superadmin` dan `admin`.
 - **Fitur Enterprise Lainnya**:
   - Import massal user menggunakan file CSV berbasis modal interaktif.
   - Validasi data ketat menggunakan Zod.
-- **Antarmuka Modern**:
-  - Desain bertema **Telemetry Dark Glass** berdensitas tinggi untuk kebutuhan Network Operations Center (NOC) RSUD NTB.
+- **Antarmuka Modern (Dark & Light Mode)**:
+  - **Sistem Tema Ganda**: Pilihan tema *Telemetry Dark Glass* (Dark Mode) dan *Clinical NOC Precision* (Light Mode) yang tersimpan permanen di `localStorage`.
+  - Tombol alih tema instan (*ThemeToggle*) di Navbar dan Sidebar dengan pencegahan FOUC (*Flash of Unstyled Content*).
   - Tabel data dengan fitur pencarian cepat (`⌘K`), filter dinamis, dan paginasi terstruktur.
 
 ## 🛠️ Teknologi

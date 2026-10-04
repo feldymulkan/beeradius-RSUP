@@ -2,6 +2,7 @@
 
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -20,7 +21,9 @@ export default function Navbar() {
 
       <div className="flex-1" />
 
-      <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded px-2 py-1">
+      <ThemeToggle />
+
+      <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-emerald-500 bg-emerald-500/10 border border-emerald-500/30 rounded px-2 py-1">
         <span className="status-dot" />
         FreeRADIUS Online
       </div>

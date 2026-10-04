@@ -14,8 +14,9 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - `MikrotikConfig`: Konfigurasi koneksi router MikroTik.
   - `WireguardPeer`: Konfigurasi peer WireGuard untuk koneksi VPN WireGuard.
   - `Wifi`: Daftar SSID dan password wifi internal RSUD NTB.
+  - `SwitchDevice`: Data perangkat switch managed (IP, brand, model, SNMP community, port, VLAN & port configuration JSON).
 - **Autentikasi**: NextAuth.js v4 dengan `CredentialsProvider`. Mendukung Role-Based Access Control (RBAC) dengan role `superadmin` dan `admin`.
-- **UI & Styling**: Tailwind CSS dan DaisyUI.
+- **UI & Styling**: Tailwind CSS dan DaisyUI (dengan tema ganda Dark & Light mode).
 
 ## 🛠️ Konvensi Pengembangan
 
@@ -53,6 +54,18 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - **KPI Metric Cards**: 4 kartu berjejer horizontal (Total Download, Total Upload, User Aktif Harian, Auth Rejects) dengan angka metrik tebal berfont monospace (`font-mono`) serta border aksen warna fungsional (*cyan, emerald, amber, rose*).
   - **Interactive Telemetry Charts**: Menggunakan Recharts dengan tema gelap, *dual-gradient glowing fill*, tooltip *dark glass* kustom, serta pemilih rentang waktu mikro (*24j | 7h | 30h | 1t*) yang diletakkan secara *inline* pada header kartu.
   - **Telemetry Mini-Insights**: Visualisasi terpadu untuk proporsi tipe pengguna (Hotspot vs VPN), kesehatan gateway & NAS, serta kalkulasi rasio throughput (Rx/Tx).
+- **Sistem Tema Dark & Light Mode**:
+  - Menggunakan DaisyUI v5 dengan tema `beeradius` (*Telemetry Dark Glass*) dan `beeradius-light` (*Clinical NOC Precision*).
+  - Preferensi disimpan di `localStorage` melalui [ThemeProvider.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/ThemeProvider.tsx).
+  - Komponen [ThemeToggle.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/ThemeToggle.tsx) diletakkan di Navbar kanan atas dan bagian bawah Sidebar.
+  - Script inline `ThemeLoaderScript` di [layout.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/app/layout.tsx) mencegah *flash of unstyled content* (FOUC) saat halaman dimuat ulang.
+- **Halaman Manajemen Switch & VLAN Discovery (`/switches`)**:
+  - Deteksi otomatis brand & model perangkat (Ruijie Networks, ZTE, TP-Link, Cisco Systems, Huawei, MikroTik) berdasarkan `sysObjectID` (Enterprise PEN) dan regex `sysDescr`.
+  - Pemindaian VLAN dan keanggotaan port (*Access / Untagged* vs *Trunk / Tagged*) mendukung:
+    - **Standar RFC 2674 (Q-BRIDGE-MIB)** via algoritma dekode bitmask port (`decodePortBitmap` di [snmp.ts](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/lib/snmp.ts)).
+    - **TP-Link JetStream Private MIB (`TPLINK-DOT1Q-VLAN-MIB` OID `1.3.6.1.4.1.11863.6.14.1.2.1.1`)** dengan normalisasi nomor port fisik dan parsing range port (`1/0/1-12`).
+    - **Cisco Catalyst VTP & VMPS MIB (`CISCO-VTP-MIB` & `CISCO-VLAN-MEMBERSHIP-MIB`)**.
+  - Menyediakan modal interaktif: *Detail VLAN & Port Matrix* (visual grid port 1..24/48 dengan status OperStatus Up/Down dan PVID), *Uji Cepat Probe SNMP*, serta aksi *Scan Ulang SNMP* real-time.
 
 ### 5. Keamanan, Validasi & Best Practices
 - **Middleware**: Middleware di `src/middleware.ts` melindungi semua rute kecuali `/login`, `/api` (beberapa API endpoint melakukan pengecekan session secara internal), dan file statis.

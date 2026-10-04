@@ -305,6 +305,26 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   ipAddress: 'ipAddress'
 };
 
+exports.Prisma.SwitchDeviceScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  ip: 'ip',
+  community: 'community',
+  snmpVersion: 'snmpVersion',
+  port: 'port',
+  brand: 'brand',
+  model: 'model',
+  sysDescr: 'sysDescr',
+  location: 'location',
+  status: 'status',
+  uptime: 'uptime',
+  vlans: 'vlans',
+  ports: 'ports',
+  lastPolled: 'lastPolled',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -462,6 +482,21 @@ exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
   ipAddress: 'ipAddress'
 };
 
+exports.Prisma.SwitchDeviceOrderByRelevanceFieldEnum = {
+  name: 'name',
+  ip: 'ip',
+  community: 'community',
+  snmpVersion: 'snmpVersion',
+  brand: 'brand',
+  model: 'model',
+  sysDescr: 'sysDescr',
+  location: 'location',
+  status: 'status',
+  uptime: 'uptime',
+  vlans: 'vlans',
+  ports: 'ports'
+};
+
 
 exports.Prisma.ModelName = {
   nas: 'nas',
@@ -481,7 +516,8 @@ exports.Prisma.ModelName = {
   MikrotikConfig: 'MikrotikConfig',
   WireguardPeer: 'WireguardPeer',
   Wifi: 'Wifi',
-  AuditLog: 'AuditLog'
+  AuditLog: 'AuditLog',
+  SwitchDevice: 'SwitchDevice'
 };
 
 /**

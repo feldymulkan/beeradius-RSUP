@@ -103,6 +103,11 @@ export type Wifi = $Result.DefaultSelection<Prisma.$WifiPayload>
  * 
  */
 export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
+/**
+ * Model SwitchDevice
+ * 
+ */
+export type SwitchDevice = $Result.DefaultSelection<Prisma.$SwitchDevicePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -401,6 +406,16 @@ export class PrismaClient<
     * ```
     */
   get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.switchDevice`: Exposes CRUD operations for the **SwitchDevice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SwitchDevices
+    * const switchDevices = await prisma.switchDevice.findMany()
+    * ```
+    */
+  get switchDevice(): Prisma.SwitchDeviceDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -858,7 +873,8 @@ export namespace Prisma {
     MikrotikConfig: 'MikrotikConfig',
     WireguardPeer: 'WireguardPeer',
     Wifi: 'Wifi',
-    AuditLog: 'AuditLog'
+    AuditLog: 'AuditLog',
+    SwitchDevice: 'SwitchDevice'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -877,7 +893,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "nas" | "nasreload" | "radacct" | "radcheck" | "radgroupcheck" | "radgroupreply" | "radpostauth" | "radreply" | "radusergroup" | "userinfo" | "admin" | "groupMetadata" | "radiusPool" | "radippool" | "mikrotikConfig" | "wireguardPeer" | "wifi" | "auditLog"
+      modelProps: "nas" | "nasreload" | "radacct" | "radcheck" | "radgroupcheck" | "radgroupreply" | "radpostauth" | "radreply" | "radusergroup" | "userinfo" | "admin" | "groupMetadata" | "radiusPool" | "radippool" | "mikrotikConfig" | "wireguardPeer" | "wifi" | "auditLog" | "switchDevice"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2069,6 +2085,72 @@ export namespace Prisma {
           }
         }
       }
+      SwitchDevice: {
+        payload: Prisma.$SwitchDevicePayload<ExtArgs>
+        fields: Prisma.SwitchDeviceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SwitchDeviceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SwitchDeviceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload>
+          }
+          findFirst: {
+            args: Prisma.SwitchDeviceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SwitchDeviceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload>
+          }
+          findMany: {
+            args: Prisma.SwitchDeviceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload>[]
+          }
+          create: {
+            args: Prisma.SwitchDeviceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload>
+          }
+          createMany: {
+            args: Prisma.SwitchDeviceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.SwitchDeviceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload>
+          }
+          update: {
+            args: Prisma.SwitchDeviceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload>
+          }
+          deleteMany: {
+            args: Prisma.SwitchDeviceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SwitchDeviceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.SwitchDeviceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SwitchDevicePayload>
+          }
+          aggregate: {
+            args: Prisma.SwitchDeviceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSwitchDevice>
+          }
+          groupBy: {
+            args: Prisma.SwitchDeviceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SwitchDeviceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SwitchDeviceCountArgs<ExtArgs>
+            result: $Utils.Optional<SwitchDeviceCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2183,6 +2265,7 @@ export namespace Prisma {
     wireguardPeer?: WireguardPeerOmit
     wifi?: WifiOmit
     auditLog?: AuditLogOmit
+    switchDevice?: SwitchDeviceOmit
   }
 
   /* Types for Logging */
@@ -19491,6 +19574,1058 @@ export namespace Prisma {
 
 
   /**
+   * Model SwitchDevice
+   */
+
+  export type AggregateSwitchDevice = {
+    _count: SwitchDeviceCountAggregateOutputType | null
+    _avg: SwitchDeviceAvgAggregateOutputType | null
+    _sum: SwitchDeviceSumAggregateOutputType | null
+    _min: SwitchDeviceMinAggregateOutputType | null
+    _max: SwitchDeviceMaxAggregateOutputType | null
+  }
+
+  export type SwitchDeviceAvgAggregateOutputType = {
+    id: number | null
+    port: number | null
+  }
+
+  export type SwitchDeviceSumAggregateOutputType = {
+    id: number | null
+    port: number | null
+  }
+
+  export type SwitchDeviceMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    ip: string | null
+    community: string | null
+    snmpVersion: string | null
+    port: number | null
+    brand: string | null
+    model: string | null
+    sysDescr: string | null
+    location: string | null
+    status: string | null
+    uptime: string | null
+    vlans: string | null
+    ports: string | null
+    lastPolled: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SwitchDeviceMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    ip: string | null
+    community: string | null
+    snmpVersion: string | null
+    port: number | null
+    brand: string | null
+    model: string | null
+    sysDescr: string | null
+    location: string | null
+    status: string | null
+    uptime: string | null
+    vlans: string | null
+    ports: string | null
+    lastPolled: Date | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SwitchDeviceCountAggregateOutputType = {
+    id: number
+    name: number
+    ip: number
+    community: number
+    snmpVersion: number
+    port: number
+    brand: number
+    model: number
+    sysDescr: number
+    location: number
+    status: number
+    uptime: number
+    vlans: number
+    ports: number
+    lastPolled: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SwitchDeviceAvgAggregateInputType = {
+    id?: true
+    port?: true
+  }
+
+  export type SwitchDeviceSumAggregateInputType = {
+    id?: true
+    port?: true
+  }
+
+  export type SwitchDeviceMinAggregateInputType = {
+    id?: true
+    name?: true
+    ip?: true
+    community?: true
+    snmpVersion?: true
+    port?: true
+    brand?: true
+    model?: true
+    sysDescr?: true
+    location?: true
+    status?: true
+    uptime?: true
+    vlans?: true
+    ports?: true
+    lastPolled?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SwitchDeviceMaxAggregateInputType = {
+    id?: true
+    name?: true
+    ip?: true
+    community?: true
+    snmpVersion?: true
+    port?: true
+    brand?: true
+    model?: true
+    sysDescr?: true
+    location?: true
+    status?: true
+    uptime?: true
+    vlans?: true
+    ports?: true
+    lastPolled?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SwitchDeviceCountAggregateInputType = {
+    id?: true
+    name?: true
+    ip?: true
+    community?: true
+    snmpVersion?: true
+    port?: true
+    brand?: true
+    model?: true
+    sysDescr?: true
+    location?: true
+    status?: true
+    uptime?: true
+    vlans?: true
+    ports?: true
+    lastPolled?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SwitchDeviceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SwitchDevice to aggregate.
+     */
+    where?: SwitchDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SwitchDevices to fetch.
+     */
+    orderBy?: SwitchDeviceOrderByWithRelationInput | SwitchDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SwitchDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SwitchDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SwitchDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SwitchDevices
+    **/
+    _count?: true | SwitchDeviceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SwitchDeviceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SwitchDeviceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SwitchDeviceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SwitchDeviceMaxAggregateInputType
+  }
+
+  export type GetSwitchDeviceAggregateType<T extends SwitchDeviceAggregateArgs> = {
+        [P in keyof T & keyof AggregateSwitchDevice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSwitchDevice[P]>
+      : GetScalarType<T[P], AggregateSwitchDevice[P]>
+  }
+
+
+
+
+  export type SwitchDeviceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SwitchDeviceWhereInput
+    orderBy?: SwitchDeviceOrderByWithAggregationInput | SwitchDeviceOrderByWithAggregationInput[]
+    by: SwitchDeviceScalarFieldEnum[] | SwitchDeviceScalarFieldEnum
+    having?: SwitchDeviceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SwitchDeviceCountAggregateInputType | true
+    _avg?: SwitchDeviceAvgAggregateInputType
+    _sum?: SwitchDeviceSumAggregateInputType
+    _min?: SwitchDeviceMinAggregateInputType
+    _max?: SwitchDeviceMaxAggregateInputType
+  }
+
+  export type SwitchDeviceGroupByOutputType = {
+    id: number
+    name: string
+    ip: string
+    community: string
+    snmpVersion: string
+    port: number
+    brand: string | null
+    model: string | null
+    sysDescr: string | null
+    location: string | null
+    status: string
+    uptime: string | null
+    vlans: string | null
+    ports: string | null
+    lastPolled: Date | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SwitchDeviceCountAggregateOutputType | null
+    _avg: SwitchDeviceAvgAggregateOutputType | null
+    _sum: SwitchDeviceSumAggregateOutputType | null
+    _min: SwitchDeviceMinAggregateOutputType | null
+    _max: SwitchDeviceMaxAggregateOutputType | null
+  }
+
+  type GetSwitchDeviceGroupByPayload<T extends SwitchDeviceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SwitchDeviceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SwitchDeviceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SwitchDeviceGroupByOutputType[P]>
+            : GetScalarType<T[P], SwitchDeviceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SwitchDeviceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    ip?: boolean
+    community?: boolean
+    snmpVersion?: boolean
+    port?: boolean
+    brand?: boolean
+    model?: boolean
+    sysDescr?: boolean
+    location?: boolean
+    status?: boolean
+    uptime?: boolean
+    vlans?: boolean
+    ports?: boolean
+    lastPolled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["switchDevice"]>
+
+
+
+  export type SwitchDeviceSelectScalar = {
+    id?: boolean
+    name?: boolean
+    ip?: boolean
+    community?: boolean
+    snmpVersion?: boolean
+    port?: boolean
+    brand?: boolean
+    model?: boolean
+    sysDescr?: boolean
+    location?: boolean
+    status?: boolean
+    uptime?: boolean
+    vlans?: boolean
+    ports?: boolean
+    lastPolled?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SwitchDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ip" | "community" | "snmpVersion" | "port" | "brand" | "model" | "sysDescr" | "location" | "status" | "uptime" | "vlans" | "ports" | "lastPolled" | "createdAt" | "updatedAt", ExtArgs["result"]["switchDevice"]>
+
+  export type $SwitchDevicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SwitchDevice"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      ip: string
+      community: string
+      snmpVersion: string
+      port: number
+      brand: string | null
+      model: string | null
+      sysDescr: string | null
+      location: string | null
+      status: string
+      uptime: string | null
+      vlans: string | null
+      ports: string | null
+      lastPolled: Date | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["switchDevice"]>
+    composites: {}
+  }
+
+  type SwitchDeviceGetPayload<S extends boolean | null | undefined | SwitchDeviceDefaultArgs> = $Result.GetResult<Prisma.$SwitchDevicePayload, S>
+
+  type SwitchDeviceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SwitchDeviceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SwitchDeviceCountAggregateInputType | true
+    }
+
+  export interface SwitchDeviceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SwitchDevice'], meta: { name: 'SwitchDevice' } }
+    /**
+     * Find zero or one SwitchDevice that matches the filter.
+     * @param {SwitchDeviceFindUniqueArgs} args - Arguments to find a SwitchDevice
+     * @example
+     * // Get one SwitchDevice
+     * const switchDevice = await prisma.switchDevice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SwitchDeviceFindUniqueArgs>(args: SelectSubset<T, SwitchDeviceFindUniqueArgs<ExtArgs>>): Prisma__SwitchDeviceClient<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SwitchDevice that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SwitchDeviceFindUniqueOrThrowArgs} args - Arguments to find a SwitchDevice
+     * @example
+     * // Get one SwitchDevice
+     * const switchDevice = await prisma.switchDevice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SwitchDeviceFindUniqueOrThrowArgs>(args: SelectSubset<T, SwitchDeviceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SwitchDeviceClient<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SwitchDevice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SwitchDeviceFindFirstArgs} args - Arguments to find a SwitchDevice
+     * @example
+     * // Get one SwitchDevice
+     * const switchDevice = await prisma.switchDevice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SwitchDeviceFindFirstArgs>(args?: SelectSubset<T, SwitchDeviceFindFirstArgs<ExtArgs>>): Prisma__SwitchDeviceClient<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SwitchDevice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SwitchDeviceFindFirstOrThrowArgs} args - Arguments to find a SwitchDevice
+     * @example
+     * // Get one SwitchDevice
+     * const switchDevice = await prisma.switchDevice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SwitchDeviceFindFirstOrThrowArgs>(args?: SelectSubset<T, SwitchDeviceFindFirstOrThrowArgs<ExtArgs>>): Prisma__SwitchDeviceClient<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SwitchDevices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SwitchDeviceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SwitchDevices
+     * const switchDevices = await prisma.switchDevice.findMany()
+     * 
+     * // Get first 10 SwitchDevices
+     * const switchDevices = await prisma.switchDevice.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const switchDeviceWithIdOnly = await prisma.switchDevice.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SwitchDeviceFindManyArgs>(args?: SelectSubset<T, SwitchDeviceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SwitchDevice.
+     * @param {SwitchDeviceCreateArgs} args - Arguments to create a SwitchDevice.
+     * @example
+     * // Create one SwitchDevice
+     * const SwitchDevice = await prisma.switchDevice.create({
+     *   data: {
+     *     // ... data to create a SwitchDevice
+     *   }
+     * })
+     * 
+     */
+    create<T extends SwitchDeviceCreateArgs>(args: SelectSubset<T, SwitchDeviceCreateArgs<ExtArgs>>): Prisma__SwitchDeviceClient<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SwitchDevices.
+     * @param {SwitchDeviceCreateManyArgs} args - Arguments to create many SwitchDevices.
+     * @example
+     * // Create many SwitchDevices
+     * const switchDevice = await prisma.switchDevice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SwitchDeviceCreateManyArgs>(args?: SelectSubset<T, SwitchDeviceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a SwitchDevice.
+     * @param {SwitchDeviceDeleteArgs} args - Arguments to delete one SwitchDevice.
+     * @example
+     * // Delete one SwitchDevice
+     * const SwitchDevice = await prisma.switchDevice.delete({
+     *   where: {
+     *     // ... filter to delete one SwitchDevice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SwitchDeviceDeleteArgs>(args: SelectSubset<T, SwitchDeviceDeleteArgs<ExtArgs>>): Prisma__SwitchDeviceClient<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SwitchDevice.
+     * @param {SwitchDeviceUpdateArgs} args - Arguments to update one SwitchDevice.
+     * @example
+     * // Update one SwitchDevice
+     * const switchDevice = await prisma.switchDevice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SwitchDeviceUpdateArgs>(args: SelectSubset<T, SwitchDeviceUpdateArgs<ExtArgs>>): Prisma__SwitchDeviceClient<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SwitchDevices.
+     * @param {SwitchDeviceDeleteManyArgs} args - Arguments to filter SwitchDevices to delete.
+     * @example
+     * // Delete a few SwitchDevices
+     * const { count } = await prisma.switchDevice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SwitchDeviceDeleteManyArgs>(args?: SelectSubset<T, SwitchDeviceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SwitchDevices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SwitchDeviceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SwitchDevices
+     * const switchDevice = await prisma.switchDevice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SwitchDeviceUpdateManyArgs>(args: SelectSubset<T, SwitchDeviceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one SwitchDevice.
+     * @param {SwitchDeviceUpsertArgs} args - Arguments to update or create a SwitchDevice.
+     * @example
+     * // Update or create a SwitchDevice
+     * const switchDevice = await prisma.switchDevice.upsert({
+     *   create: {
+     *     // ... data to create a SwitchDevice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SwitchDevice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SwitchDeviceUpsertArgs>(args: SelectSubset<T, SwitchDeviceUpsertArgs<ExtArgs>>): Prisma__SwitchDeviceClient<$Result.GetResult<Prisma.$SwitchDevicePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SwitchDevices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SwitchDeviceCountArgs} args - Arguments to filter SwitchDevices to count.
+     * @example
+     * // Count the number of SwitchDevices
+     * const count = await prisma.switchDevice.count({
+     *   where: {
+     *     // ... the filter for the SwitchDevices we want to count
+     *   }
+     * })
+    **/
+    count<T extends SwitchDeviceCountArgs>(
+      args?: Subset<T, SwitchDeviceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SwitchDeviceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SwitchDevice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SwitchDeviceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SwitchDeviceAggregateArgs>(args: Subset<T, SwitchDeviceAggregateArgs>): Prisma.PrismaPromise<GetSwitchDeviceAggregateType<T>>
+
+    /**
+     * Group by SwitchDevice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SwitchDeviceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SwitchDeviceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SwitchDeviceGroupByArgs['orderBy'] }
+        : { orderBy?: SwitchDeviceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SwitchDeviceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSwitchDeviceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SwitchDevice model
+   */
+  readonly fields: SwitchDeviceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SwitchDevice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SwitchDeviceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SwitchDevice model
+   */
+  interface SwitchDeviceFieldRefs {
+    readonly id: FieldRef<"SwitchDevice", 'Int'>
+    readonly name: FieldRef<"SwitchDevice", 'String'>
+    readonly ip: FieldRef<"SwitchDevice", 'String'>
+    readonly community: FieldRef<"SwitchDevice", 'String'>
+    readonly snmpVersion: FieldRef<"SwitchDevice", 'String'>
+    readonly port: FieldRef<"SwitchDevice", 'Int'>
+    readonly brand: FieldRef<"SwitchDevice", 'String'>
+    readonly model: FieldRef<"SwitchDevice", 'String'>
+    readonly sysDescr: FieldRef<"SwitchDevice", 'String'>
+    readonly location: FieldRef<"SwitchDevice", 'String'>
+    readonly status: FieldRef<"SwitchDevice", 'String'>
+    readonly uptime: FieldRef<"SwitchDevice", 'String'>
+    readonly vlans: FieldRef<"SwitchDevice", 'String'>
+    readonly ports: FieldRef<"SwitchDevice", 'String'>
+    readonly lastPolled: FieldRef<"SwitchDevice", 'DateTime'>
+    readonly createdAt: FieldRef<"SwitchDevice", 'DateTime'>
+    readonly updatedAt: FieldRef<"SwitchDevice", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SwitchDevice findUnique
+   */
+  export type SwitchDeviceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * Filter, which SwitchDevice to fetch.
+     */
+    where: SwitchDeviceWhereUniqueInput
+  }
+
+  /**
+   * SwitchDevice findUniqueOrThrow
+   */
+  export type SwitchDeviceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * Filter, which SwitchDevice to fetch.
+     */
+    where: SwitchDeviceWhereUniqueInput
+  }
+
+  /**
+   * SwitchDevice findFirst
+   */
+  export type SwitchDeviceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * Filter, which SwitchDevice to fetch.
+     */
+    where?: SwitchDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SwitchDevices to fetch.
+     */
+    orderBy?: SwitchDeviceOrderByWithRelationInput | SwitchDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SwitchDevices.
+     */
+    cursor?: SwitchDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SwitchDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SwitchDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SwitchDevices.
+     */
+    distinct?: SwitchDeviceScalarFieldEnum | SwitchDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * SwitchDevice findFirstOrThrow
+   */
+  export type SwitchDeviceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * Filter, which SwitchDevice to fetch.
+     */
+    where?: SwitchDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SwitchDevices to fetch.
+     */
+    orderBy?: SwitchDeviceOrderByWithRelationInput | SwitchDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SwitchDevices.
+     */
+    cursor?: SwitchDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SwitchDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SwitchDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SwitchDevices.
+     */
+    distinct?: SwitchDeviceScalarFieldEnum | SwitchDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * SwitchDevice findMany
+   */
+  export type SwitchDeviceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * Filter, which SwitchDevices to fetch.
+     */
+    where?: SwitchDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SwitchDevices to fetch.
+     */
+    orderBy?: SwitchDeviceOrderByWithRelationInput | SwitchDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SwitchDevices.
+     */
+    cursor?: SwitchDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SwitchDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SwitchDevices.
+     */
+    skip?: number
+    distinct?: SwitchDeviceScalarFieldEnum | SwitchDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * SwitchDevice create
+   */
+  export type SwitchDeviceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SwitchDevice.
+     */
+    data: XOR<SwitchDeviceCreateInput, SwitchDeviceUncheckedCreateInput>
+  }
+
+  /**
+   * SwitchDevice createMany
+   */
+  export type SwitchDeviceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SwitchDevices.
+     */
+    data: SwitchDeviceCreateManyInput | SwitchDeviceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SwitchDevice update
+   */
+  export type SwitchDeviceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SwitchDevice.
+     */
+    data: XOR<SwitchDeviceUpdateInput, SwitchDeviceUncheckedUpdateInput>
+    /**
+     * Choose, which SwitchDevice to update.
+     */
+    where: SwitchDeviceWhereUniqueInput
+  }
+
+  /**
+   * SwitchDevice updateMany
+   */
+  export type SwitchDeviceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SwitchDevices.
+     */
+    data: XOR<SwitchDeviceUpdateManyMutationInput, SwitchDeviceUncheckedUpdateManyInput>
+    /**
+     * Filter which SwitchDevices to update
+     */
+    where?: SwitchDeviceWhereInput
+    /**
+     * Limit how many SwitchDevices to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SwitchDevice upsert
+   */
+  export type SwitchDeviceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SwitchDevice to update in case it exists.
+     */
+    where: SwitchDeviceWhereUniqueInput
+    /**
+     * In case the SwitchDevice found by the `where` argument doesn't exist, create a new SwitchDevice with this data.
+     */
+    create: XOR<SwitchDeviceCreateInput, SwitchDeviceUncheckedCreateInput>
+    /**
+     * In case the SwitchDevice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SwitchDeviceUpdateInput, SwitchDeviceUncheckedUpdateInput>
+  }
+
+  /**
+   * SwitchDevice delete
+   */
+  export type SwitchDeviceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+    /**
+     * Filter which SwitchDevice to delete.
+     */
+    where: SwitchDeviceWhereUniqueInput
+  }
+
+  /**
+   * SwitchDevice deleteMany
+   */
+  export type SwitchDeviceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SwitchDevices to delete
+     */
+    where?: SwitchDeviceWhereInput
+    /**
+     * Limit how many SwitchDevices to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SwitchDevice without action
+   */
+  export type SwitchDeviceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SwitchDevice
+     */
+    select?: SwitchDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SwitchDevice
+     */
+    omit?: SwitchDeviceOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -19743,6 +20878,29 @@ export namespace Prisma {
   export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+  export const SwitchDeviceScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    ip: 'ip',
+    community: 'community',
+    snmpVersion: 'snmpVersion',
+    port: 'port',
+    brand: 'brand',
+    model: 'model',
+    sysDescr: 'sysDescr',
+    location: 'location',
+    status: 'status',
+    uptime: 'uptime',
+    vlans: 'vlans',
+    ports: 'ports',
+    lastPolled: 'lastPolled',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SwitchDeviceScalarFieldEnum = (typeof SwitchDeviceScalarFieldEnum)[keyof typeof SwitchDeviceScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -19958,6 +21116,24 @@ export namespace Prisma {
   };
 
   export type AuditLogOrderByRelevanceFieldEnum = (typeof AuditLogOrderByRelevanceFieldEnum)[keyof typeof AuditLogOrderByRelevanceFieldEnum]
+
+
+  export const SwitchDeviceOrderByRelevanceFieldEnum: {
+    name: 'name',
+    ip: 'ip',
+    community: 'community',
+    snmpVersion: 'snmpVersion',
+    brand: 'brand',
+    model: 'model',
+    sysDescr: 'sysDescr',
+    location: 'location',
+    status: 'status',
+    uptime: 'uptime',
+    vlans: 'vlans',
+    ports: 'ports'
+  };
+
+  export type SwitchDeviceOrderByRelevanceFieldEnum = (typeof SwitchDeviceOrderByRelevanceFieldEnum)[keyof typeof SwitchDeviceOrderByRelevanceFieldEnum]
 
 
   /**
@@ -21212,6 +22388,121 @@ export namespace Prisma {
     targetName?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
     details?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
     ipAddress?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+  }
+
+  export type SwitchDeviceWhereInput = {
+    AND?: SwitchDeviceWhereInput | SwitchDeviceWhereInput[]
+    OR?: SwitchDeviceWhereInput[]
+    NOT?: SwitchDeviceWhereInput | SwitchDeviceWhereInput[]
+    id?: IntFilter<"SwitchDevice"> | number
+    name?: StringFilter<"SwitchDevice"> | string
+    ip?: StringFilter<"SwitchDevice"> | string
+    community?: StringFilter<"SwitchDevice"> | string
+    snmpVersion?: StringFilter<"SwitchDevice"> | string
+    port?: IntFilter<"SwitchDevice"> | number
+    brand?: StringNullableFilter<"SwitchDevice"> | string | null
+    model?: StringNullableFilter<"SwitchDevice"> | string | null
+    sysDescr?: StringNullableFilter<"SwitchDevice"> | string | null
+    location?: StringNullableFilter<"SwitchDevice"> | string | null
+    status?: StringFilter<"SwitchDevice"> | string
+    uptime?: StringNullableFilter<"SwitchDevice"> | string | null
+    vlans?: StringNullableFilter<"SwitchDevice"> | string | null
+    ports?: StringNullableFilter<"SwitchDevice"> | string | null
+    lastPolled?: DateTimeNullableFilter<"SwitchDevice"> | Date | string | null
+    createdAt?: DateTimeFilter<"SwitchDevice"> | Date | string
+    updatedAt?: DateTimeFilter<"SwitchDevice"> | Date | string
+  }
+
+  export type SwitchDeviceOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ip?: SortOrder
+    community?: SortOrder
+    snmpVersion?: SortOrder
+    port?: SortOrder
+    brand?: SortOrderInput | SortOrder
+    model?: SortOrderInput | SortOrder
+    sysDescr?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    status?: SortOrder
+    uptime?: SortOrderInput | SortOrder
+    vlans?: SortOrderInput | SortOrder
+    ports?: SortOrderInput | SortOrder
+    lastPolled?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _relevance?: SwitchDeviceOrderByRelevanceInput
+  }
+
+  export type SwitchDeviceWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    ip?: string
+    AND?: SwitchDeviceWhereInput | SwitchDeviceWhereInput[]
+    OR?: SwitchDeviceWhereInput[]
+    NOT?: SwitchDeviceWhereInput | SwitchDeviceWhereInput[]
+    name?: StringFilter<"SwitchDevice"> | string
+    community?: StringFilter<"SwitchDevice"> | string
+    snmpVersion?: StringFilter<"SwitchDevice"> | string
+    port?: IntFilter<"SwitchDevice"> | number
+    brand?: StringNullableFilter<"SwitchDevice"> | string | null
+    model?: StringNullableFilter<"SwitchDevice"> | string | null
+    sysDescr?: StringNullableFilter<"SwitchDevice"> | string | null
+    location?: StringNullableFilter<"SwitchDevice"> | string | null
+    status?: StringFilter<"SwitchDevice"> | string
+    uptime?: StringNullableFilter<"SwitchDevice"> | string | null
+    vlans?: StringNullableFilter<"SwitchDevice"> | string | null
+    ports?: StringNullableFilter<"SwitchDevice"> | string | null
+    lastPolled?: DateTimeNullableFilter<"SwitchDevice"> | Date | string | null
+    createdAt?: DateTimeFilter<"SwitchDevice"> | Date | string
+    updatedAt?: DateTimeFilter<"SwitchDevice"> | Date | string
+  }, "id" | "ip">
+
+  export type SwitchDeviceOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ip?: SortOrder
+    community?: SortOrder
+    snmpVersion?: SortOrder
+    port?: SortOrder
+    brand?: SortOrderInput | SortOrder
+    model?: SortOrderInput | SortOrder
+    sysDescr?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    status?: SortOrder
+    uptime?: SortOrderInput | SortOrder
+    vlans?: SortOrderInput | SortOrder
+    ports?: SortOrderInput | SortOrder
+    lastPolled?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SwitchDeviceCountOrderByAggregateInput
+    _avg?: SwitchDeviceAvgOrderByAggregateInput
+    _max?: SwitchDeviceMaxOrderByAggregateInput
+    _min?: SwitchDeviceMinOrderByAggregateInput
+    _sum?: SwitchDeviceSumOrderByAggregateInput
+  }
+
+  export type SwitchDeviceScalarWhereWithAggregatesInput = {
+    AND?: SwitchDeviceScalarWhereWithAggregatesInput | SwitchDeviceScalarWhereWithAggregatesInput[]
+    OR?: SwitchDeviceScalarWhereWithAggregatesInput[]
+    NOT?: SwitchDeviceScalarWhereWithAggregatesInput | SwitchDeviceScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"SwitchDevice"> | number
+    name?: StringWithAggregatesFilter<"SwitchDevice"> | string
+    ip?: StringWithAggregatesFilter<"SwitchDevice"> | string
+    community?: StringWithAggregatesFilter<"SwitchDevice"> | string
+    snmpVersion?: StringWithAggregatesFilter<"SwitchDevice"> | string
+    port?: IntWithAggregatesFilter<"SwitchDevice"> | number
+    brand?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    model?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    sysDescr?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    location?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    status?: StringWithAggregatesFilter<"SwitchDevice"> | string
+    uptime?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    vlans?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    ports?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    lastPolled?: DateTimeNullableWithAggregatesFilter<"SwitchDevice"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SwitchDevice"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SwitchDevice"> | Date | string
   }
 
   export type nasCreateInput = {
@@ -22470,6 +23761,143 @@ export namespace Prisma {
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
+  export type SwitchDeviceCreateInput = {
+    name: string
+    ip: string
+    community?: string
+    snmpVersion?: string
+    port?: number
+    brand?: string | null
+    model?: string | null
+    sysDescr?: string | null
+    location?: string | null
+    status?: string
+    uptime?: string | null
+    vlans?: string | null
+    ports?: string | null
+    lastPolled?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SwitchDeviceUncheckedCreateInput = {
+    id?: number
+    name: string
+    ip: string
+    community?: string
+    snmpVersion?: string
+    port?: number
+    brand?: string | null
+    model?: string | null
+    sysDescr?: string | null
+    location?: string | null
+    status?: string
+    uptime?: string | null
+    vlans?: string | null
+    ports?: string | null
+    lastPolled?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SwitchDeviceUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    ip?: StringFieldUpdateOperationsInput | string
+    community?: StringFieldUpdateOperationsInput | string
+    snmpVersion?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    sysDescr?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    uptime?: NullableStringFieldUpdateOperationsInput | string | null
+    vlans?: NullableStringFieldUpdateOperationsInput | string | null
+    ports?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPolled?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SwitchDeviceUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    ip?: StringFieldUpdateOperationsInput | string
+    community?: StringFieldUpdateOperationsInput | string
+    snmpVersion?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    sysDescr?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    uptime?: NullableStringFieldUpdateOperationsInput | string | null
+    vlans?: NullableStringFieldUpdateOperationsInput | string | null
+    ports?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPolled?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SwitchDeviceCreateManyInput = {
+    id?: number
+    name: string
+    ip: string
+    community?: string
+    snmpVersion?: string
+    port?: number
+    brand?: string | null
+    model?: string | null
+    sysDescr?: string | null
+    location?: string | null
+    status?: string
+    uptime?: string | null
+    vlans?: string | null
+    ports?: string | null
+    lastPolled?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SwitchDeviceUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    ip?: StringFieldUpdateOperationsInput | string
+    community?: StringFieldUpdateOperationsInput | string
+    snmpVersion?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    sysDescr?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    uptime?: NullableStringFieldUpdateOperationsInput | string | null
+    vlans?: NullableStringFieldUpdateOperationsInput | string | null
+    ports?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPolled?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SwitchDeviceUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    ip?: StringFieldUpdateOperationsInput | string
+    community?: StringFieldUpdateOperationsInput | string
+    snmpVersion?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    brand?: NullableStringFieldUpdateOperationsInput | string | null
+    model?: NullableStringFieldUpdateOperationsInput | string | null
+    sysDescr?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    uptime?: NullableStringFieldUpdateOperationsInput | string | null
+    vlans?: NullableStringFieldUpdateOperationsInput | string | null
+    ports?: NullableStringFieldUpdateOperationsInput | string | null
+    lastPolled?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -23554,6 +24982,82 @@ export namespace Prisma {
 
   export type AuditLogSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type SwitchDeviceOrderByRelevanceInput = {
+    fields: SwitchDeviceOrderByRelevanceFieldEnum | SwitchDeviceOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type SwitchDeviceCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ip?: SortOrder
+    community?: SortOrder
+    snmpVersion?: SortOrder
+    port?: SortOrder
+    brand?: SortOrder
+    model?: SortOrder
+    sysDescr?: SortOrder
+    location?: SortOrder
+    status?: SortOrder
+    uptime?: SortOrder
+    vlans?: SortOrder
+    ports?: SortOrder
+    lastPolled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SwitchDeviceAvgOrderByAggregateInput = {
+    id?: SortOrder
+    port?: SortOrder
+  }
+
+  export type SwitchDeviceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ip?: SortOrder
+    community?: SortOrder
+    snmpVersion?: SortOrder
+    port?: SortOrder
+    brand?: SortOrder
+    model?: SortOrder
+    sysDescr?: SortOrder
+    location?: SortOrder
+    status?: SortOrder
+    uptime?: SortOrder
+    vlans?: SortOrder
+    ports?: SortOrder
+    lastPolled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SwitchDeviceMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    ip?: SortOrder
+    community?: SortOrder
+    snmpVersion?: SortOrder
+    port?: SortOrder
+    brand?: SortOrder
+    model?: SortOrder
+    sysDescr?: SortOrder
+    location?: SortOrder
+    status?: SortOrder
+    uptime?: SortOrder
+    vlans?: SortOrder
+    ports?: SortOrder
+    lastPolled?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SwitchDeviceSumOrderByAggregateInput = {
+    id?: SortOrder
+    port?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {

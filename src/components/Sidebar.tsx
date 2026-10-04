@@ -1,6 +1,7 @@
 "use client";
 
 import ActiveLink from "./ActiveLink";
+import ThemeToggle from "./ThemeToggle";
 import { useSession } from "next-auth/react";
 import {
   FaHome,
@@ -67,6 +68,7 @@ export default function Sidebar() {
           <li><ActiveLink href="/radius-groups/hotspot"><FaLayerGroup className={icon} />Grup Hotspot</ActiveLink></li>
           <li><ActiveLink href="/radius-groups/vpn"><FaLayerGroup className={icon} />Grup VPN</ActiveLink></li>
           <li><ActiveLink href="/radius-pools"><FaNetworkWired className={icon} />IP Pools</ActiveLink></li>
+          <li><ActiveLink href="/switches"><FaNetworkWired className={icon} />Switch &amp; VLAN</ActiveLink></li>
           {isSuperAdmin && (
             <li><ActiveLink href="/nas"><FaServer className={icon} />Perangkat</ActiveLink></li>
           )}
@@ -87,6 +89,11 @@ export default function Sidebar() {
           <li><ActiveLink href="/help"><FaQuestionCircle className={icon} />Bantuan</ActiveLink></li>
         </Section>
       </nav>
+
+      <div className="pt-3 border-t border-primary/10 flex items-center justify-between">
+        <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Tampilan</span>
+        <ThemeToggle />
+      </div>
     </aside>
   );
 }
