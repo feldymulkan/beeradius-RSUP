@@ -14,6 +14,11 @@ export default function ProtectedLayout({
         <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-base-200">
           {children}
         </main>
+        <footer className="footer footer-center p-4 bg-base-300 text-base-content border-t border-base-200">
+          <aside>
+            <p className="text-xs opacity-70">Copyright © {new Date().getFullYear()} - feldymulkan</p>
+          </aside>
+        </footer>
       </div>
       <div className="drawer-side">
         <label

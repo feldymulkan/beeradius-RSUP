@@ -1,7 +1,5 @@
-import { DashboardLoading } from "@/components/Skleton"
+import { DashboardLoading } from "@/components/Skleton";
 
-export default function Loading(){
-    return (
-        <DashboardLoading />
-    )
+export default function Loading() {
+  return <DashboardLoading />;
 }

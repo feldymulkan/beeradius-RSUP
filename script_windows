@@ -1,0 +1,53 @@
+# ============================================
+# FIX CREDENTIAL VPN GUI — RasSetCredentials
+# Jalankan sebagai Administrator
+# ============================================
+
+# Load RAS API via P/Invoke
+Add-Type @"
+using System;
+using System.Runtime.InteropServices;
+
+public class RasHelper {
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct RASCREDENTIALS {
+        public int    dwSize;
+        public int    dwMask;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 257)]
+        public string szUserName;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 257)]
+        public string szPassword;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 16)]
+        public string szDomain;
+    }
+
+    [DllImport("rasapi32.dll", CharSet = CharSet.Unicode)]
+    public static extern int RasSetCredentials(
+        string lpszPhonebook,
+        string lpszEntry,
+        ref RASCREDENTIALS lpCredentials,
+        bool fClearCredentials
+    );
+
+    public static int SetCredentials(string pbk, string entry, string user, string pass, string domain) {
+        RASCREDENTIALS c = new RASCREDENTIALS();
+        c.dwSize    = Marshal.SizeOf(typeof(RASCREDENTIALS));
+        c.dwMask    = 0x7; // Username + Password + Domain
+        c.szUserName = user;
+        c.szPassword = pass;
+        c.szDomain   = domain;
+        return RasSetCredentials(pbk, entry, ref c, false);
+    }
+}
+"@
+
+# Simpan credential langsung ke RAS subsystem
+$pbk    = "$env:APPDATA\Microsoft\Network\Connections\Pbk\rasphone.pbk"
+$result = [RasHelper]::SetCredentials($pbk, "RSUD-VPN", "feldymulkan", "Feldy2013*", "")
+
+if ($result -eq 0) {
+    Write-Host "Credential berhasil disimpan ke RAS!" -ForegroundColor Green
+    Write-Host "Silakan connect via GUI sekarang." -ForegroundColor Cyan
+} else {
+    Write-Host "Gagal. Error code: $result" -ForegroundColor Red
+}

@@ -192,9 +192,11 @@ exports.Prisma.RadusergroupScalarFieldEnum = {
 exports.Prisma.UserinfoScalarFieldEnum = {
   id: 'id',
   username: 'username',
+  type: 'type',
   fullName: 'fullName',
   department: 'department',
-  createdBy: 'createdBy'
+  createdBy: 'createdBy',
+  status: 'status'
 };
 
 exports.Prisma.AdminScalarFieldEnum = {
@@ -202,6 +204,77 @@ exports.Prisma.AdminScalarFieldEnum = {
   username: 'username',
   password: 'password',
   role: 'role'
+};
+
+exports.Prisma.GroupMetadataScalarFieldEnum = {
+  groupname: 'groupname',
+  type: 'type',
+  description: 'description'
+};
+
+exports.Prisma.RadiusPoolScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description'
+};
+
+exports.Prisma.RadippoolScalarFieldEnum = {
+  id: 'id',
+  pool_name: 'pool_name',
+  framedipaddress: 'framedipaddress',
+  nasipaddress: 'nasipaddress',
+  calledstationid: 'calledstationid',
+  callingstationid: 'callingstationid',
+  expiry_time: 'expiry_time',
+  username: 'username',
+  pool_key: 'pool_key'
+};
+
+exports.Prisma.MikrotikConfigScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  host: 'host',
+  port: 'port',
+  username: 'username',
+  password: 'password',
+  useSsl: 'useSsl',
+  wgPublicHost: 'wgPublicHost',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WireguardPeerScalarFieldEnum = {
+  id: 'id',
+  mikrotikId: 'mikrotikId',
+  mikrotikPeerId: 'mikrotikPeerId',
+  name: 'name',
+  publicKey: 'publicKey',
+  privateKey: 'privateKey',
+  allowedIps: 'allowedIps',
+  interface: 'interface',
+  listenPort: 'listenPort',
+  endpoint: 'endpoint',
+  comment: 'comment',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WifiScalarFieldEnum = {
+  id: 'id',
+  ssid: 'ssid',
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  timestamp: 'timestamp',
+  adminUser: 'adminUser',
+  action: 'action',
+  targetType: 'targetType',
+  targetName: 'targetName',
+  details: 'details',
+  ipAddress: 'ipAddress'
 };
 
 exports.Prisma.SortOrder = {
@@ -294,15 +367,71 @@ exports.Prisma.radusergroupOrderByRelevanceFieldEnum = {
 
 exports.Prisma.userinfoOrderByRelevanceFieldEnum = {
   username: 'username',
+  type: 'type',
   fullName: 'fullName',
   department: 'department',
-  createdBy: 'createdBy'
+  createdBy: 'createdBy',
+  status: 'status'
 };
 
 exports.Prisma.adminOrderByRelevanceFieldEnum = {
   username: 'username',
   password: 'password',
   role: 'role'
+};
+
+exports.Prisma.GroupMetadataOrderByRelevanceFieldEnum = {
+  groupname: 'groupname',
+  type: 'type',
+  description: 'description'
+};
+
+exports.Prisma.RadiusPoolOrderByRelevanceFieldEnum = {
+  name: 'name',
+  description: 'description'
+};
+
+exports.Prisma.radippoolOrderByRelevanceFieldEnum = {
+  pool_name: 'pool_name',
+  framedipaddress: 'framedipaddress',
+  nasipaddress: 'nasipaddress',
+  calledstationid: 'calledstationid',
+  callingstationid: 'callingstationid',
+  username: 'username',
+  pool_key: 'pool_key'
+};
+
+exports.Prisma.MikrotikConfigOrderByRelevanceFieldEnum = {
+  name: 'name',
+  host: 'host',
+  username: 'username',
+  password: 'password',
+  wgPublicHost: 'wgPublicHost'
+};
+
+exports.Prisma.WireguardPeerOrderByRelevanceFieldEnum = {
+  mikrotikPeerId: 'mikrotikPeerId',
+  name: 'name',
+  publicKey: 'publicKey',
+  privateKey: 'privateKey',
+  allowedIps: 'allowedIps',
+  interface: 'interface',
+  endpoint: 'endpoint',
+  comment: 'comment'
+};
+
+exports.Prisma.WifiOrderByRelevanceFieldEnum = {
+  ssid: 'ssid',
+  password: 'password'
+};
+
+exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
+  adminUser: 'adminUser',
+  action: 'action',
+  targetType: 'targetType',
+  targetName: 'targetName',
+  details: 'details',
+  ipAddress: 'ipAddress'
 };
 
 
@@ -317,7 +446,14 @@ exports.Prisma.ModelName = {
   radreply: 'radreply',
   radusergroup: 'radusergroup',
   userinfo: 'userinfo',
-  admin: 'admin'
+  admin: 'admin',
+  GroupMetadata: 'GroupMetadata',
+  RadiusPool: 'RadiusPool',
+  radippool: 'radippool',
+  MikrotikConfig: 'MikrotikConfig',
+  WireguardPeer: 'WireguardPeer',
+  Wifi: 'Wifi',
+  AuditLog: 'AuditLog'
 };
 /**
  * Create the Client
@@ -366,13 +502,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel nas {\n  id          Int     @id @default(autoincrement())\n  nasname     String  @db.VarChar(128)\n  shortname   String? @db.VarChar(32)\n  type        String? @default(\"other\") @db.VarChar(30)\n  ports       Int?\n  secret      String  @default(\"secret\") @db.VarChar(60)\n  server      String? @db.VarChar(64)\n  community   String? @db.VarChar(50)\n  description String? @default(\"RADIUS Client\") @db.VarChar(200)\n\n  @@index([nasname], map: \"nasname\")\n}\n\nmodel nasreload {\n  nasipaddress String   @id @db.VarChar(15)\n  reloadtime   DateTime @db.DateTime(0)\n}\n\nmodel radacct {\n  radacctid           BigInt    @id @default(autoincrement())\n  acctsessionid       String    @default(\"\") @db.VarChar(64)\n  acctuniqueid        String    @unique(map: \"acctuniqueid\") @default(\"\") @db.VarChar(32)\n  username            String    @default(\"\") @db.VarChar(64)\n  realm               String?   @default(\"\") @db.VarChar(64)\n  nasipaddress        String    @default(\"\") @db.VarChar(15)\n  nasportid           String?   @db.VarChar(32)\n  nasporttype         String?   @db.VarChar(32)\n  acctstarttime       DateTime? @db.DateTime(0)\n  acctupdatetime      DateTime? @db.DateTime(0)\n  acctstoptime        DateTime? @db.DateTime(0)\n  acctinterval        Int?\n  acctsessiontime     Int?      @db.UnsignedInt\n  acctauthentic       String?   @db.VarChar(32)\n  connectinfo_start   String?   @db.VarChar(128)\n  connectinfo_stop    String?   @db.VarChar(128)\n  acctinputoctets     BigInt?\n  acctoutputoctets    BigInt?\n  calledstationid     String    @default(\"\") @db.VarChar(50)\n  callingstationid    String    @default(\"\") @db.VarChar(50)\n  acctterminatecause  String    @default(\"\") @db.VarChar(32)\n  servicetype         String?   @db.VarChar(32)\n  framedprotocol      String?   @db.VarChar(32)\n  framedipaddress     String    @default(\"\") @db.VarChar(15)\n  framedipv6address   String    @default(\"\") @db.VarChar(45)\n  framedipv6prefix    String    @default(\"\") @db.VarChar(45)\n  framedinterfaceid   String    @default(\"\") @db.VarChar(44)\n  delegatedipv6prefix String    @default(\"\") @db.VarChar(45)\n  class               String?   @db.VarChar(64)\n\n  @@index([acctinterval], map: \"acctinterval\")\n  @@index([acctsessionid], map: \"acctsessionid\")\n  @@index([acctsessiontime], map: \"acctsessiontime\")\n  @@index([acctstarttime], map: \"acctstarttime\")\n  @@index([acctstoptime], map: \"acctstoptime\")\n  @@index([class], map: \"class\")\n  @@index([delegatedipv6prefix], map: \"delegatedipv6prefix\")\n  @@index([framedinterfaceid], map: \"framedinterfaceid\")\n  @@index([framedipaddress], map: \"framedipaddress\")\n  @@index([framedipv6address], map: \"framedipv6address\")\n  @@index([framedipv6prefix], map: \"framedipv6prefix\")\n  @@index([nasipaddress], map: \"nasipaddress\")\n  @@index([username], map: \"username\")\n}\n\nmodel radcheck {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  username  String @default(\"\") @db.VarChar(64)\n  attribute String @default(\"\") @db.VarChar(64)\n  op        String @default(\"==\") @db.Char(2)\n  value     String @default(\"\") @db.VarChar(253)\n\n  @@index([username(length: 32)], map: \"username\")\n}\n\nmodel radgroupcheck {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  groupname String @default(\"\") @db.VarChar(64)\n  attribute String @default(\"\") @db.VarChar(64)\n  op        String @default(\"==\") @db.Char(2)\n  value     String @default(\"\") @db.VarChar(253)\n\n  @@index([groupname(length: 32)], map: \"groupname\")\n}\n\nmodel radgroupreply {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  groupname String @default(\"\") @db.VarChar(64)\n  attribute String @default(\"\") @db.VarChar(64)\n  op        String @default(\"=\") @db.Char(2)\n  value     String @default(\"\") @db.VarChar(253)\n\n  @@index([groupname(length: 32)], map: \"groupname\")\n}\n\nmodel radpostauth {\n  id       Int      @id @default(autoincrement())\n  username String   @default(\"\") @db.VarChar(64)\n  pass     String   @default(\"\") @db.VarChar(64)\n  reply    String   @default(\"\") @db.VarChar(32)\n  authdate DateTime @default(now()) @db.Timestamp(6)\n  class    String?  @db.VarChar(64)\n\n  @@index([class], map: \"class\")\n  @@index([username], map: \"username\")\n}\n\nmodel radreply {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  username  String @default(\"\") @db.VarChar(64)\n  attribute String @default(\"\") @db.VarChar(64)\n  op        String @default(\"=\") @db.Char(2)\n  value     String @default(\"\") @db.VarChar(253)\n\n  @@index([username(length: 32)], map: \"username\")\n}\n\nmodel radusergroup {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  username  String @default(\"\") @db.VarChar(64)\n  groupname String @default(\"\") @db.VarChar(64)\n  priority  Int    @default(1)\n\n  @@index([username(length: 32)], map: \"username\")\n}\n\nmodel userinfo {\n  id         Int     @id @default(autoincrement())\n  username   String  @unique @db.VarChar(64)\n  fullName   String  @default(\"\") @db.VarChar(255)\n  department String  @default(\"\") @db.VarChar(64)\n  createdBy  String? @db.VarChar(64)\n}\n\nmodel admin {\n  id       Int    @id @default(autoincrement())\n  username String @unique\n  password String\n  role     String @default(\"admin\")\n}\n",
-  "inlineSchemaHash": "3da655b8653b84b7f2434443ad7a3fdf981e9efc0798a0e3cd83321f88d77aed",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel nas {\n  id          Int     @id @default(autoincrement())\n  nasname     String  @db.VarChar(128)\n  shortname   String? @db.VarChar(32)\n  type        String? @default(\"other\") @db.VarChar(30)\n  ports       Int?\n  secret      String  @default(\"secret\") @db.VarChar(60)\n  server      String? @db.VarChar(64)\n  community   String? @db.VarChar(50)\n  description String? @default(\"RADIUS Client\") @db.VarChar(200)\n\n  @@index([nasname], map: \"nasname\")\n}\n\nmodel nasreload {\n  nasipaddress String   @id @db.VarChar(15)\n  reloadtime   DateTime @db.DateTime(0)\n}\n\nmodel radacct {\n  radacctid           BigInt    @id @default(autoincrement())\n  acctsessionid       String    @default(\"\") @db.VarChar(64)\n  acctuniqueid        String    @unique(map: \"acctuniqueid\") @default(\"\") @db.VarChar(32)\n  username            String    @default(\"\") @db.VarChar(64)\n  realm               String?   @default(\"\") @db.VarChar(64)\n  nasipaddress        String    @default(\"\") @db.VarChar(15)\n  nasportid           String?   @db.VarChar(32)\n  nasporttype         String?   @db.VarChar(32)\n  acctstarttime       DateTime? @db.DateTime(0)\n  acctupdatetime      DateTime? @db.DateTime(0)\n  acctstoptime        DateTime? @db.DateTime(0)\n  acctinterval        Int?\n  acctsessiontime     Int?      @db.UnsignedInt\n  acctauthentic       String?   @db.VarChar(32)\n  connectinfo_start   String?   @db.VarChar(128)\n  connectinfo_stop    String?   @db.VarChar(128)\n  acctinputoctets     BigInt?\n  acctoutputoctets    BigInt?\n  calledstationid     String    @default(\"\") @db.VarChar(50)\n  callingstationid    String    @default(\"\") @db.VarChar(50)\n  acctterminatecause  String    @default(\"\") @db.VarChar(32)\n  servicetype         String?   @db.VarChar(32)\n  framedprotocol      String?   @db.VarChar(32)\n  framedipaddress     String    @default(\"\") @db.VarChar(15)\n  framedipv6address   String    @default(\"\") @db.VarChar(45)\n  framedipv6prefix    String    @default(\"\") @db.VarChar(45)\n  framedinterfaceid   String    @default(\"\") @db.VarChar(44)\n  delegatedipv6prefix String    @default(\"\") @db.VarChar(45)\n  class               String?   @db.VarChar(64)\n\n  @@index([acctinterval], map: \"acctinterval\")\n  @@index([acctsessionid], map: \"acctsessionid\")\n  @@index([acctsessiontime], map: \"acctsessiontime\")\n  @@index([acctstarttime], map: \"acctstarttime\")\n  @@index([acctstoptime], map: \"acctstoptime\")\n  @@index([class], map: \"class\")\n  @@index([delegatedipv6prefix], map: \"delegatedipv6prefix\")\n  @@index([framedinterfaceid], map: \"framedinterfaceid\")\n  @@index([framedipaddress], map: \"framedipaddress\")\n  @@index([framedipv6address], map: \"framedipv6address\")\n  @@index([framedipv6prefix], map: \"framedipv6prefix\")\n  @@index([nasipaddress], map: \"nasipaddress\")\n  @@index([username], map: \"username\")\n}\n\nmodel radcheck {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  username  String @default(\"\") @db.VarChar(64)\n  attribute String @default(\"\") @db.VarChar(64)\n  op        String @default(\"==\") @db.Char(2)\n  value     String @default(\"\") @db.VarChar(253)\n\n  @@index([username(length: 32)], map: \"username\")\n}\n\nmodel radgroupcheck {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  groupname String @default(\"\") @db.VarChar(64)\n  attribute String @default(\"\") @db.VarChar(64)\n  op        String @default(\"==\") @db.Char(2)\n  value     String @default(\"\") @db.VarChar(253)\n\n  @@index([groupname(length: 32)], map: \"groupname\")\n}\n\nmodel radgroupreply {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  groupname String @default(\"\") @db.VarChar(64)\n  attribute String @default(\"\") @db.VarChar(64)\n  op        String @default(\"=\") @db.Char(2)\n  value     String @default(\"\") @db.VarChar(253)\n\n  @@index([groupname(length: 32)], map: \"groupname\")\n}\n\nmodel radpostauth {\n  id       Int      @id @default(autoincrement())\n  username String   @default(\"\") @db.VarChar(64)\n  pass     String   @default(\"\") @db.VarChar(64)\n  reply    String   @default(\"\") @db.VarChar(32)\n  authdate DateTime @default(now()) @db.Timestamp(6)\n  class    String?  @db.VarChar(64)\n\n  @@index([class], map: \"class\")\n  @@index([username], map: \"username\")\n}\n\nmodel radreply {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  username  String @default(\"\") @db.VarChar(64)\n  attribute String @default(\"\") @db.VarChar(64)\n  op        String @default(\"=\") @db.Char(2)\n  value     String @default(\"\") @db.VarChar(253)\n\n  @@index([username(length: 32)], map: \"username\")\n}\n\nmodel radusergroup {\n  id        Int    @id @default(autoincrement()) @db.UnsignedInt\n  username  String @default(\"\") @db.VarChar(64)\n  groupname String @default(\"\") @db.VarChar(64)\n  priority  Int    @default(1)\n\n  groupMetadata GroupMetadata? @relation(fields: [groupname], references: [groupname])\n\n  @@index([username(length: 32)], map: \"username\")\n}\n\nmodel userinfo {\n  id         Int     @id @default(autoincrement())\n  username   String  @db.VarChar(64)\n  type       String  @default(\"hotspot\") @db.VarChar(20)\n  fullName   String  @default(\"\") @db.VarChar(255)\n  department String  @default(\"\") @db.VarChar(64)\n  createdBy  String? @db.VarChar(64)\n  status     String  @default(\"active\") @db.VarChar(20)\n\n  @@unique([username, type], name: \"username_type\")\n}\n\nmodel admin {\n  id       Int    @id @default(autoincrement())\n  username String @unique\n  password String\n  role     String @default(\"admin\")\n}\n\nmodel GroupMetadata {\n  groupname   String  @id @db.VarChar(64)\n  type        String  @db.VarChar(20)\n  description String? @db.VarChar(255)\n\n  radusergroups radusergroup[]\n}\n\nmodel RadiusPool {\n  id          Int     @id @default(autoincrement())\n  name        String  @unique @db.VarChar(64)\n  description String? @db.VarChar(255)\n}\n\nmodel radippool {\n  id               Int       @id @default(autoincrement()) @db.UnsignedInt\n  pool_name        String    @db.VarChar(30)\n  framedipaddress  String    @default(\"\") @db.VarChar(15)\n  nasipaddress     String    @default(\"\") @db.VarChar(15)\n  calledstationid  String    @db.VarChar(30)\n  callingstationid String    @db.VarChar(30)\n  expiry_time      DateTime? @db.DateTime(0)\n  username         String    @default(\"\") @db.VarChar(64)\n  pool_key         String    @db.VarChar(30)\n\n  @@index([pool_name, framedipaddress], map: \"poolname_framedipaddress\")\n  @@index([pool_name, expiry_time], map: \"poolname_expiry\")\n  @@index([pool_key], map: \"pool_key\")\n}\n\nmodel MikrotikConfig {\n  id           Int             @id @default(autoincrement())\n  name         String          @unique\n  host         String\n  port         Int             @default(443)\n  username     String\n  password     String\n  useSsl       Boolean         @default(true)\n  wgPublicHost String? // Added for WireGuard public endpoint\n  createdAt    DateTime        @default(now())\n  updatedAt    DateTime        @updatedAt\n  peers        WireguardPeer[]\n}\n\nmodel WireguardPeer {\n  id             Int            @id @default(autoincrement())\n  mikrotikId     Int\n  mikrotik       MikrotikConfig @relation(fields: [mikrotikId], references: [id], onDelete: Cascade)\n  mikrotikPeerId String?        @db.VarChar(50)\n  name           String\n  publicKey      String         @db.VarChar(255)\n  privateKey     String         @db.VarChar(255)\n  allowedIps     String         @db.VarChar(255)\n  interface      String         @default(\"wireguard1\")\n  listenPort     Int?\n  endpoint       String?\n  comment        String?\n  createdAt      DateTime       @default(now())\n}\n\nmodel Wifi {\n  id        Int      @id @default(autoincrement())\n  ssid      String   @unique @db.VarChar(128)\n  password  String   @db.VarChar(128)\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel AuditLog {\n  id         Int      @id @default(autoincrement())\n  timestamp  DateTime @default(now())\n  adminUser  String   @db.VarChar(64)\n  action     String   @db.VarChar(50)\n  targetType String   @db.VarChar(30)\n  targetName String?  @db.VarChar(128)\n  details    String?  @db.Text\n  ipAddress  String?  @db.VarChar(45)\n\n  @@index([timestamp])\n  @@index([adminUser])\n  @@index([action])\n}\n",
+  "inlineSchemaHash": "1f5e392f3f04d4414502f5e3e79a5bc9b9b8e76c5ea712b6a19785ee63a7077c",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"nas\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nasname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shortname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ports\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"secret\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"server\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"community\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"nasreload\":{\"fields\":[{\"name\":\"nasipaddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reloadtime\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"radacct\":{\"fields\":[{\"name\":\"radacctid\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"acctsessionid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acctuniqueid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"realm\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nasipaddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nasportid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nasporttype\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acctstarttime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"acctupdatetime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"acctstoptime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"acctinterval\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"acctsessiontime\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"acctauthentic\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"connectinfo_start\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"connectinfo_stop\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acctinputoctets\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"acctoutputoctets\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"calledstationid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"callingstationid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acctterminatecause\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"servicetype\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedprotocol\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedipaddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedipv6address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedipv6prefix\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedinterfaceid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"delegatedipv6prefix\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"class\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radcheck\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attribute\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"op\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radgroupcheck\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"groupname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attribute\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"op\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radgroupreply\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"groupname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attribute\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"op\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radpostauth\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pass\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reply\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"authdate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"class\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radreply\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attribute\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"op\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radusergroup\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"groupname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"priority\",\"kind\":\"scalar\",\"type\":\"Int\"}],\"dbName\":null},\"userinfo\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"department\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdBy\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"admin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"nas\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"nasname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"shortname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ports\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"secret\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"server\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"community\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"nasreload\":{\"fields\":[{\"name\":\"nasipaddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reloadtime\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"radacct\":{\"fields\":[{\"name\":\"radacctid\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"acctsessionid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acctuniqueid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"realm\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nasipaddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nasportid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nasporttype\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acctstarttime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"acctupdatetime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"acctstoptime\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"acctinterval\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"acctsessiontime\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"acctauthentic\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"connectinfo_start\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"connectinfo_stop\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acctinputoctets\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"acctoutputoctets\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"calledstationid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"callingstationid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"acctterminatecause\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"servicetype\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedprotocol\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedipaddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedipv6address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedipv6prefix\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedinterfaceid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"delegatedipv6prefix\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"class\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radcheck\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attribute\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"op\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radgroupcheck\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"groupname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attribute\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"op\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radgroupreply\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"groupname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attribute\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"op\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radpostauth\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pass\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"reply\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"authdate\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"class\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radreply\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attribute\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"op\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radusergroup\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"groupname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"priority\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"groupMetadata\",\"kind\":\"object\",\"type\":\"GroupMetadata\",\"relationName\":\"GroupMetadataToradusergroup\"}],\"dbName\":null},\"userinfo\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"department\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdBy\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"admin\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"GroupMetadata\":{\"fields\":[{\"name\":\"groupname\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"radusergroups\",\"kind\":\"object\",\"type\":\"radusergroup\",\"relationName\":\"GroupMetadataToradusergroup\"}],\"dbName\":null},\"RadiusPool\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"radippool\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"pool_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"framedipaddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nasipaddress\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"calledstationid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"callingstationid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expiry_time\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pool_key\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"MikrotikConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"host\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"port\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"useSsl\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"wgPublicHost\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"peers\",\"kind\":\"object\",\"type\":\"WireguardPeer\",\"relationName\":\"MikrotikConfigToWireguardPeer\"}],\"dbName\":null},\"WireguardPeer\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"mikrotikId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"mikrotik\",\"kind\":\"object\",\"type\":\"MikrotikConfig\",\"relationName\":\"MikrotikConfigToWireguardPeer\"},{\"name\":\"mikrotikPeerId\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"publicKey\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"privateKey\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"allowedIps\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"interface\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"listenPort\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"endpoint\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"comment\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Wifi\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"ssid\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"timestamp\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"adminUser\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"targetType\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"targetName\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

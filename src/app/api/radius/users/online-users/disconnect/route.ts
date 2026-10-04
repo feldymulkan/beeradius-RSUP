@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { logAudit } from '@/lib/audit';
 import { exec } from "child_process";
 import util from "util";
 
@@ -101,6 +102,7 @@ export async function POST(req: Request) {
     // 7. Cek Hasil Output
     // Sukses biasanya berisi "Disconnect-ACK"
     if (stdout.includes("Disconnect-ACK")) {
+      await logAudit('DISCONNECT_USER', 'session', cleanUsername, { ipAddress: session.framedipaddress, nas: session.nasipaddress, sessionId: session.acctsessionid });
       return NextResponse.json(
         { message: "Sukses! User berhasil diputus (Disconnect-ACK).", details: stdout },
         { status: 200 }

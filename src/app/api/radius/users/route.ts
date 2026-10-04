@@ -2,6 +2,7 @@ import * as crypto from 'crypto';
 import { Prisma } from '@prisma/client';
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { logAudit } from '@/lib/audit';
 
 // Interface untuk body request yang mendukung semua field
 interface PostRequestBody {
@@ -82,6 +83,12 @@ export async function POST(req: NextRequest) {
 
         const transactionResult = await prisma.$transaction(prismaOperations);
         
+        await logAudit('CREATE_USER', 'user', username, { 
+            group: assignedGroup, 
+            fullName, 
+            department 
+        });
+
         return NextResponse.json({ message: `User berhasil dibuat di grup ${assignedGroup}`, result: transactionResult }, { status: 201 });
     
     } catch (error: any) {

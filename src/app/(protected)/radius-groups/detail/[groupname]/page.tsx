@@ -7,14 +7,11 @@ import { notFound } from "next/navigation";
 export default async function GroupDetailPage({
   params,
 }: {
-  // [PERBAIKAN] Ini adalah cara standar
-  // untuk menerima params di Next.js
-  params: { groupname: string };
+  params: Promise<{ groupname: string }>;
 }) {
   
-  // [PERBAIKAN] Ambil groupname langsung,
-  // tidak perlu 'await params'
-  const groupname = decodeURIComponent(params.groupname);
+  const resolvedParams = await params;
+  const groupname = decodeURIComponent(resolvedParams.groupname);
 
   // [PERBAIKAN] Ambil data dari KEDUA tabel secara bersamaan
   const [replyAttributes, checkAttributes] = await Promise.all([

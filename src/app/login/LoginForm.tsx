@@ -71,6 +71,9 @@ export default function LoginForm() {
           </form>
         </div>
       </div>
+      <div className="absolute bottom-4 w-full text-center">
+        <p className="text-xs opacity-50">Copyright © {new Date().getFullYear()} - feldymulkan</p>
+      </div>
     </div>
   );
 }

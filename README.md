@@ -6,6 +6,7 @@ BeeRadius adalah aplikasi manajemen RADIUS berbasis web yang dibangun dengan Nex
 
 - **Manajemen Pengguna RADIUS (Hotspot & VPN)**:
   - Halaman terpisah untuk pembuatan user Hotspot dan VPN.
+  - Panduan konfigurasi manual VPN (L2TP/IPSec) untuk Windows, macOS, dan Linux.
   - Tambah, edit, dan hapus pengguna.
   - Detail informasi profil pengguna (Nama Lengkap, Departemen).
   - Pelacakan admin pembuat akun (`createdBy`).
@@ -15,8 +16,9 @@ BeeRadius adalah aplikasi manajemen RADIUS berbasis web yang dibangun dengan Nex
   - Pengaturan atribut `radgroupcheck` dan `radgroupreply`.
   - Penugasan pengguna ke grup tertentu.
 - **Monitoring & Analitik**:
-  - Pantau pengguna yang sedang aktif secara real-time.
-  - Fitur untuk memutuskan koneksi pengguna (*Disconnect*) dan pembersihan sesi menggantung (*Clear Stale Sessions*).
+  - Pantau pengguna yang sedang aktif dan durasi online secara real-time.
+  - Filter sesi berdasarkan status (Aktif / Gantung / Semua) pada halaman Online User.
+  - Fitur untuk memutuskan koneksi pengguna (*Disconnect*) dan pembersihan massal sesi gantung (*Clear Stale Sessions*).
   - Laporan penggunaan bandwidth terbanyak (Top Usage) berdasarkan User/IP.
 - **Autentikasi & RBAC**:
   - Sistem login aman menggunakan NextAuth.js.

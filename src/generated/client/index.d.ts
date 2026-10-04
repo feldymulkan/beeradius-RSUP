@@ -68,6 +68,41 @@ export type userinfo = $Result.DefaultSelection<Prisma.$userinfoPayload>
  * 
  */
 export type admin = $Result.DefaultSelection<Prisma.$adminPayload>
+/**
+ * Model GroupMetadata
+ * 
+ */
+export type GroupMetadata = $Result.DefaultSelection<Prisma.$GroupMetadataPayload>
+/**
+ * Model RadiusPool
+ * 
+ */
+export type RadiusPool = $Result.DefaultSelection<Prisma.$RadiusPoolPayload>
+/**
+ * Model radippool
+ * 
+ */
+export type radippool = $Result.DefaultSelection<Prisma.$radippoolPayload>
+/**
+ * Model MikrotikConfig
+ * 
+ */
+export type MikrotikConfig = $Result.DefaultSelection<Prisma.$MikrotikConfigPayload>
+/**
+ * Model WireguardPeer
+ * 
+ */
+export type WireguardPeer = $Result.DefaultSelection<Prisma.$WireguardPeerPayload>
+/**
+ * Model Wifi
+ * 
+ */
+export type Wifi = $Result.DefaultSelection<Prisma.$WifiPayload>
+/**
+ * Model AuditLog
+ * 
+ */
+export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -296,6 +331,76 @@ export class PrismaClient<
     * ```
     */
   get admin(): Prisma.adminDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.groupMetadata`: Exposes CRUD operations for the **GroupMetadata** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GroupMetadata
+    * const groupMetadata = await prisma.groupMetadata.findMany()
+    * ```
+    */
+  get groupMetadata(): Prisma.GroupMetadataDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.radiusPool`: Exposes CRUD operations for the **RadiusPool** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more RadiusPools
+    * const radiusPools = await prisma.radiusPool.findMany()
+    * ```
+    */
+  get radiusPool(): Prisma.RadiusPoolDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.radippool`: Exposes CRUD operations for the **radippool** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Radippools
+    * const radippools = await prisma.radippool.findMany()
+    * ```
+    */
+  get radippool(): Prisma.radippoolDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.mikrotikConfig`: Exposes CRUD operations for the **MikrotikConfig** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MikrotikConfigs
+    * const mikrotikConfigs = await prisma.mikrotikConfig.findMany()
+    * ```
+    */
+  get mikrotikConfig(): Prisma.MikrotikConfigDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.wireguardPeer`: Exposes CRUD operations for the **WireguardPeer** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more WireguardPeers
+    * const wireguardPeers = await prisma.wireguardPeer.findMany()
+    * ```
+    */
+  get wireguardPeer(): Prisma.WireguardPeerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.wifi`: Exposes CRUD operations for the **Wifi** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Wifis
+    * const wifis = await prisma.wifi.findMany()
+    * ```
+    */
+  get wifi(): Prisma.WifiDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AuditLogs
+    * const auditLogs = await prisma.auditLog.findMany()
+    * ```
+    */
+  get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -746,7 +851,14 @@ export namespace Prisma {
     radreply: 'radreply',
     radusergroup: 'radusergroup',
     userinfo: 'userinfo',
-    admin: 'admin'
+    admin: 'admin',
+    GroupMetadata: 'GroupMetadata',
+    RadiusPool: 'RadiusPool',
+    radippool: 'radippool',
+    MikrotikConfig: 'MikrotikConfig',
+    WireguardPeer: 'WireguardPeer',
+    Wifi: 'Wifi',
+    AuditLog: 'AuditLog'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -765,7 +877,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "nas" | "nasreload" | "radacct" | "radcheck" | "radgroupcheck" | "radgroupreply" | "radpostauth" | "radreply" | "radusergroup" | "userinfo" | "admin"
+      modelProps: "nas" | "nasreload" | "radacct" | "radcheck" | "radgroupcheck" | "radgroupreply" | "radpostauth" | "radreply" | "radusergroup" | "userinfo" | "admin" | "groupMetadata" | "radiusPool" | "radippool" | "mikrotikConfig" | "wireguardPeer" | "wifi" | "auditLog"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1495,6 +1607,468 @@ export namespace Prisma {
           }
         }
       }
+      GroupMetadata: {
+        payload: Prisma.$GroupMetadataPayload<ExtArgs>
+        fields: Prisma.GroupMetadataFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GroupMetadataFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GroupMetadataFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload>
+          }
+          findFirst: {
+            args: Prisma.GroupMetadataFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GroupMetadataFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload>
+          }
+          findMany: {
+            args: Prisma.GroupMetadataFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload>[]
+          }
+          create: {
+            args: Prisma.GroupMetadataCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload>
+          }
+          createMany: {
+            args: Prisma.GroupMetadataCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.GroupMetadataDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload>
+          }
+          update: {
+            args: Prisma.GroupMetadataUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload>
+          }
+          deleteMany: {
+            args: Prisma.GroupMetadataDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GroupMetadataUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.GroupMetadataUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GroupMetadataPayload>
+          }
+          aggregate: {
+            args: Prisma.GroupMetadataAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGroupMetadata>
+          }
+          groupBy: {
+            args: Prisma.GroupMetadataGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GroupMetadataGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GroupMetadataCountArgs<ExtArgs>
+            result: $Utils.Optional<GroupMetadataCountAggregateOutputType> | number
+          }
+        }
+      }
+      RadiusPool: {
+        payload: Prisma.$RadiusPoolPayload<ExtArgs>
+        fields: Prisma.RadiusPoolFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.RadiusPoolFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.RadiusPoolFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload>
+          }
+          findFirst: {
+            args: Prisma.RadiusPoolFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.RadiusPoolFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload>
+          }
+          findMany: {
+            args: Prisma.RadiusPoolFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload>[]
+          }
+          create: {
+            args: Prisma.RadiusPoolCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload>
+          }
+          createMany: {
+            args: Prisma.RadiusPoolCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.RadiusPoolDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload>
+          }
+          update: {
+            args: Prisma.RadiusPoolUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload>
+          }
+          deleteMany: {
+            args: Prisma.RadiusPoolDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.RadiusPoolUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.RadiusPoolUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RadiusPoolPayload>
+          }
+          aggregate: {
+            args: Prisma.RadiusPoolAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRadiusPool>
+          }
+          groupBy: {
+            args: Prisma.RadiusPoolGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RadiusPoolGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.RadiusPoolCountArgs<ExtArgs>
+            result: $Utils.Optional<RadiusPoolCountAggregateOutputType> | number
+          }
+        }
+      }
+      radippool: {
+        payload: Prisma.$radippoolPayload<ExtArgs>
+        fields: Prisma.radippoolFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.radippoolFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.radippoolFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload>
+          }
+          findFirst: {
+            args: Prisma.radippoolFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.radippoolFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload>
+          }
+          findMany: {
+            args: Prisma.radippoolFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload>[]
+          }
+          create: {
+            args: Prisma.radippoolCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload>
+          }
+          createMany: {
+            args: Prisma.radippoolCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.radippoolDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload>
+          }
+          update: {
+            args: Prisma.radippoolUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload>
+          }
+          deleteMany: {
+            args: Prisma.radippoolDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.radippoolUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.radippoolUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$radippoolPayload>
+          }
+          aggregate: {
+            args: Prisma.RadippoolAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRadippool>
+          }
+          groupBy: {
+            args: Prisma.radippoolGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RadippoolGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.radippoolCountArgs<ExtArgs>
+            result: $Utils.Optional<RadippoolCountAggregateOutputType> | number
+          }
+        }
+      }
+      MikrotikConfig: {
+        payload: Prisma.$MikrotikConfigPayload<ExtArgs>
+        fields: Prisma.MikrotikConfigFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MikrotikConfigFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MikrotikConfigFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload>
+          }
+          findFirst: {
+            args: Prisma.MikrotikConfigFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MikrotikConfigFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload>
+          }
+          findMany: {
+            args: Prisma.MikrotikConfigFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload>[]
+          }
+          create: {
+            args: Prisma.MikrotikConfigCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload>
+          }
+          createMany: {
+            args: Prisma.MikrotikConfigCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.MikrotikConfigDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload>
+          }
+          update: {
+            args: Prisma.MikrotikConfigUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload>
+          }
+          deleteMany: {
+            args: Prisma.MikrotikConfigDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MikrotikConfigUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.MikrotikConfigUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MikrotikConfigPayload>
+          }
+          aggregate: {
+            args: Prisma.MikrotikConfigAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMikrotikConfig>
+          }
+          groupBy: {
+            args: Prisma.MikrotikConfigGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MikrotikConfigGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MikrotikConfigCountArgs<ExtArgs>
+            result: $Utils.Optional<MikrotikConfigCountAggregateOutputType> | number
+          }
+        }
+      }
+      WireguardPeer: {
+        payload: Prisma.$WireguardPeerPayload<ExtArgs>
+        fields: Prisma.WireguardPeerFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WireguardPeerFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WireguardPeerFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload>
+          }
+          findFirst: {
+            args: Prisma.WireguardPeerFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WireguardPeerFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload>
+          }
+          findMany: {
+            args: Prisma.WireguardPeerFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload>[]
+          }
+          create: {
+            args: Prisma.WireguardPeerCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload>
+          }
+          createMany: {
+            args: Prisma.WireguardPeerCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.WireguardPeerDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload>
+          }
+          update: {
+            args: Prisma.WireguardPeerUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload>
+          }
+          deleteMany: {
+            args: Prisma.WireguardPeerDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WireguardPeerUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.WireguardPeerUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WireguardPeerPayload>
+          }
+          aggregate: {
+            args: Prisma.WireguardPeerAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWireguardPeer>
+          }
+          groupBy: {
+            args: Prisma.WireguardPeerGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WireguardPeerGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WireguardPeerCountArgs<ExtArgs>
+            result: $Utils.Optional<WireguardPeerCountAggregateOutputType> | number
+          }
+        }
+      }
+      Wifi: {
+        payload: Prisma.$WifiPayload<ExtArgs>
+        fields: Prisma.WifiFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.WifiFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.WifiFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload>
+          }
+          findFirst: {
+            args: Prisma.WifiFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.WifiFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload>
+          }
+          findMany: {
+            args: Prisma.WifiFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload>[]
+          }
+          create: {
+            args: Prisma.WifiCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload>
+          }
+          createMany: {
+            args: Prisma.WifiCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.WifiDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload>
+          }
+          update: {
+            args: Prisma.WifiUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload>
+          }
+          deleteMany: {
+            args: Prisma.WifiDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.WifiUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.WifiUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$WifiPayload>
+          }
+          aggregate: {
+            args: Prisma.WifiAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateWifi>
+          }
+          groupBy: {
+            args: Prisma.WifiGroupByArgs<ExtArgs>
+            result: $Utils.Optional<WifiGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.WifiCountArgs<ExtArgs>
+            result: $Utils.Optional<WifiCountAggregateOutputType> | number
+          }
+        }
+      }
+      AuditLog: {
+        payload: Prisma.$AuditLogPayload<ExtArgs>
+        fields: Prisma.AuditLogFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AuditLogFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AuditLogFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          findFirst: {
+            args: Prisma.AuditLogFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AuditLogFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          findMany: {
+            args: Prisma.AuditLogFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
+          }
+          create: {
+            args: Prisma.AuditLogCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          createMany: {
+            args: Prisma.AuditLogCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.AuditLogDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          update: {
+            args: Prisma.AuditLogUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          deleteMany: {
+            args: Prisma.AuditLogDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AuditLogUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.AuditLogUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
+          }
+          aggregate: {
+            args: Prisma.AuditLogAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAuditLog>
+          }
+          groupBy: {
+            args: Prisma.AuditLogGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AuditLogGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AuditLogCountArgs<ExtArgs>
+            result: $Utils.Optional<AuditLogCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1602,6 +2176,13 @@ export namespace Prisma {
     radusergroup?: radusergroupOmit
     userinfo?: userinfoOmit
     admin?: adminOmit
+    groupMetadata?: GroupMetadataOmit
+    radiusPool?: RadiusPoolOmit
+    radippool?: radippoolOmit
+    mikrotikConfig?: MikrotikConfigOmit
+    wireguardPeer?: WireguardPeerOmit
+    wifi?: WifiOmit
+    auditLog?: AuditLogOmit
   }
 
   /* Types for Logging */
@@ -1676,6 +2257,67 @@ export namespace Prisma {
    * Count Types
    */
 
+
+  /**
+   * Count Type GroupMetadataCountOutputType
+   */
+
+  export type GroupMetadataCountOutputType = {
+    radusergroups: number
+  }
+
+  export type GroupMetadataCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    radusergroups?: boolean | GroupMetadataCountOutputTypeCountRadusergroupsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GroupMetadataCountOutputType without action
+   */
+  export type GroupMetadataCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadataCountOutputType
+     */
+    select?: GroupMetadataCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GroupMetadataCountOutputType without action
+   */
+  export type GroupMetadataCountOutputTypeCountRadusergroupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: radusergroupWhereInput
+  }
+
+
+  /**
+   * Count Type MikrotikConfigCountOutputType
+   */
+
+  export type MikrotikConfigCountOutputType = {
+    peers: number
+  }
+
+  export type MikrotikConfigCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    peers?: boolean | MikrotikConfigCountOutputTypeCountPeersArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * MikrotikConfigCountOutputType without action
+   */
+  export type MikrotikConfigCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfigCountOutputType
+     */
+    select?: MikrotikConfigCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * MikrotikConfigCountOutputType without action
+   */
+  export type MikrotikConfigCountOutputTypeCountPeersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WireguardPeerWhereInput
+  }
 
 
   /**
@@ -9476,6 +10118,7 @@ export namespace Prisma {
     username?: boolean
     groupname?: boolean
     priority?: boolean
+    groupMetadata?: boolean | radusergroup$groupMetadataArgs<ExtArgs>
   }, ExtArgs["result"]["radusergroup"]>
 
 
@@ -9488,10 +10131,15 @@ export namespace Prisma {
   }
 
   export type radusergroupOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "groupname" | "priority", ExtArgs["result"]["radusergroup"]>
+  export type radusergroupInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    groupMetadata?: boolean | radusergroup$groupMetadataArgs<ExtArgs>
+  }
 
   export type $radusergroupPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "radusergroup"
-    objects: {}
+    objects: {
+      groupMetadata: Prisma.$GroupMetadataPayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       username: string
@@ -9837,6 +10485,7 @@ export namespace Prisma {
    */
   export interface Prisma__radusergroupClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    groupMetadata<T extends radusergroup$groupMetadataArgs<ExtArgs> = {}>(args?: Subset<T, radusergroup$groupMetadataArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9887,6 +10536,10 @@ export namespace Prisma {
      */
     omit?: radusergroupOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
+    /**
      * Filter, which radusergroup to fetch.
      */
     where: radusergroupWhereUniqueInput
@@ -9905,6 +10558,10 @@ export namespace Prisma {
      */
     omit?: radusergroupOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
+    /**
      * Filter, which radusergroup to fetch.
      */
     where: radusergroupWhereUniqueInput
@@ -9922,6 +10579,10 @@ export namespace Prisma {
      * Omit specific fields from the radusergroup
      */
     omit?: radusergroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
     /**
      * Filter, which radusergroup to fetch.
      */
@@ -9971,6 +10632,10 @@ export namespace Prisma {
      */
     omit?: radusergroupOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
+    /**
      * Filter, which radusergroup to fetch.
      */
     where?: radusergroupWhereInput
@@ -10019,6 +10684,10 @@ export namespace Prisma {
      */
     omit?: radusergroupOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
+    /**
      * Filter, which radusergroups to fetch.
      */
     where?: radusergroupWhereInput
@@ -10062,6 +10731,10 @@ export namespace Prisma {
      */
     omit?: radusergroupOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
+    /**
      * The data needed to create a radusergroup.
      */
     data?: XOR<radusergroupCreateInput, radusergroupUncheckedCreateInput>
@@ -10090,6 +10763,10 @@ export namespace Prisma {
      * Omit specific fields from the radusergroup
      */
     omit?: radusergroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
     /**
      * The data needed to update a radusergroup.
      */
@@ -10131,6 +10808,10 @@ export namespace Prisma {
      */
     omit?: radusergroupOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
+    /**
      * The filter to search for the radusergroup to update in case it exists.
      */
     where: radusergroupWhereUniqueInput
@@ -10157,6 +10838,10 @@ export namespace Prisma {
      */
     omit?: radusergroupOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
+    /**
      * Filter which radusergroup to delete.
      */
     where: radusergroupWhereUniqueInput
@@ -10177,6 +10862,25 @@ export namespace Prisma {
   }
 
   /**
+   * radusergroup.groupMetadata
+   */
+  export type radusergroup$groupMetadataArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    where?: GroupMetadataWhereInput
+  }
+
+  /**
    * radusergroup without action
    */
   export type radusergroupDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -10188,6 +10892,10 @@ export namespace Prisma {
      * Omit specific fields from the radusergroup
      */
     omit?: radusergroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
   }
 
 
@@ -10214,25 +10922,31 @@ export namespace Prisma {
   export type UserinfoMinAggregateOutputType = {
     id: number | null
     username: string | null
+    type: string | null
     fullName: string | null
     department: string | null
     createdBy: string | null
+    status: string | null
   }
 
   export type UserinfoMaxAggregateOutputType = {
     id: number | null
     username: string | null
+    type: string | null
     fullName: string | null
     department: string | null
     createdBy: string | null
+    status: string | null
   }
 
   export type UserinfoCountAggregateOutputType = {
     id: number
     username: number
+    type: number
     fullName: number
     department: number
     createdBy: number
+    status: number
     _all: number
   }
 
@@ -10248,25 +10962,31 @@ export namespace Prisma {
   export type UserinfoMinAggregateInputType = {
     id?: true
     username?: true
+    type?: true
     fullName?: true
     department?: true
     createdBy?: true
+    status?: true
   }
 
   export type UserinfoMaxAggregateInputType = {
     id?: true
     username?: true
+    type?: true
     fullName?: true
     department?: true
     createdBy?: true
+    status?: true
   }
 
   export type UserinfoCountAggregateInputType = {
     id?: true
     username?: true
+    type?: true
     fullName?: true
     department?: true
     createdBy?: true
+    status?: true
     _all?: true
   }
 
@@ -10359,9 +11079,11 @@ export namespace Prisma {
   export type UserinfoGroupByOutputType = {
     id: number
     username: string
+    type: string
     fullName: string
     department: string
     createdBy: string | null
+    status: string
     _count: UserinfoCountAggregateOutputType | null
     _avg: UserinfoAvgAggregateOutputType | null
     _sum: UserinfoSumAggregateOutputType | null
@@ -10386,9 +11108,11 @@ export namespace Prisma {
   export type userinfoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     username?: boolean
+    type?: boolean
     fullName?: boolean
     department?: boolean
     createdBy?: boolean
+    status?: boolean
   }, ExtArgs["result"]["userinfo"]>
 
 
@@ -10396,12 +11120,14 @@ export namespace Prisma {
   export type userinfoSelectScalar = {
     id?: boolean
     username?: boolean
+    type?: boolean
     fullName?: boolean
     department?: boolean
     createdBy?: boolean
+    status?: boolean
   }
 
-  export type userinfoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "fullName" | "department" | "createdBy", ExtArgs["result"]["userinfo"]>
+  export type userinfoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "username" | "type" | "fullName" | "department" | "createdBy" | "status", ExtArgs["result"]["userinfo"]>
 
   export type $userinfoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "userinfo"
@@ -10409,9 +11135,11 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       username: string
+      type: string
       fullName: string
       department: string
       createdBy: string | null
+      status: string
     }, ExtArgs["result"]["userinfo"]>
     composites: {}
   }
@@ -10783,9 +11511,11 @@ export namespace Prisma {
   interface userinfoFieldRefs {
     readonly id: FieldRef<"userinfo", 'Int'>
     readonly username: FieldRef<"userinfo", 'String'>
+    readonly type: FieldRef<"userinfo", 'String'>
     readonly fullName: FieldRef<"userinfo", 'String'>
     readonly department: FieldRef<"userinfo", 'String'>
     readonly createdBy: FieldRef<"userinfo", 'String'>
+    readonly status: FieldRef<"userinfo", 'String'>
   }
     
 
@@ -12013,6 +12743,6754 @@ export namespace Prisma {
 
 
   /**
+   * Model GroupMetadata
+   */
+
+  export type AggregateGroupMetadata = {
+    _count: GroupMetadataCountAggregateOutputType | null
+    _min: GroupMetadataMinAggregateOutputType | null
+    _max: GroupMetadataMaxAggregateOutputType | null
+  }
+
+  export type GroupMetadataMinAggregateOutputType = {
+    groupname: string | null
+    type: string | null
+    description: string | null
+  }
+
+  export type GroupMetadataMaxAggregateOutputType = {
+    groupname: string | null
+    type: string | null
+    description: string | null
+  }
+
+  export type GroupMetadataCountAggregateOutputType = {
+    groupname: number
+    type: number
+    description: number
+    _all: number
+  }
+
+
+  export type GroupMetadataMinAggregateInputType = {
+    groupname?: true
+    type?: true
+    description?: true
+  }
+
+  export type GroupMetadataMaxAggregateInputType = {
+    groupname?: true
+    type?: true
+    description?: true
+  }
+
+  export type GroupMetadataCountAggregateInputType = {
+    groupname?: true
+    type?: true
+    description?: true
+    _all?: true
+  }
+
+  export type GroupMetadataAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupMetadata to aggregate.
+     */
+    where?: GroupMetadataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMetadata to fetch.
+     */
+    orderBy?: GroupMetadataOrderByWithRelationInput | GroupMetadataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GroupMetadataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMetadata from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMetadata.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GroupMetadata
+    **/
+    _count?: true | GroupMetadataCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GroupMetadataMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GroupMetadataMaxAggregateInputType
+  }
+
+  export type GetGroupMetadataAggregateType<T extends GroupMetadataAggregateArgs> = {
+        [P in keyof T & keyof AggregateGroupMetadata]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGroupMetadata[P]>
+      : GetScalarType<T[P], AggregateGroupMetadata[P]>
+  }
+
+
+
+
+  export type GroupMetadataGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GroupMetadataWhereInput
+    orderBy?: GroupMetadataOrderByWithAggregationInput | GroupMetadataOrderByWithAggregationInput[]
+    by: GroupMetadataScalarFieldEnum[] | GroupMetadataScalarFieldEnum
+    having?: GroupMetadataScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GroupMetadataCountAggregateInputType | true
+    _min?: GroupMetadataMinAggregateInputType
+    _max?: GroupMetadataMaxAggregateInputType
+  }
+
+  export type GroupMetadataGroupByOutputType = {
+    groupname: string
+    type: string
+    description: string | null
+    _count: GroupMetadataCountAggregateOutputType | null
+    _min: GroupMetadataMinAggregateOutputType | null
+    _max: GroupMetadataMaxAggregateOutputType | null
+  }
+
+  type GetGroupMetadataGroupByPayload<T extends GroupMetadataGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GroupMetadataGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GroupMetadataGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GroupMetadataGroupByOutputType[P]>
+            : GetScalarType<T[P], GroupMetadataGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GroupMetadataSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    groupname?: boolean
+    type?: boolean
+    description?: boolean
+    radusergroups?: boolean | GroupMetadata$radusergroupsArgs<ExtArgs>
+    _count?: boolean | GroupMetadataCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["groupMetadata"]>
+
+
+
+  export type GroupMetadataSelectScalar = {
+    groupname?: boolean
+    type?: boolean
+    description?: boolean
+  }
+
+  export type GroupMetadataOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"groupname" | "type" | "description", ExtArgs["result"]["groupMetadata"]>
+  export type GroupMetadataInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    radusergroups?: boolean | GroupMetadata$radusergroupsArgs<ExtArgs>
+    _count?: boolean | GroupMetadataCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $GroupMetadataPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GroupMetadata"
+    objects: {
+      radusergroups: Prisma.$radusergroupPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      groupname: string
+      type: string
+      description: string | null
+    }, ExtArgs["result"]["groupMetadata"]>
+    composites: {}
+  }
+
+  type GroupMetadataGetPayload<S extends boolean | null | undefined | GroupMetadataDefaultArgs> = $Result.GetResult<Prisma.$GroupMetadataPayload, S>
+
+  type GroupMetadataCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GroupMetadataFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GroupMetadataCountAggregateInputType | true
+    }
+
+  export interface GroupMetadataDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GroupMetadata'], meta: { name: 'GroupMetadata' } }
+    /**
+     * Find zero or one GroupMetadata that matches the filter.
+     * @param {GroupMetadataFindUniqueArgs} args - Arguments to find a GroupMetadata
+     * @example
+     * // Get one GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GroupMetadataFindUniqueArgs>(args: SelectSubset<T, GroupMetadataFindUniqueArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GroupMetadata that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GroupMetadataFindUniqueOrThrowArgs} args - Arguments to find a GroupMetadata
+     * @example
+     * // Get one GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GroupMetadataFindUniqueOrThrowArgs>(args: SelectSubset<T, GroupMetadataFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroupMetadata that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMetadataFindFirstArgs} args - Arguments to find a GroupMetadata
+     * @example
+     * // Get one GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GroupMetadataFindFirstArgs>(args?: SelectSubset<T, GroupMetadataFindFirstArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GroupMetadata that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMetadataFindFirstOrThrowArgs} args - Arguments to find a GroupMetadata
+     * @example
+     * // Get one GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GroupMetadataFindFirstOrThrowArgs>(args?: SelectSubset<T, GroupMetadataFindFirstOrThrowArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GroupMetadata that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMetadataFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.findMany()
+     * 
+     * // Get first 10 GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.findMany({ take: 10 })
+     * 
+     * // Only select the `groupname`
+     * const groupMetadataWithGroupnameOnly = await prisma.groupMetadata.findMany({ select: { groupname: true } })
+     * 
+     */
+    findMany<T extends GroupMetadataFindManyArgs>(args?: SelectSubset<T, GroupMetadataFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GroupMetadata.
+     * @param {GroupMetadataCreateArgs} args - Arguments to create a GroupMetadata.
+     * @example
+     * // Create one GroupMetadata
+     * const GroupMetadata = await prisma.groupMetadata.create({
+     *   data: {
+     *     // ... data to create a GroupMetadata
+     *   }
+     * })
+     * 
+     */
+    create<T extends GroupMetadataCreateArgs>(args: SelectSubset<T, GroupMetadataCreateArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GroupMetadata.
+     * @param {GroupMetadataCreateManyArgs} args - Arguments to create many GroupMetadata.
+     * @example
+     * // Create many GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GroupMetadataCreateManyArgs>(args?: SelectSubset<T, GroupMetadataCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a GroupMetadata.
+     * @param {GroupMetadataDeleteArgs} args - Arguments to delete one GroupMetadata.
+     * @example
+     * // Delete one GroupMetadata
+     * const GroupMetadata = await prisma.groupMetadata.delete({
+     *   where: {
+     *     // ... filter to delete one GroupMetadata
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GroupMetadataDeleteArgs>(args: SelectSubset<T, GroupMetadataDeleteArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GroupMetadata.
+     * @param {GroupMetadataUpdateArgs} args - Arguments to update one GroupMetadata.
+     * @example
+     * // Update one GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GroupMetadataUpdateArgs>(args: SelectSubset<T, GroupMetadataUpdateArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GroupMetadata.
+     * @param {GroupMetadataDeleteManyArgs} args - Arguments to filter GroupMetadata to delete.
+     * @example
+     * // Delete a few GroupMetadata
+     * const { count } = await prisma.groupMetadata.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GroupMetadataDeleteManyArgs>(args?: SelectSubset<T, GroupMetadataDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GroupMetadata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMetadataUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GroupMetadataUpdateManyArgs>(args: SelectSubset<T, GroupMetadataUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one GroupMetadata.
+     * @param {GroupMetadataUpsertArgs} args - Arguments to update or create a GroupMetadata.
+     * @example
+     * // Update or create a GroupMetadata
+     * const groupMetadata = await prisma.groupMetadata.upsert({
+     *   create: {
+     *     // ... data to create a GroupMetadata
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GroupMetadata we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GroupMetadataUpsertArgs>(args: SelectSubset<T, GroupMetadataUpsertArgs<ExtArgs>>): Prisma__GroupMetadataClient<$Result.GetResult<Prisma.$GroupMetadataPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GroupMetadata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMetadataCountArgs} args - Arguments to filter GroupMetadata to count.
+     * @example
+     * // Count the number of GroupMetadata
+     * const count = await prisma.groupMetadata.count({
+     *   where: {
+     *     // ... the filter for the GroupMetadata we want to count
+     *   }
+     * })
+    **/
+    count<T extends GroupMetadataCountArgs>(
+      args?: Subset<T, GroupMetadataCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GroupMetadataCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GroupMetadata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMetadataAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GroupMetadataAggregateArgs>(args: Subset<T, GroupMetadataAggregateArgs>): Prisma.PrismaPromise<GetGroupMetadataAggregateType<T>>
+
+    /**
+     * Group by GroupMetadata.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GroupMetadataGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GroupMetadataGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GroupMetadataGroupByArgs['orderBy'] }
+        : { orderBy?: GroupMetadataGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GroupMetadataGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGroupMetadataGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GroupMetadata model
+   */
+  readonly fields: GroupMetadataFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GroupMetadata.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GroupMetadataClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    radusergroups<T extends GroupMetadata$radusergroupsArgs<ExtArgs> = {}>(args?: Subset<T, GroupMetadata$radusergroupsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$radusergroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GroupMetadata model
+   */
+  interface GroupMetadataFieldRefs {
+    readonly groupname: FieldRef<"GroupMetadata", 'String'>
+    readonly type: FieldRef<"GroupMetadata", 'String'>
+    readonly description: FieldRef<"GroupMetadata", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GroupMetadata findUnique
+   */
+  export type GroupMetadataFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMetadata to fetch.
+     */
+    where: GroupMetadataWhereUniqueInput
+  }
+
+  /**
+   * GroupMetadata findUniqueOrThrow
+   */
+  export type GroupMetadataFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMetadata to fetch.
+     */
+    where: GroupMetadataWhereUniqueInput
+  }
+
+  /**
+   * GroupMetadata findFirst
+   */
+  export type GroupMetadataFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMetadata to fetch.
+     */
+    where?: GroupMetadataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMetadata to fetch.
+     */
+    orderBy?: GroupMetadataOrderByWithRelationInput | GroupMetadataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupMetadata.
+     */
+    cursor?: GroupMetadataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMetadata from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMetadata.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupMetadata.
+     */
+    distinct?: GroupMetadataScalarFieldEnum | GroupMetadataScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMetadata findFirstOrThrow
+   */
+  export type GroupMetadataFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMetadata to fetch.
+     */
+    where?: GroupMetadataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMetadata to fetch.
+     */
+    orderBy?: GroupMetadataOrderByWithRelationInput | GroupMetadataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GroupMetadata.
+     */
+    cursor?: GroupMetadataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMetadata from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMetadata.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GroupMetadata.
+     */
+    distinct?: GroupMetadataScalarFieldEnum | GroupMetadataScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMetadata findMany
+   */
+  export type GroupMetadataFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * Filter, which GroupMetadata to fetch.
+     */
+    where?: GroupMetadataWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GroupMetadata to fetch.
+     */
+    orderBy?: GroupMetadataOrderByWithRelationInput | GroupMetadataOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GroupMetadata.
+     */
+    cursor?: GroupMetadataWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GroupMetadata from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GroupMetadata.
+     */
+    skip?: number
+    distinct?: GroupMetadataScalarFieldEnum | GroupMetadataScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMetadata create
+   */
+  export type GroupMetadataCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GroupMetadata.
+     */
+    data: XOR<GroupMetadataCreateInput, GroupMetadataUncheckedCreateInput>
+  }
+
+  /**
+   * GroupMetadata createMany
+   */
+  export type GroupMetadataCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GroupMetadata.
+     */
+    data: GroupMetadataCreateManyInput | GroupMetadataCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GroupMetadata update
+   */
+  export type GroupMetadataUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GroupMetadata.
+     */
+    data: XOR<GroupMetadataUpdateInput, GroupMetadataUncheckedUpdateInput>
+    /**
+     * Choose, which GroupMetadata to update.
+     */
+    where: GroupMetadataWhereUniqueInput
+  }
+
+  /**
+   * GroupMetadata updateMany
+   */
+  export type GroupMetadataUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GroupMetadata.
+     */
+    data: XOR<GroupMetadataUpdateManyMutationInput, GroupMetadataUncheckedUpdateManyInput>
+    /**
+     * Filter which GroupMetadata to update
+     */
+    where?: GroupMetadataWhereInput
+    /**
+     * Limit how many GroupMetadata to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroupMetadata upsert
+   */
+  export type GroupMetadataUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GroupMetadata to update in case it exists.
+     */
+    where: GroupMetadataWhereUniqueInput
+    /**
+     * In case the GroupMetadata found by the `where` argument doesn't exist, create a new GroupMetadata with this data.
+     */
+    create: XOR<GroupMetadataCreateInput, GroupMetadataUncheckedCreateInput>
+    /**
+     * In case the GroupMetadata was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GroupMetadataUpdateInput, GroupMetadataUncheckedUpdateInput>
+  }
+
+  /**
+   * GroupMetadata delete
+   */
+  export type GroupMetadataDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+    /**
+     * Filter which GroupMetadata to delete.
+     */
+    where: GroupMetadataWhereUniqueInput
+  }
+
+  /**
+   * GroupMetadata deleteMany
+   */
+  export type GroupMetadataDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GroupMetadata to delete
+     */
+    where?: GroupMetadataWhereInput
+    /**
+     * Limit how many GroupMetadata to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GroupMetadata.radusergroups
+   */
+  export type GroupMetadata$radusergroupsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radusergroup
+     */
+    select?: radusergroupSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radusergroup
+     */
+    omit?: radusergroupOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: radusergroupInclude<ExtArgs> | null
+    where?: radusergroupWhereInput
+    orderBy?: radusergroupOrderByWithRelationInput | radusergroupOrderByWithRelationInput[]
+    cursor?: radusergroupWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: RadusergroupScalarFieldEnum | RadusergroupScalarFieldEnum[]
+  }
+
+  /**
+   * GroupMetadata without action
+   */
+  export type GroupMetadataDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GroupMetadata
+     */
+    select?: GroupMetadataSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GroupMetadata
+     */
+    omit?: GroupMetadataOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GroupMetadataInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model RadiusPool
+   */
+
+  export type AggregateRadiusPool = {
+    _count: RadiusPoolCountAggregateOutputType | null
+    _avg: RadiusPoolAvgAggregateOutputType | null
+    _sum: RadiusPoolSumAggregateOutputType | null
+    _min: RadiusPoolMinAggregateOutputType | null
+    _max: RadiusPoolMaxAggregateOutputType | null
+  }
+
+  export type RadiusPoolAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type RadiusPoolSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type RadiusPoolMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    description: string | null
+  }
+
+  export type RadiusPoolMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    description: string | null
+  }
+
+  export type RadiusPoolCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    _all: number
+  }
+
+
+  export type RadiusPoolAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type RadiusPoolSumAggregateInputType = {
+    id?: true
+  }
+
+  export type RadiusPoolMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+  }
+
+  export type RadiusPoolMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+  }
+
+  export type RadiusPoolCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    _all?: true
+  }
+
+  export type RadiusPoolAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RadiusPool to aggregate.
+     */
+    where?: RadiusPoolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RadiusPools to fetch.
+     */
+    orderBy?: RadiusPoolOrderByWithRelationInput | RadiusPoolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: RadiusPoolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RadiusPools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RadiusPools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned RadiusPools
+    **/
+    _count?: true | RadiusPoolCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RadiusPoolAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RadiusPoolSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RadiusPoolMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RadiusPoolMaxAggregateInputType
+  }
+
+  export type GetRadiusPoolAggregateType<T extends RadiusPoolAggregateArgs> = {
+        [P in keyof T & keyof AggregateRadiusPool]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRadiusPool[P]>
+      : GetScalarType<T[P], AggregateRadiusPool[P]>
+  }
+
+
+
+
+  export type RadiusPoolGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RadiusPoolWhereInput
+    orderBy?: RadiusPoolOrderByWithAggregationInput | RadiusPoolOrderByWithAggregationInput[]
+    by: RadiusPoolScalarFieldEnum[] | RadiusPoolScalarFieldEnum
+    having?: RadiusPoolScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RadiusPoolCountAggregateInputType | true
+    _avg?: RadiusPoolAvgAggregateInputType
+    _sum?: RadiusPoolSumAggregateInputType
+    _min?: RadiusPoolMinAggregateInputType
+    _max?: RadiusPoolMaxAggregateInputType
+  }
+
+  export type RadiusPoolGroupByOutputType = {
+    id: number
+    name: string
+    description: string | null
+    _count: RadiusPoolCountAggregateOutputType | null
+    _avg: RadiusPoolAvgAggregateOutputType | null
+    _sum: RadiusPoolSumAggregateOutputType | null
+    _min: RadiusPoolMinAggregateOutputType | null
+    _max: RadiusPoolMaxAggregateOutputType | null
+  }
+
+  type GetRadiusPoolGroupByPayload<T extends RadiusPoolGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RadiusPoolGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RadiusPoolGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RadiusPoolGroupByOutputType[P]>
+            : GetScalarType<T[P], RadiusPoolGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type RadiusPoolSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+  }, ExtArgs["result"]["radiusPool"]>
+
+
+
+  export type RadiusPoolSelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+  }
+
+  export type RadiusPoolOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description", ExtArgs["result"]["radiusPool"]>
+
+  export type $RadiusPoolPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "RadiusPool"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      description: string | null
+    }, ExtArgs["result"]["radiusPool"]>
+    composites: {}
+  }
+
+  type RadiusPoolGetPayload<S extends boolean | null | undefined | RadiusPoolDefaultArgs> = $Result.GetResult<Prisma.$RadiusPoolPayload, S>
+
+  type RadiusPoolCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RadiusPoolFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RadiusPoolCountAggregateInputType | true
+    }
+
+  export interface RadiusPoolDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['RadiusPool'], meta: { name: 'RadiusPool' } }
+    /**
+     * Find zero or one RadiusPool that matches the filter.
+     * @param {RadiusPoolFindUniqueArgs} args - Arguments to find a RadiusPool
+     * @example
+     * // Get one RadiusPool
+     * const radiusPool = await prisma.radiusPool.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends RadiusPoolFindUniqueArgs>(args: SelectSubset<T, RadiusPoolFindUniqueArgs<ExtArgs>>): Prisma__RadiusPoolClient<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one RadiusPool that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {RadiusPoolFindUniqueOrThrowArgs} args - Arguments to find a RadiusPool
+     * @example
+     * // Get one RadiusPool
+     * const radiusPool = await prisma.radiusPool.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends RadiusPoolFindUniqueOrThrowArgs>(args: SelectSubset<T, RadiusPoolFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RadiusPoolClient<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RadiusPool that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiusPoolFindFirstArgs} args - Arguments to find a RadiusPool
+     * @example
+     * // Get one RadiusPool
+     * const radiusPool = await prisma.radiusPool.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends RadiusPoolFindFirstArgs>(args?: SelectSubset<T, RadiusPoolFindFirstArgs<ExtArgs>>): Prisma__RadiusPoolClient<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first RadiusPool that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiusPoolFindFirstOrThrowArgs} args - Arguments to find a RadiusPool
+     * @example
+     * // Get one RadiusPool
+     * const radiusPool = await prisma.radiusPool.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends RadiusPoolFindFirstOrThrowArgs>(args?: SelectSubset<T, RadiusPoolFindFirstOrThrowArgs<ExtArgs>>): Prisma__RadiusPoolClient<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more RadiusPools that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiusPoolFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all RadiusPools
+     * const radiusPools = await prisma.radiusPool.findMany()
+     * 
+     * // Get first 10 RadiusPools
+     * const radiusPools = await prisma.radiusPool.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const radiusPoolWithIdOnly = await prisma.radiusPool.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends RadiusPoolFindManyArgs>(args?: SelectSubset<T, RadiusPoolFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a RadiusPool.
+     * @param {RadiusPoolCreateArgs} args - Arguments to create a RadiusPool.
+     * @example
+     * // Create one RadiusPool
+     * const RadiusPool = await prisma.radiusPool.create({
+     *   data: {
+     *     // ... data to create a RadiusPool
+     *   }
+     * })
+     * 
+     */
+    create<T extends RadiusPoolCreateArgs>(args: SelectSubset<T, RadiusPoolCreateArgs<ExtArgs>>): Prisma__RadiusPoolClient<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many RadiusPools.
+     * @param {RadiusPoolCreateManyArgs} args - Arguments to create many RadiusPools.
+     * @example
+     * // Create many RadiusPools
+     * const radiusPool = await prisma.radiusPool.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends RadiusPoolCreateManyArgs>(args?: SelectSubset<T, RadiusPoolCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a RadiusPool.
+     * @param {RadiusPoolDeleteArgs} args - Arguments to delete one RadiusPool.
+     * @example
+     * // Delete one RadiusPool
+     * const RadiusPool = await prisma.radiusPool.delete({
+     *   where: {
+     *     // ... filter to delete one RadiusPool
+     *   }
+     * })
+     * 
+     */
+    delete<T extends RadiusPoolDeleteArgs>(args: SelectSubset<T, RadiusPoolDeleteArgs<ExtArgs>>): Prisma__RadiusPoolClient<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one RadiusPool.
+     * @param {RadiusPoolUpdateArgs} args - Arguments to update one RadiusPool.
+     * @example
+     * // Update one RadiusPool
+     * const radiusPool = await prisma.radiusPool.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends RadiusPoolUpdateArgs>(args: SelectSubset<T, RadiusPoolUpdateArgs<ExtArgs>>): Prisma__RadiusPoolClient<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more RadiusPools.
+     * @param {RadiusPoolDeleteManyArgs} args - Arguments to filter RadiusPools to delete.
+     * @example
+     * // Delete a few RadiusPools
+     * const { count } = await prisma.radiusPool.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends RadiusPoolDeleteManyArgs>(args?: SelectSubset<T, RadiusPoolDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more RadiusPools.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiusPoolUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many RadiusPools
+     * const radiusPool = await prisma.radiusPool.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends RadiusPoolUpdateManyArgs>(args: SelectSubset<T, RadiusPoolUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one RadiusPool.
+     * @param {RadiusPoolUpsertArgs} args - Arguments to update or create a RadiusPool.
+     * @example
+     * // Update or create a RadiusPool
+     * const radiusPool = await prisma.radiusPool.upsert({
+     *   create: {
+     *     // ... data to create a RadiusPool
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the RadiusPool we want to update
+     *   }
+     * })
+     */
+    upsert<T extends RadiusPoolUpsertArgs>(args: SelectSubset<T, RadiusPoolUpsertArgs<ExtArgs>>): Prisma__RadiusPoolClient<$Result.GetResult<Prisma.$RadiusPoolPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of RadiusPools.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiusPoolCountArgs} args - Arguments to filter RadiusPools to count.
+     * @example
+     * // Count the number of RadiusPools
+     * const count = await prisma.radiusPool.count({
+     *   where: {
+     *     // ... the filter for the RadiusPools we want to count
+     *   }
+     * })
+    **/
+    count<T extends RadiusPoolCountArgs>(
+      args?: Subset<T, RadiusPoolCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RadiusPoolCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a RadiusPool.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiusPoolAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RadiusPoolAggregateArgs>(args: Subset<T, RadiusPoolAggregateArgs>): Prisma.PrismaPromise<GetRadiusPoolAggregateType<T>>
+
+    /**
+     * Group by RadiusPool.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadiusPoolGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends RadiusPoolGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: RadiusPoolGroupByArgs['orderBy'] }
+        : { orderBy?: RadiusPoolGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, RadiusPoolGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRadiusPoolGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the RadiusPool model
+   */
+  readonly fields: RadiusPoolFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for RadiusPool.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__RadiusPoolClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the RadiusPool model
+   */
+  interface RadiusPoolFieldRefs {
+    readonly id: FieldRef<"RadiusPool", 'Int'>
+    readonly name: FieldRef<"RadiusPool", 'String'>
+    readonly description: FieldRef<"RadiusPool", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * RadiusPool findUnique
+   */
+  export type RadiusPoolFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * Filter, which RadiusPool to fetch.
+     */
+    where: RadiusPoolWhereUniqueInput
+  }
+
+  /**
+   * RadiusPool findUniqueOrThrow
+   */
+  export type RadiusPoolFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * Filter, which RadiusPool to fetch.
+     */
+    where: RadiusPoolWhereUniqueInput
+  }
+
+  /**
+   * RadiusPool findFirst
+   */
+  export type RadiusPoolFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * Filter, which RadiusPool to fetch.
+     */
+    where?: RadiusPoolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RadiusPools to fetch.
+     */
+    orderBy?: RadiusPoolOrderByWithRelationInput | RadiusPoolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RadiusPools.
+     */
+    cursor?: RadiusPoolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RadiusPools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RadiusPools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RadiusPools.
+     */
+    distinct?: RadiusPoolScalarFieldEnum | RadiusPoolScalarFieldEnum[]
+  }
+
+  /**
+   * RadiusPool findFirstOrThrow
+   */
+  export type RadiusPoolFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * Filter, which RadiusPool to fetch.
+     */
+    where?: RadiusPoolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RadiusPools to fetch.
+     */
+    orderBy?: RadiusPoolOrderByWithRelationInput | RadiusPoolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for RadiusPools.
+     */
+    cursor?: RadiusPoolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RadiusPools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RadiusPools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of RadiusPools.
+     */
+    distinct?: RadiusPoolScalarFieldEnum | RadiusPoolScalarFieldEnum[]
+  }
+
+  /**
+   * RadiusPool findMany
+   */
+  export type RadiusPoolFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * Filter, which RadiusPools to fetch.
+     */
+    where?: RadiusPoolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of RadiusPools to fetch.
+     */
+    orderBy?: RadiusPoolOrderByWithRelationInput | RadiusPoolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing RadiusPools.
+     */
+    cursor?: RadiusPoolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` RadiusPools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` RadiusPools.
+     */
+    skip?: number
+    distinct?: RadiusPoolScalarFieldEnum | RadiusPoolScalarFieldEnum[]
+  }
+
+  /**
+   * RadiusPool create
+   */
+  export type RadiusPoolCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * The data needed to create a RadiusPool.
+     */
+    data: XOR<RadiusPoolCreateInput, RadiusPoolUncheckedCreateInput>
+  }
+
+  /**
+   * RadiusPool createMany
+   */
+  export type RadiusPoolCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many RadiusPools.
+     */
+    data: RadiusPoolCreateManyInput | RadiusPoolCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * RadiusPool update
+   */
+  export type RadiusPoolUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * The data needed to update a RadiusPool.
+     */
+    data: XOR<RadiusPoolUpdateInput, RadiusPoolUncheckedUpdateInput>
+    /**
+     * Choose, which RadiusPool to update.
+     */
+    where: RadiusPoolWhereUniqueInput
+  }
+
+  /**
+   * RadiusPool updateMany
+   */
+  export type RadiusPoolUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update RadiusPools.
+     */
+    data: XOR<RadiusPoolUpdateManyMutationInput, RadiusPoolUncheckedUpdateManyInput>
+    /**
+     * Filter which RadiusPools to update
+     */
+    where?: RadiusPoolWhereInput
+    /**
+     * Limit how many RadiusPools to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * RadiusPool upsert
+   */
+  export type RadiusPoolUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * The filter to search for the RadiusPool to update in case it exists.
+     */
+    where: RadiusPoolWhereUniqueInput
+    /**
+     * In case the RadiusPool found by the `where` argument doesn't exist, create a new RadiusPool with this data.
+     */
+    create: XOR<RadiusPoolCreateInput, RadiusPoolUncheckedCreateInput>
+    /**
+     * In case the RadiusPool was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RadiusPoolUpdateInput, RadiusPoolUncheckedUpdateInput>
+  }
+
+  /**
+   * RadiusPool delete
+   */
+  export type RadiusPoolDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+    /**
+     * Filter which RadiusPool to delete.
+     */
+    where: RadiusPoolWhereUniqueInput
+  }
+
+  /**
+   * RadiusPool deleteMany
+   */
+  export type RadiusPoolDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which RadiusPools to delete
+     */
+    where?: RadiusPoolWhereInput
+    /**
+     * Limit how many RadiusPools to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * RadiusPool without action
+   */
+  export type RadiusPoolDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the RadiusPool
+     */
+    select?: RadiusPoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the RadiusPool
+     */
+    omit?: RadiusPoolOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model radippool
+   */
+
+  export type AggregateRadippool = {
+    _count: RadippoolCountAggregateOutputType | null
+    _avg: RadippoolAvgAggregateOutputType | null
+    _sum: RadippoolSumAggregateOutputType | null
+    _min: RadippoolMinAggregateOutputType | null
+    _max: RadippoolMaxAggregateOutputType | null
+  }
+
+  export type RadippoolAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type RadippoolSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type RadippoolMinAggregateOutputType = {
+    id: number | null
+    pool_name: string | null
+    framedipaddress: string | null
+    nasipaddress: string | null
+    calledstationid: string | null
+    callingstationid: string | null
+    expiry_time: Date | null
+    username: string | null
+    pool_key: string | null
+  }
+
+  export type RadippoolMaxAggregateOutputType = {
+    id: number | null
+    pool_name: string | null
+    framedipaddress: string | null
+    nasipaddress: string | null
+    calledstationid: string | null
+    callingstationid: string | null
+    expiry_time: Date | null
+    username: string | null
+    pool_key: string | null
+  }
+
+  export type RadippoolCountAggregateOutputType = {
+    id: number
+    pool_name: number
+    framedipaddress: number
+    nasipaddress: number
+    calledstationid: number
+    callingstationid: number
+    expiry_time: number
+    username: number
+    pool_key: number
+    _all: number
+  }
+
+
+  export type RadippoolAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type RadippoolSumAggregateInputType = {
+    id?: true
+  }
+
+  export type RadippoolMinAggregateInputType = {
+    id?: true
+    pool_name?: true
+    framedipaddress?: true
+    nasipaddress?: true
+    calledstationid?: true
+    callingstationid?: true
+    expiry_time?: true
+    username?: true
+    pool_key?: true
+  }
+
+  export type RadippoolMaxAggregateInputType = {
+    id?: true
+    pool_name?: true
+    framedipaddress?: true
+    nasipaddress?: true
+    calledstationid?: true
+    callingstationid?: true
+    expiry_time?: true
+    username?: true
+    pool_key?: true
+  }
+
+  export type RadippoolCountAggregateInputType = {
+    id?: true
+    pool_name?: true
+    framedipaddress?: true
+    nasipaddress?: true
+    calledstationid?: true
+    callingstationid?: true
+    expiry_time?: true
+    username?: true
+    pool_key?: true
+    _all?: true
+  }
+
+  export type RadippoolAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which radippool to aggregate.
+     */
+    where?: radippoolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of radippools to fetch.
+     */
+    orderBy?: radippoolOrderByWithRelationInput | radippoolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: radippoolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` radippools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` radippools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned radippools
+    **/
+    _count?: true | RadippoolCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: RadippoolAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: RadippoolSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: RadippoolMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: RadippoolMaxAggregateInputType
+  }
+
+  export type GetRadippoolAggregateType<T extends RadippoolAggregateArgs> = {
+        [P in keyof T & keyof AggregateRadippool]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateRadippool[P]>
+      : GetScalarType<T[P], AggregateRadippool[P]>
+  }
+
+
+
+
+  export type radippoolGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: radippoolWhereInput
+    orderBy?: radippoolOrderByWithAggregationInput | radippoolOrderByWithAggregationInput[]
+    by: RadippoolScalarFieldEnum[] | RadippoolScalarFieldEnum
+    having?: radippoolScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: RadippoolCountAggregateInputType | true
+    _avg?: RadippoolAvgAggregateInputType
+    _sum?: RadippoolSumAggregateInputType
+    _min?: RadippoolMinAggregateInputType
+    _max?: RadippoolMaxAggregateInputType
+  }
+
+  export type RadippoolGroupByOutputType = {
+    id: number
+    pool_name: string
+    framedipaddress: string
+    nasipaddress: string
+    calledstationid: string
+    callingstationid: string
+    expiry_time: Date | null
+    username: string
+    pool_key: string
+    _count: RadippoolCountAggregateOutputType | null
+    _avg: RadippoolAvgAggregateOutputType | null
+    _sum: RadippoolSumAggregateOutputType | null
+    _min: RadippoolMinAggregateOutputType | null
+    _max: RadippoolMaxAggregateOutputType | null
+  }
+
+  type GetRadippoolGroupByPayload<T extends radippoolGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<RadippoolGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof RadippoolGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], RadippoolGroupByOutputType[P]>
+            : GetScalarType<T[P], RadippoolGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type radippoolSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pool_name?: boolean
+    framedipaddress?: boolean
+    nasipaddress?: boolean
+    calledstationid?: boolean
+    callingstationid?: boolean
+    expiry_time?: boolean
+    username?: boolean
+    pool_key?: boolean
+  }, ExtArgs["result"]["radippool"]>
+
+
+
+  export type radippoolSelectScalar = {
+    id?: boolean
+    pool_name?: boolean
+    framedipaddress?: boolean
+    nasipaddress?: boolean
+    calledstationid?: boolean
+    callingstationid?: boolean
+    expiry_time?: boolean
+    username?: boolean
+    pool_key?: boolean
+  }
+
+  export type radippoolOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pool_name" | "framedipaddress" | "nasipaddress" | "calledstationid" | "callingstationid" | "expiry_time" | "username" | "pool_key", ExtArgs["result"]["radippool"]>
+
+  export type $radippoolPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "radippool"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      pool_name: string
+      framedipaddress: string
+      nasipaddress: string
+      calledstationid: string
+      callingstationid: string
+      expiry_time: Date | null
+      username: string
+      pool_key: string
+    }, ExtArgs["result"]["radippool"]>
+    composites: {}
+  }
+
+  type radippoolGetPayload<S extends boolean | null | undefined | radippoolDefaultArgs> = $Result.GetResult<Prisma.$radippoolPayload, S>
+
+  type radippoolCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<radippoolFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RadippoolCountAggregateInputType | true
+    }
+
+  export interface radippoolDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['radippool'], meta: { name: 'radippool' } }
+    /**
+     * Find zero or one Radippool that matches the filter.
+     * @param {radippoolFindUniqueArgs} args - Arguments to find a Radippool
+     * @example
+     * // Get one Radippool
+     * const radippool = await prisma.radippool.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends radippoolFindUniqueArgs>(args: SelectSubset<T, radippoolFindUniqueArgs<ExtArgs>>): Prisma__radippoolClient<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Radippool that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {radippoolFindUniqueOrThrowArgs} args - Arguments to find a Radippool
+     * @example
+     * // Get one Radippool
+     * const radippool = await prisma.radippool.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends radippoolFindUniqueOrThrowArgs>(args: SelectSubset<T, radippoolFindUniqueOrThrowArgs<ExtArgs>>): Prisma__radippoolClient<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Radippool that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {radippoolFindFirstArgs} args - Arguments to find a Radippool
+     * @example
+     * // Get one Radippool
+     * const radippool = await prisma.radippool.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends radippoolFindFirstArgs>(args?: SelectSubset<T, radippoolFindFirstArgs<ExtArgs>>): Prisma__radippoolClient<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Radippool that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {radippoolFindFirstOrThrowArgs} args - Arguments to find a Radippool
+     * @example
+     * // Get one Radippool
+     * const radippool = await prisma.radippool.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends radippoolFindFirstOrThrowArgs>(args?: SelectSubset<T, radippoolFindFirstOrThrowArgs<ExtArgs>>): Prisma__radippoolClient<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Radippools that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {radippoolFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Radippools
+     * const radippools = await prisma.radippool.findMany()
+     * 
+     * // Get first 10 Radippools
+     * const radippools = await prisma.radippool.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const radippoolWithIdOnly = await prisma.radippool.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends radippoolFindManyArgs>(args?: SelectSubset<T, radippoolFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Radippool.
+     * @param {radippoolCreateArgs} args - Arguments to create a Radippool.
+     * @example
+     * // Create one Radippool
+     * const Radippool = await prisma.radippool.create({
+     *   data: {
+     *     // ... data to create a Radippool
+     *   }
+     * })
+     * 
+     */
+    create<T extends radippoolCreateArgs>(args: SelectSubset<T, radippoolCreateArgs<ExtArgs>>): Prisma__radippoolClient<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Radippools.
+     * @param {radippoolCreateManyArgs} args - Arguments to create many Radippools.
+     * @example
+     * // Create many Radippools
+     * const radippool = await prisma.radippool.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends radippoolCreateManyArgs>(args?: SelectSubset<T, radippoolCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Radippool.
+     * @param {radippoolDeleteArgs} args - Arguments to delete one Radippool.
+     * @example
+     * // Delete one Radippool
+     * const Radippool = await prisma.radippool.delete({
+     *   where: {
+     *     // ... filter to delete one Radippool
+     *   }
+     * })
+     * 
+     */
+    delete<T extends radippoolDeleteArgs>(args: SelectSubset<T, radippoolDeleteArgs<ExtArgs>>): Prisma__radippoolClient<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Radippool.
+     * @param {radippoolUpdateArgs} args - Arguments to update one Radippool.
+     * @example
+     * // Update one Radippool
+     * const radippool = await prisma.radippool.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends radippoolUpdateArgs>(args: SelectSubset<T, radippoolUpdateArgs<ExtArgs>>): Prisma__radippoolClient<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Radippools.
+     * @param {radippoolDeleteManyArgs} args - Arguments to filter Radippools to delete.
+     * @example
+     * // Delete a few Radippools
+     * const { count } = await prisma.radippool.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends radippoolDeleteManyArgs>(args?: SelectSubset<T, radippoolDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Radippools.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {radippoolUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Radippools
+     * const radippool = await prisma.radippool.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends radippoolUpdateManyArgs>(args: SelectSubset<T, radippoolUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Radippool.
+     * @param {radippoolUpsertArgs} args - Arguments to update or create a Radippool.
+     * @example
+     * // Update or create a Radippool
+     * const radippool = await prisma.radippool.upsert({
+     *   create: {
+     *     // ... data to create a Radippool
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Radippool we want to update
+     *   }
+     * })
+     */
+    upsert<T extends radippoolUpsertArgs>(args: SelectSubset<T, radippoolUpsertArgs<ExtArgs>>): Prisma__radippoolClient<$Result.GetResult<Prisma.$radippoolPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Radippools.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {radippoolCountArgs} args - Arguments to filter Radippools to count.
+     * @example
+     * // Count the number of Radippools
+     * const count = await prisma.radippool.count({
+     *   where: {
+     *     // ... the filter for the Radippools we want to count
+     *   }
+     * })
+    **/
+    count<T extends radippoolCountArgs>(
+      args?: Subset<T, radippoolCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], RadippoolCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Radippool.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {RadippoolAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends RadippoolAggregateArgs>(args: Subset<T, RadippoolAggregateArgs>): Prisma.PrismaPromise<GetRadippoolAggregateType<T>>
+
+    /**
+     * Group by Radippool.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {radippoolGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends radippoolGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: radippoolGroupByArgs['orderBy'] }
+        : { orderBy?: radippoolGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, radippoolGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRadippoolGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the radippool model
+   */
+  readonly fields: radippoolFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for radippool.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__radippoolClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the radippool model
+   */
+  interface radippoolFieldRefs {
+    readonly id: FieldRef<"radippool", 'Int'>
+    readonly pool_name: FieldRef<"radippool", 'String'>
+    readonly framedipaddress: FieldRef<"radippool", 'String'>
+    readonly nasipaddress: FieldRef<"radippool", 'String'>
+    readonly calledstationid: FieldRef<"radippool", 'String'>
+    readonly callingstationid: FieldRef<"radippool", 'String'>
+    readonly expiry_time: FieldRef<"radippool", 'DateTime'>
+    readonly username: FieldRef<"radippool", 'String'>
+    readonly pool_key: FieldRef<"radippool", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * radippool findUnique
+   */
+  export type radippoolFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * Filter, which radippool to fetch.
+     */
+    where: radippoolWhereUniqueInput
+  }
+
+  /**
+   * radippool findUniqueOrThrow
+   */
+  export type radippoolFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * Filter, which radippool to fetch.
+     */
+    where: radippoolWhereUniqueInput
+  }
+
+  /**
+   * radippool findFirst
+   */
+  export type radippoolFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * Filter, which radippool to fetch.
+     */
+    where?: radippoolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of radippools to fetch.
+     */
+    orderBy?: radippoolOrderByWithRelationInput | radippoolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for radippools.
+     */
+    cursor?: radippoolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` radippools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` radippools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of radippools.
+     */
+    distinct?: RadippoolScalarFieldEnum | RadippoolScalarFieldEnum[]
+  }
+
+  /**
+   * radippool findFirstOrThrow
+   */
+  export type radippoolFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * Filter, which radippool to fetch.
+     */
+    where?: radippoolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of radippools to fetch.
+     */
+    orderBy?: radippoolOrderByWithRelationInput | radippoolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for radippools.
+     */
+    cursor?: radippoolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` radippools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` radippools.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of radippools.
+     */
+    distinct?: RadippoolScalarFieldEnum | RadippoolScalarFieldEnum[]
+  }
+
+  /**
+   * radippool findMany
+   */
+  export type radippoolFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * Filter, which radippools to fetch.
+     */
+    where?: radippoolWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of radippools to fetch.
+     */
+    orderBy?: radippoolOrderByWithRelationInput | radippoolOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing radippools.
+     */
+    cursor?: radippoolWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` radippools from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` radippools.
+     */
+    skip?: number
+    distinct?: RadippoolScalarFieldEnum | RadippoolScalarFieldEnum[]
+  }
+
+  /**
+   * radippool create
+   */
+  export type radippoolCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * The data needed to create a radippool.
+     */
+    data: XOR<radippoolCreateInput, radippoolUncheckedCreateInput>
+  }
+
+  /**
+   * radippool createMany
+   */
+  export type radippoolCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many radippools.
+     */
+    data: radippoolCreateManyInput | radippoolCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * radippool update
+   */
+  export type radippoolUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * The data needed to update a radippool.
+     */
+    data: XOR<radippoolUpdateInput, radippoolUncheckedUpdateInput>
+    /**
+     * Choose, which radippool to update.
+     */
+    where: radippoolWhereUniqueInput
+  }
+
+  /**
+   * radippool updateMany
+   */
+  export type radippoolUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update radippools.
+     */
+    data: XOR<radippoolUpdateManyMutationInput, radippoolUncheckedUpdateManyInput>
+    /**
+     * Filter which radippools to update
+     */
+    where?: radippoolWhereInput
+    /**
+     * Limit how many radippools to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * radippool upsert
+   */
+  export type radippoolUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * The filter to search for the radippool to update in case it exists.
+     */
+    where: radippoolWhereUniqueInput
+    /**
+     * In case the radippool found by the `where` argument doesn't exist, create a new radippool with this data.
+     */
+    create: XOR<radippoolCreateInput, radippoolUncheckedCreateInput>
+    /**
+     * In case the radippool was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<radippoolUpdateInput, radippoolUncheckedUpdateInput>
+  }
+
+  /**
+   * radippool delete
+   */
+  export type radippoolDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+    /**
+     * Filter which radippool to delete.
+     */
+    where: radippoolWhereUniqueInput
+  }
+
+  /**
+   * radippool deleteMany
+   */
+  export type radippoolDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which radippools to delete
+     */
+    where?: radippoolWhereInput
+    /**
+     * Limit how many radippools to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * radippool without action
+   */
+  export type radippoolDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the radippool
+     */
+    select?: radippoolSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the radippool
+     */
+    omit?: radippoolOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model MikrotikConfig
+   */
+
+  export type AggregateMikrotikConfig = {
+    _count: MikrotikConfigCountAggregateOutputType | null
+    _avg: MikrotikConfigAvgAggregateOutputType | null
+    _sum: MikrotikConfigSumAggregateOutputType | null
+    _min: MikrotikConfigMinAggregateOutputType | null
+    _max: MikrotikConfigMaxAggregateOutputType | null
+  }
+
+  export type MikrotikConfigAvgAggregateOutputType = {
+    id: number | null
+    port: number | null
+  }
+
+  export type MikrotikConfigSumAggregateOutputType = {
+    id: number | null
+    port: number | null
+  }
+
+  export type MikrotikConfigMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    host: string | null
+    port: number | null
+    username: string | null
+    password: string | null
+    useSsl: boolean | null
+    wgPublicHost: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MikrotikConfigMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    host: string | null
+    port: number | null
+    username: string | null
+    password: string | null
+    useSsl: boolean | null
+    wgPublicHost: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MikrotikConfigCountAggregateOutputType = {
+    id: number
+    name: number
+    host: number
+    port: number
+    username: number
+    password: number
+    useSsl: number
+    wgPublicHost: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MikrotikConfigAvgAggregateInputType = {
+    id?: true
+    port?: true
+  }
+
+  export type MikrotikConfigSumAggregateInputType = {
+    id?: true
+    port?: true
+  }
+
+  export type MikrotikConfigMinAggregateInputType = {
+    id?: true
+    name?: true
+    host?: true
+    port?: true
+    username?: true
+    password?: true
+    useSsl?: true
+    wgPublicHost?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MikrotikConfigMaxAggregateInputType = {
+    id?: true
+    name?: true
+    host?: true
+    port?: true
+    username?: true
+    password?: true
+    useSsl?: true
+    wgPublicHost?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MikrotikConfigCountAggregateInputType = {
+    id?: true
+    name?: true
+    host?: true
+    port?: true
+    username?: true
+    password?: true
+    useSsl?: true
+    wgPublicHost?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MikrotikConfigAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MikrotikConfig to aggregate.
+     */
+    where?: MikrotikConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MikrotikConfigs to fetch.
+     */
+    orderBy?: MikrotikConfigOrderByWithRelationInput | MikrotikConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MikrotikConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MikrotikConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MikrotikConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MikrotikConfigs
+    **/
+    _count?: true | MikrotikConfigCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MikrotikConfigAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MikrotikConfigSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MikrotikConfigMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MikrotikConfigMaxAggregateInputType
+  }
+
+  export type GetMikrotikConfigAggregateType<T extends MikrotikConfigAggregateArgs> = {
+        [P in keyof T & keyof AggregateMikrotikConfig]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMikrotikConfig[P]>
+      : GetScalarType<T[P], AggregateMikrotikConfig[P]>
+  }
+
+
+
+
+  export type MikrotikConfigGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MikrotikConfigWhereInput
+    orderBy?: MikrotikConfigOrderByWithAggregationInput | MikrotikConfigOrderByWithAggregationInput[]
+    by: MikrotikConfigScalarFieldEnum[] | MikrotikConfigScalarFieldEnum
+    having?: MikrotikConfigScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MikrotikConfigCountAggregateInputType | true
+    _avg?: MikrotikConfigAvgAggregateInputType
+    _sum?: MikrotikConfigSumAggregateInputType
+    _min?: MikrotikConfigMinAggregateInputType
+    _max?: MikrotikConfigMaxAggregateInputType
+  }
+
+  export type MikrotikConfigGroupByOutputType = {
+    id: number
+    name: string
+    host: string
+    port: number
+    username: string
+    password: string
+    useSsl: boolean
+    wgPublicHost: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: MikrotikConfigCountAggregateOutputType | null
+    _avg: MikrotikConfigAvgAggregateOutputType | null
+    _sum: MikrotikConfigSumAggregateOutputType | null
+    _min: MikrotikConfigMinAggregateOutputType | null
+    _max: MikrotikConfigMaxAggregateOutputType | null
+  }
+
+  type GetMikrotikConfigGroupByPayload<T extends MikrotikConfigGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MikrotikConfigGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MikrotikConfigGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MikrotikConfigGroupByOutputType[P]>
+            : GetScalarType<T[P], MikrotikConfigGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MikrotikConfigSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    host?: boolean
+    port?: boolean
+    username?: boolean
+    password?: boolean
+    useSsl?: boolean
+    wgPublicHost?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    peers?: boolean | MikrotikConfig$peersArgs<ExtArgs>
+    _count?: boolean | MikrotikConfigCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["mikrotikConfig"]>
+
+
+
+  export type MikrotikConfigSelectScalar = {
+    id?: boolean
+    name?: boolean
+    host?: boolean
+    port?: boolean
+    username?: boolean
+    password?: boolean
+    useSsl?: boolean
+    wgPublicHost?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MikrotikConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "host" | "port" | "username" | "password" | "useSsl" | "wgPublicHost" | "createdAt" | "updatedAt", ExtArgs["result"]["mikrotikConfig"]>
+  export type MikrotikConfigInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    peers?: boolean | MikrotikConfig$peersArgs<ExtArgs>
+    _count?: boolean | MikrotikConfigCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $MikrotikConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MikrotikConfig"
+    objects: {
+      peers: Prisma.$WireguardPeerPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      host: string
+      port: number
+      username: string
+      password: string
+      useSsl: boolean
+      wgPublicHost: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["mikrotikConfig"]>
+    composites: {}
+  }
+
+  type MikrotikConfigGetPayload<S extends boolean | null | undefined | MikrotikConfigDefaultArgs> = $Result.GetResult<Prisma.$MikrotikConfigPayload, S>
+
+  type MikrotikConfigCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MikrotikConfigFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MikrotikConfigCountAggregateInputType | true
+    }
+
+  export interface MikrotikConfigDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MikrotikConfig'], meta: { name: 'MikrotikConfig' } }
+    /**
+     * Find zero or one MikrotikConfig that matches the filter.
+     * @param {MikrotikConfigFindUniqueArgs} args - Arguments to find a MikrotikConfig
+     * @example
+     * // Get one MikrotikConfig
+     * const mikrotikConfig = await prisma.mikrotikConfig.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MikrotikConfigFindUniqueArgs>(args: SelectSubset<T, MikrotikConfigFindUniqueArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MikrotikConfig that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MikrotikConfigFindUniqueOrThrowArgs} args - Arguments to find a MikrotikConfig
+     * @example
+     * // Get one MikrotikConfig
+     * const mikrotikConfig = await prisma.mikrotikConfig.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MikrotikConfigFindUniqueOrThrowArgs>(args: SelectSubset<T, MikrotikConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MikrotikConfig that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MikrotikConfigFindFirstArgs} args - Arguments to find a MikrotikConfig
+     * @example
+     * // Get one MikrotikConfig
+     * const mikrotikConfig = await prisma.mikrotikConfig.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MikrotikConfigFindFirstArgs>(args?: SelectSubset<T, MikrotikConfigFindFirstArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MikrotikConfig that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MikrotikConfigFindFirstOrThrowArgs} args - Arguments to find a MikrotikConfig
+     * @example
+     * // Get one MikrotikConfig
+     * const mikrotikConfig = await prisma.mikrotikConfig.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MikrotikConfigFindFirstOrThrowArgs>(args?: SelectSubset<T, MikrotikConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MikrotikConfigs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MikrotikConfigFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MikrotikConfigs
+     * const mikrotikConfigs = await prisma.mikrotikConfig.findMany()
+     * 
+     * // Get first 10 MikrotikConfigs
+     * const mikrotikConfigs = await prisma.mikrotikConfig.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const mikrotikConfigWithIdOnly = await prisma.mikrotikConfig.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MikrotikConfigFindManyArgs>(args?: SelectSubset<T, MikrotikConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MikrotikConfig.
+     * @param {MikrotikConfigCreateArgs} args - Arguments to create a MikrotikConfig.
+     * @example
+     * // Create one MikrotikConfig
+     * const MikrotikConfig = await prisma.mikrotikConfig.create({
+     *   data: {
+     *     // ... data to create a MikrotikConfig
+     *   }
+     * })
+     * 
+     */
+    create<T extends MikrotikConfigCreateArgs>(args: SelectSubset<T, MikrotikConfigCreateArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MikrotikConfigs.
+     * @param {MikrotikConfigCreateManyArgs} args - Arguments to create many MikrotikConfigs.
+     * @example
+     * // Create many MikrotikConfigs
+     * const mikrotikConfig = await prisma.mikrotikConfig.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MikrotikConfigCreateManyArgs>(args?: SelectSubset<T, MikrotikConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a MikrotikConfig.
+     * @param {MikrotikConfigDeleteArgs} args - Arguments to delete one MikrotikConfig.
+     * @example
+     * // Delete one MikrotikConfig
+     * const MikrotikConfig = await prisma.mikrotikConfig.delete({
+     *   where: {
+     *     // ... filter to delete one MikrotikConfig
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MikrotikConfigDeleteArgs>(args: SelectSubset<T, MikrotikConfigDeleteArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MikrotikConfig.
+     * @param {MikrotikConfigUpdateArgs} args - Arguments to update one MikrotikConfig.
+     * @example
+     * // Update one MikrotikConfig
+     * const mikrotikConfig = await prisma.mikrotikConfig.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MikrotikConfigUpdateArgs>(args: SelectSubset<T, MikrotikConfigUpdateArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MikrotikConfigs.
+     * @param {MikrotikConfigDeleteManyArgs} args - Arguments to filter MikrotikConfigs to delete.
+     * @example
+     * // Delete a few MikrotikConfigs
+     * const { count } = await prisma.mikrotikConfig.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MikrotikConfigDeleteManyArgs>(args?: SelectSubset<T, MikrotikConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MikrotikConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MikrotikConfigUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MikrotikConfigs
+     * const mikrotikConfig = await prisma.mikrotikConfig.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MikrotikConfigUpdateManyArgs>(args: SelectSubset<T, MikrotikConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one MikrotikConfig.
+     * @param {MikrotikConfigUpsertArgs} args - Arguments to update or create a MikrotikConfig.
+     * @example
+     * // Update or create a MikrotikConfig
+     * const mikrotikConfig = await prisma.mikrotikConfig.upsert({
+     *   create: {
+     *     // ... data to create a MikrotikConfig
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MikrotikConfig we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MikrotikConfigUpsertArgs>(args: SelectSubset<T, MikrotikConfigUpsertArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MikrotikConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MikrotikConfigCountArgs} args - Arguments to filter MikrotikConfigs to count.
+     * @example
+     * // Count the number of MikrotikConfigs
+     * const count = await prisma.mikrotikConfig.count({
+     *   where: {
+     *     // ... the filter for the MikrotikConfigs we want to count
+     *   }
+     * })
+    **/
+    count<T extends MikrotikConfigCountArgs>(
+      args?: Subset<T, MikrotikConfigCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MikrotikConfigCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MikrotikConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MikrotikConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MikrotikConfigAggregateArgs>(args: Subset<T, MikrotikConfigAggregateArgs>): Prisma.PrismaPromise<GetMikrotikConfigAggregateType<T>>
+
+    /**
+     * Group by MikrotikConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MikrotikConfigGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MikrotikConfigGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MikrotikConfigGroupByArgs['orderBy'] }
+        : { orderBy?: MikrotikConfigGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MikrotikConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMikrotikConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MikrotikConfig model
+   */
+  readonly fields: MikrotikConfigFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MikrotikConfig.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MikrotikConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    peers<T extends MikrotikConfig$peersArgs<ExtArgs> = {}>(args?: Subset<T, MikrotikConfig$peersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MikrotikConfig model
+   */
+  interface MikrotikConfigFieldRefs {
+    readonly id: FieldRef<"MikrotikConfig", 'Int'>
+    readonly name: FieldRef<"MikrotikConfig", 'String'>
+    readonly host: FieldRef<"MikrotikConfig", 'String'>
+    readonly port: FieldRef<"MikrotikConfig", 'Int'>
+    readonly username: FieldRef<"MikrotikConfig", 'String'>
+    readonly password: FieldRef<"MikrotikConfig", 'String'>
+    readonly useSsl: FieldRef<"MikrotikConfig", 'Boolean'>
+    readonly wgPublicHost: FieldRef<"MikrotikConfig", 'String'>
+    readonly createdAt: FieldRef<"MikrotikConfig", 'DateTime'>
+    readonly updatedAt: FieldRef<"MikrotikConfig", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MikrotikConfig findUnique
+   */
+  export type MikrotikConfigFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * Filter, which MikrotikConfig to fetch.
+     */
+    where: MikrotikConfigWhereUniqueInput
+  }
+
+  /**
+   * MikrotikConfig findUniqueOrThrow
+   */
+  export type MikrotikConfigFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * Filter, which MikrotikConfig to fetch.
+     */
+    where: MikrotikConfigWhereUniqueInput
+  }
+
+  /**
+   * MikrotikConfig findFirst
+   */
+  export type MikrotikConfigFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * Filter, which MikrotikConfig to fetch.
+     */
+    where?: MikrotikConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MikrotikConfigs to fetch.
+     */
+    orderBy?: MikrotikConfigOrderByWithRelationInput | MikrotikConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MikrotikConfigs.
+     */
+    cursor?: MikrotikConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MikrotikConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MikrotikConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MikrotikConfigs.
+     */
+    distinct?: MikrotikConfigScalarFieldEnum | MikrotikConfigScalarFieldEnum[]
+  }
+
+  /**
+   * MikrotikConfig findFirstOrThrow
+   */
+  export type MikrotikConfigFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * Filter, which MikrotikConfig to fetch.
+     */
+    where?: MikrotikConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MikrotikConfigs to fetch.
+     */
+    orderBy?: MikrotikConfigOrderByWithRelationInput | MikrotikConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MikrotikConfigs.
+     */
+    cursor?: MikrotikConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MikrotikConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MikrotikConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MikrotikConfigs.
+     */
+    distinct?: MikrotikConfigScalarFieldEnum | MikrotikConfigScalarFieldEnum[]
+  }
+
+  /**
+   * MikrotikConfig findMany
+   */
+  export type MikrotikConfigFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * Filter, which MikrotikConfigs to fetch.
+     */
+    where?: MikrotikConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MikrotikConfigs to fetch.
+     */
+    orderBy?: MikrotikConfigOrderByWithRelationInput | MikrotikConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MikrotikConfigs.
+     */
+    cursor?: MikrotikConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MikrotikConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MikrotikConfigs.
+     */
+    skip?: number
+    distinct?: MikrotikConfigScalarFieldEnum | MikrotikConfigScalarFieldEnum[]
+  }
+
+  /**
+   * MikrotikConfig create
+   */
+  export type MikrotikConfigCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MikrotikConfig.
+     */
+    data: XOR<MikrotikConfigCreateInput, MikrotikConfigUncheckedCreateInput>
+  }
+
+  /**
+   * MikrotikConfig createMany
+   */
+  export type MikrotikConfigCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MikrotikConfigs.
+     */
+    data: MikrotikConfigCreateManyInput | MikrotikConfigCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MikrotikConfig update
+   */
+  export type MikrotikConfigUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MikrotikConfig.
+     */
+    data: XOR<MikrotikConfigUpdateInput, MikrotikConfigUncheckedUpdateInput>
+    /**
+     * Choose, which MikrotikConfig to update.
+     */
+    where: MikrotikConfigWhereUniqueInput
+  }
+
+  /**
+   * MikrotikConfig updateMany
+   */
+  export type MikrotikConfigUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MikrotikConfigs.
+     */
+    data: XOR<MikrotikConfigUpdateManyMutationInput, MikrotikConfigUncheckedUpdateManyInput>
+    /**
+     * Filter which MikrotikConfigs to update
+     */
+    where?: MikrotikConfigWhereInput
+    /**
+     * Limit how many MikrotikConfigs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MikrotikConfig upsert
+   */
+  export type MikrotikConfigUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MikrotikConfig to update in case it exists.
+     */
+    where: MikrotikConfigWhereUniqueInput
+    /**
+     * In case the MikrotikConfig found by the `where` argument doesn't exist, create a new MikrotikConfig with this data.
+     */
+    create: XOR<MikrotikConfigCreateInput, MikrotikConfigUncheckedCreateInput>
+    /**
+     * In case the MikrotikConfig was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MikrotikConfigUpdateInput, MikrotikConfigUncheckedUpdateInput>
+  }
+
+  /**
+   * MikrotikConfig delete
+   */
+  export type MikrotikConfigDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+    /**
+     * Filter which MikrotikConfig to delete.
+     */
+    where: MikrotikConfigWhereUniqueInput
+  }
+
+  /**
+   * MikrotikConfig deleteMany
+   */
+  export type MikrotikConfigDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MikrotikConfigs to delete
+     */
+    where?: MikrotikConfigWhereInput
+    /**
+     * Limit how many MikrotikConfigs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MikrotikConfig.peers
+   */
+  export type MikrotikConfig$peersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    where?: WireguardPeerWhereInput
+    orderBy?: WireguardPeerOrderByWithRelationInput | WireguardPeerOrderByWithRelationInput[]
+    cursor?: WireguardPeerWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: WireguardPeerScalarFieldEnum | WireguardPeerScalarFieldEnum[]
+  }
+
+  /**
+   * MikrotikConfig without action
+   */
+  export type MikrotikConfigDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MikrotikConfig
+     */
+    select?: MikrotikConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MikrotikConfig
+     */
+    omit?: MikrotikConfigOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MikrotikConfigInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model WireguardPeer
+   */
+
+  export type AggregateWireguardPeer = {
+    _count: WireguardPeerCountAggregateOutputType | null
+    _avg: WireguardPeerAvgAggregateOutputType | null
+    _sum: WireguardPeerSumAggregateOutputType | null
+    _min: WireguardPeerMinAggregateOutputType | null
+    _max: WireguardPeerMaxAggregateOutputType | null
+  }
+
+  export type WireguardPeerAvgAggregateOutputType = {
+    id: number | null
+    mikrotikId: number | null
+    listenPort: number | null
+  }
+
+  export type WireguardPeerSumAggregateOutputType = {
+    id: number | null
+    mikrotikId: number | null
+    listenPort: number | null
+  }
+
+  export type WireguardPeerMinAggregateOutputType = {
+    id: number | null
+    mikrotikId: number | null
+    mikrotikPeerId: string | null
+    name: string | null
+    publicKey: string | null
+    privateKey: string | null
+    allowedIps: string | null
+    interface: string | null
+    listenPort: number | null
+    endpoint: string | null
+    comment: string | null
+    createdAt: Date | null
+  }
+
+  export type WireguardPeerMaxAggregateOutputType = {
+    id: number | null
+    mikrotikId: number | null
+    mikrotikPeerId: string | null
+    name: string | null
+    publicKey: string | null
+    privateKey: string | null
+    allowedIps: string | null
+    interface: string | null
+    listenPort: number | null
+    endpoint: string | null
+    comment: string | null
+    createdAt: Date | null
+  }
+
+  export type WireguardPeerCountAggregateOutputType = {
+    id: number
+    mikrotikId: number
+    mikrotikPeerId: number
+    name: number
+    publicKey: number
+    privateKey: number
+    allowedIps: number
+    interface: number
+    listenPort: number
+    endpoint: number
+    comment: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type WireguardPeerAvgAggregateInputType = {
+    id?: true
+    mikrotikId?: true
+    listenPort?: true
+  }
+
+  export type WireguardPeerSumAggregateInputType = {
+    id?: true
+    mikrotikId?: true
+    listenPort?: true
+  }
+
+  export type WireguardPeerMinAggregateInputType = {
+    id?: true
+    mikrotikId?: true
+    mikrotikPeerId?: true
+    name?: true
+    publicKey?: true
+    privateKey?: true
+    allowedIps?: true
+    interface?: true
+    listenPort?: true
+    endpoint?: true
+    comment?: true
+    createdAt?: true
+  }
+
+  export type WireguardPeerMaxAggregateInputType = {
+    id?: true
+    mikrotikId?: true
+    mikrotikPeerId?: true
+    name?: true
+    publicKey?: true
+    privateKey?: true
+    allowedIps?: true
+    interface?: true
+    listenPort?: true
+    endpoint?: true
+    comment?: true
+    createdAt?: true
+  }
+
+  export type WireguardPeerCountAggregateInputType = {
+    id?: true
+    mikrotikId?: true
+    mikrotikPeerId?: true
+    name?: true
+    publicKey?: true
+    privateKey?: true
+    allowedIps?: true
+    interface?: true
+    listenPort?: true
+    endpoint?: true
+    comment?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type WireguardPeerAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WireguardPeer to aggregate.
+     */
+    where?: WireguardPeerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WireguardPeers to fetch.
+     */
+    orderBy?: WireguardPeerOrderByWithRelationInput | WireguardPeerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WireguardPeerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WireguardPeers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WireguardPeers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned WireguardPeers
+    **/
+    _count?: true | WireguardPeerCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WireguardPeerAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WireguardPeerSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WireguardPeerMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WireguardPeerMaxAggregateInputType
+  }
+
+  export type GetWireguardPeerAggregateType<T extends WireguardPeerAggregateArgs> = {
+        [P in keyof T & keyof AggregateWireguardPeer]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWireguardPeer[P]>
+      : GetScalarType<T[P], AggregateWireguardPeer[P]>
+  }
+
+
+
+
+  export type WireguardPeerGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WireguardPeerWhereInput
+    orderBy?: WireguardPeerOrderByWithAggregationInput | WireguardPeerOrderByWithAggregationInput[]
+    by: WireguardPeerScalarFieldEnum[] | WireguardPeerScalarFieldEnum
+    having?: WireguardPeerScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WireguardPeerCountAggregateInputType | true
+    _avg?: WireguardPeerAvgAggregateInputType
+    _sum?: WireguardPeerSumAggregateInputType
+    _min?: WireguardPeerMinAggregateInputType
+    _max?: WireguardPeerMaxAggregateInputType
+  }
+
+  export type WireguardPeerGroupByOutputType = {
+    id: number
+    mikrotikId: number
+    mikrotikPeerId: string | null
+    name: string
+    publicKey: string
+    privateKey: string
+    allowedIps: string
+    interface: string
+    listenPort: number | null
+    endpoint: string | null
+    comment: string | null
+    createdAt: Date
+    _count: WireguardPeerCountAggregateOutputType | null
+    _avg: WireguardPeerAvgAggregateOutputType | null
+    _sum: WireguardPeerSumAggregateOutputType | null
+    _min: WireguardPeerMinAggregateOutputType | null
+    _max: WireguardPeerMaxAggregateOutputType | null
+  }
+
+  type GetWireguardPeerGroupByPayload<T extends WireguardPeerGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WireguardPeerGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WireguardPeerGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WireguardPeerGroupByOutputType[P]>
+            : GetScalarType<T[P], WireguardPeerGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WireguardPeerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    mikrotikId?: boolean
+    mikrotikPeerId?: boolean
+    name?: boolean
+    publicKey?: boolean
+    privateKey?: boolean
+    allowedIps?: boolean
+    interface?: boolean
+    listenPort?: boolean
+    endpoint?: boolean
+    comment?: boolean
+    createdAt?: boolean
+    mikrotik?: boolean | MikrotikConfigDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["wireguardPeer"]>
+
+
+
+  export type WireguardPeerSelectScalar = {
+    id?: boolean
+    mikrotikId?: boolean
+    mikrotikPeerId?: boolean
+    name?: boolean
+    publicKey?: boolean
+    privateKey?: boolean
+    allowedIps?: boolean
+    interface?: boolean
+    listenPort?: boolean
+    endpoint?: boolean
+    comment?: boolean
+    createdAt?: boolean
+  }
+
+  export type WireguardPeerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "mikrotikId" | "mikrotikPeerId" | "name" | "publicKey" | "privateKey" | "allowedIps" | "interface" | "listenPort" | "endpoint" | "comment" | "createdAt", ExtArgs["result"]["wireguardPeer"]>
+  export type WireguardPeerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    mikrotik?: boolean | MikrotikConfigDefaultArgs<ExtArgs>
+  }
+
+  export type $WireguardPeerPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "WireguardPeer"
+    objects: {
+      mikrotik: Prisma.$MikrotikConfigPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      mikrotikId: number
+      mikrotikPeerId: string | null
+      name: string
+      publicKey: string
+      privateKey: string
+      allowedIps: string
+      interface: string
+      listenPort: number | null
+      endpoint: string | null
+      comment: string | null
+      createdAt: Date
+    }, ExtArgs["result"]["wireguardPeer"]>
+    composites: {}
+  }
+
+  type WireguardPeerGetPayload<S extends boolean | null | undefined | WireguardPeerDefaultArgs> = $Result.GetResult<Prisma.$WireguardPeerPayload, S>
+
+  type WireguardPeerCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WireguardPeerFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WireguardPeerCountAggregateInputType | true
+    }
+
+  export interface WireguardPeerDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['WireguardPeer'], meta: { name: 'WireguardPeer' } }
+    /**
+     * Find zero or one WireguardPeer that matches the filter.
+     * @param {WireguardPeerFindUniqueArgs} args - Arguments to find a WireguardPeer
+     * @example
+     * // Get one WireguardPeer
+     * const wireguardPeer = await prisma.wireguardPeer.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WireguardPeerFindUniqueArgs>(args: SelectSubset<T, WireguardPeerFindUniqueArgs<ExtArgs>>): Prisma__WireguardPeerClient<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one WireguardPeer that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WireguardPeerFindUniqueOrThrowArgs} args - Arguments to find a WireguardPeer
+     * @example
+     * // Get one WireguardPeer
+     * const wireguardPeer = await prisma.wireguardPeer.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WireguardPeerFindUniqueOrThrowArgs>(args: SelectSubset<T, WireguardPeerFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WireguardPeerClient<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WireguardPeer that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WireguardPeerFindFirstArgs} args - Arguments to find a WireguardPeer
+     * @example
+     * // Get one WireguardPeer
+     * const wireguardPeer = await prisma.wireguardPeer.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WireguardPeerFindFirstArgs>(args?: SelectSubset<T, WireguardPeerFindFirstArgs<ExtArgs>>): Prisma__WireguardPeerClient<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first WireguardPeer that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WireguardPeerFindFirstOrThrowArgs} args - Arguments to find a WireguardPeer
+     * @example
+     * // Get one WireguardPeer
+     * const wireguardPeer = await prisma.wireguardPeer.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WireguardPeerFindFirstOrThrowArgs>(args?: SelectSubset<T, WireguardPeerFindFirstOrThrowArgs<ExtArgs>>): Prisma__WireguardPeerClient<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more WireguardPeers that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WireguardPeerFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all WireguardPeers
+     * const wireguardPeers = await prisma.wireguardPeer.findMany()
+     * 
+     * // Get first 10 WireguardPeers
+     * const wireguardPeers = await prisma.wireguardPeer.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const wireguardPeerWithIdOnly = await prisma.wireguardPeer.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WireguardPeerFindManyArgs>(args?: SelectSubset<T, WireguardPeerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a WireguardPeer.
+     * @param {WireguardPeerCreateArgs} args - Arguments to create a WireguardPeer.
+     * @example
+     * // Create one WireguardPeer
+     * const WireguardPeer = await prisma.wireguardPeer.create({
+     *   data: {
+     *     // ... data to create a WireguardPeer
+     *   }
+     * })
+     * 
+     */
+    create<T extends WireguardPeerCreateArgs>(args: SelectSubset<T, WireguardPeerCreateArgs<ExtArgs>>): Prisma__WireguardPeerClient<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many WireguardPeers.
+     * @param {WireguardPeerCreateManyArgs} args - Arguments to create many WireguardPeers.
+     * @example
+     * // Create many WireguardPeers
+     * const wireguardPeer = await prisma.wireguardPeer.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WireguardPeerCreateManyArgs>(args?: SelectSubset<T, WireguardPeerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a WireguardPeer.
+     * @param {WireguardPeerDeleteArgs} args - Arguments to delete one WireguardPeer.
+     * @example
+     * // Delete one WireguardPeer
+     * const WireguardPeer = await prisma.wireguardPeer.delete({
+     *   where: {
+     *     // ... filter to delete one WireguardPeer
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WireguardPeerDeleteArgs>(args: SelectSubset<T, WireguardPeerDeleteArgs<ExtArgs>>): Prisma__WireguardPeerClient<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one WireguardPeer.
+     * @param {WireguardPeerUpdateArgs} args - Arguments to update one WireguardPeer.
+     * @example
+     * // Update one WireguardPeer
+     * const wireguardPeer = await prisma.wireguardPeer.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WireguardPeerUpdateArgs>(args: SelectSubset<T, WireguardPeerUpdateArgs<ExtArgs>>): Prisma__WireguardPeerClient<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more WireguardPeers.
+     * @param {WireguardPeerDeleteManyArgs} args - Arguments to filter WireguardPeers to delete.
+     * @example
+     * // Delete a few WireguardPeers
+     * const { count } = await prisma.wireguardPeer.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WireguardPeerDeleteManyArgs>(args?: SelectSubset<T, WireguardPeerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more WireguardPeers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WireguardPeerUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many WireguardPeers
+     * const wireguardPeer = await prisma.wireguardPeer.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WireguardPeerUpdateManyArgs>(args: SelectSubset<T, WireguardPeerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one WireguardPeer.
+     * @param {WireguardPeerUpsertArgs} args - Arguments to update or create a WireguardPeer.
+     * @example
+     * // Update or create a WireguardPeer
+     * const wireguardPeer = await prisma.wireguardPeer.upsert({
+     *   create: {
+     *     // ... data to create a WireguardPeer
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the WireguardPeer we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WireguardPeerUpsertArgs>(args: SelectSubset<T, WireguardPeerUpsertArgs<ExtArgs>>): Prisma__WireguardPeerClient<$Result.GetResult<Prisma.$WireguardPeerPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of WireguardPeers.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WireguardPeerCountArgs} args - Arguments to filter WireguardPeers to count.
+     * @example
+     * // Count the number of WireguardPeers
+     * const count = await prisma.wireguardPeer.count({
+     *   where: {
+     *     // ... the filter for the WireguardPeers we want to count
+     *   }
+     * })
+    **/
+    count<T extends WireguardPeerCountArgs>(
+      args?: Subset<T, WireguardPeerCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WireguardPeerCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a WireguardPeer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WireguardPeerAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WireguardPeerAggregateArgs>(args: Subset<T, WireguardPeerAggregateArgs>): Prisma.PrismaPromise<GetWireguardPeerAggregateType<T>>
+
+    /**
+     * Group by WireguardPeer.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WireguardPeerGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WireguardPeerGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WireguardPeerGroupByArgs['orderBy'] }
+        : { orderBy?: WireguardPeerGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WireguardPeerGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWireguardPeerGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the WireguardPeer model
+   */
+  readonly fields: WireguardPeerFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for WireguardPeer.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WireguardPeerClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    mikrotik<T extends MikrotikConfigDefaultArgs<ExtArgs> = {}>(args?: Subset<T, MikrotikConfigDefaultArgs<ExtArgs>>): Prisma__MikrotikConfigClient<$Result.GetResult<Prisma.$MikrotikConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the WireguardPeer model
+   */
+  interface WireguardPeerFieldRefs {
+    readonly id: FieldRef<"WireguardPeer", 'Int'>
+    readonly mikrotikId: FieldRef<"WireguardPeer", 'Int'>
+    readonly mikrotikPeerId: FieldRef<"WireguardPeer", 'String'>
+    readonly name: FieldRef<"WireguardPeer", 'String'>
+    readonly publicKey: FieldRef<"WireguardPeer", 'String'>
+    readonly privateKey: FieldRef<"WireguardPeer", 'String'>
+    readonly allowedIps: FieldRef<"WireguardPeer", 'String'>
+    readonly interface: FieldRef<"WireguardPeer", 'String'>
+    readonly listenPort: FieldRef<"WireguardPeer", 'Int'>
+    readonly endpoint: FieldRef<"WireguardPeer", 'String'>
+    readonly comment: FieldRef<"WireguardPeer", 'String'>
+    readonly createdAt: FieldRef<"WireguardPeer", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * WireguardPeer findUnique
+   */
+  export type WireguardPeerFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * Filter, which WireguardPeer to fetch.
+     */
+    where: WireguardPeerWhereUniqueInput
+  }
+
+  /**
+   * WireguardPeer findUniqueOrThrow
+   */
+  export type WireguardPeerFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * Filter, which WireguardPeer to fetch.
+     */
+    where: WireguardPeerWhereUniqueInput
+  }
+
+  /**
+   * WireguardPeer findFirst
+   */
+  export type WireguardPeerFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * Filter, which WireguardPeer to fetch.
+     */
+    where?: WireguardPeerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WireguardPeers to fetch.
+     */
+    orderBy?: WireguardPeerOrderByWithRelationInput | WireguardPeerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WireguardPeers.
+     */
+    cursor?: WireguardPeerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WireguardPeers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WireguardPeers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WireguardPeers.
+     */
+    distinct?: WireguardPeerScalarFieldEnum | WireguardPeerScalarFieldEnum[]
+  }
+
+  /**
+   * WireguardPeer findFirstOrThrow
+   */
+  export type WireguardPeerFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * Filter, which WireguardPeer to fetch.
+     */
+    where?: WireguardPeerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WireguardPeers to fetch.
+     */
+    orderBy?: WireguardPeerOrderByWithRelationInput | WireguardPeerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for WireguardPeers.
+     */
+    cursor?: WireguardPeerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WireguardPeers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WireguardPeers.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of WireguardPeers.
+     */
+    distinct?: WireguardPeerScalarFieldEnum | WireguardPeerScalarFieldEnum[]
+  }
+
+  /**
+   * WireguardPeer findMany
+   */
+  export type WireguardPeerFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * Filter, which WireguardPeers to fetch.
+     */
+    where?: WireguardPeerWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of WireguardPeers to fetch.
+     */
+    orderBy?: WireguardPeerOrderByWithRelationInput | WireguardPeerOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing WireguardPeers.
+     */
+    cursor?: WireguardPeerWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` WireguardPeers from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` WireguardPeers.
+     */
+    skip?: number
+    distinct?: WireguardPeerScalarFieldEnum | WireguardPeerScalarFieldEnum[]
+  }
+
+  /**
+   * WireguardPeer create
+   */
+  export type WireguardPeerCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * The data needed to create a WireguardPeer.
+     */
+    data: XOR<WireguardPeerCreateInput, WireguardPeerUncheckedCreateInput>
+  }
+
+  /**
+   * WireguardPeer createMany
+   */
+  export type WireguardPeerCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many WireguardPeers.
+     */
+    data: WireguardPeerCreateManyInput | WireguardPeerCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * WireguardPeer update
+   */
+  export type WireguardPeerUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * The data needed to update a WireguardPeer.
+     */
+    data: XOR<WireguardPeerUpdateInput, WireguardPeerUncheckedUpdateInput>
+    /**
+     * Choose, which WireguardPeer to update.
+     */
+    where: WireguardPeerWhereUniqueInput
+  }
+
+  /**
+   * WireguardPeer updateMany
+   */
+  export type WireguardPeerUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update WireguardPeers.
+     */
+    data: XOR<WireguardPeerUpdateManyMutationInput, WireguardPeerUncheckedUpdateManyInput>
+    /**
+     * Filter which WireguardPeers to update
+     */
+    where?: WireguardPeerWhereInput
+    /**
+     * Limit how many WireguardPeers to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * WireguardPeer upsert
+   */
+  export type WireguardPeerUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * The filter to search for the WireguardPeer to update in case it exists.
+     */
+    where: WireguardPeerWhereUniqueInput
+    /**
+     * In case the WireguardPeer found by the `where` argument doesn't exist, create a new WireguardPeer with this data.
+     */
+    create: XOR<WireguardPeerCreateInput, WireguardPeerUncheckedCreateInput>
+    /**
+     * In case the WireguardPeer was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WireguardPeerUpdateInput, WireguardPeerUncheckedUpdateInput>
+  }
+
+  /**
+   * WireguardPeer delete
+   */
+  export type WireguardPeerDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+    /**
+     * Filter which WireguardPeer to delete.
+     */
+    where: WireguardPeerWhereUniqueInput
+  }
+
+  /**
+   * WireguardPeer deleteMany
+   */
+  export type WireguardPeerDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which WireguardPeers to delete
+     */
+    where?: WireguardPeerWhereInput
+    /**
+     * Limit how many WireguardPeers to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * WireguardPeer without action
+   */
+  export type WireguardPeerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the WireguardPeer
+     */
+    select?: WireguardPeerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the WireguardPeer
+     */
+    omit?: WireguardPeerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: WireguardPeerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Wifi
+   */
+
+  export type AggregateWifi = {
+    _count: WifiCountAggregateOutputType | null
+    _avg: WifiAvgAggregateOutputType | null
+    _sum: WifiSumAggregateOutputType | null
+    _min: WifiMinAggregateOutputType | null
+    _max: WifiMaxAggregateOutputType | null
+  }
+
+  export type WifiAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type WifiSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type WifiMinAggregateOutputType = {
+    id: number | null
+    ssid: string | null
+    password: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WifiMaxAggregateOutputType = {
+    id: number | null
+    ssid: string | null
+    password: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type WifiCountAggregateOutputType = {
+    id: number
+    ssid: number
+    password: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type WifiAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type WifiSumAggregateInputType = {
+    id?: true
+  }
+
+  export type WifiMinAggregateInputType = {
+    id?: true
+    ssid?: true
+    password?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WifiMaxAggregateInputType = {
+    id?: true
+    ssid?: true
+    password?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type WifiCountAggregateInputType = {
+    id?: true
+    ssid?: true
+    password?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type WifiAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Wifi to aggregate.
+     */
+    where?: WifiWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wifis to fetch.
+     */
+    orderBy?: WifiOrderByWithRelationInput | WifiOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: WifiWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wifis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wifis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Wifis
+    **/
+    _count?: true | WifiCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: WifiAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: WifiSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: WifiMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: WifiMaxAggregateInputType
+  }
+
+  export type GetWifiAggregateType<T extends WifiAggregateArgs> = {
+        [P in keyof T & keyof AggregateWifi]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateWifi[P]>
+      : GetScalarType<T[P], AggregateWifi[P]>
+  }
+
+
+
+
+  export type WifiGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: WifiWhereInput
+    orderBy?: WifiOrderByWithAggregationInput | WifiOrderByWithAggregationInput[]
+    by: WifiScalarFieldEnum[] | WifiScalarFieldEnum
+    having?: WifiScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: WifiCountAggregateInputType | true
+    _avg?: WifiAvgAggregateInputType
+    _sum?: WifiSumAggregateInputType
+    _min?: WifiMinAggregateInputType
+    _max?: WifiMaxAggregateInputType
+  }
+
+  export type WifiGroupByOutputType = {
+    id: number
+    ssid: string
+    password: string
+    createdAt: Date
+    updatedAt: Date
+    _count: WifiCountAggregateOutputType | null
+    _avg: WifiAvgAggregateOutputType | null
+    _sum: WifiSumAggregateOutputType | null
+    _min: WifiMinAggregateOutputType | null
+    _max: WifiMaxAggregateOutputType | null
+  }
+
+  type GetWifiGroupByPayload<T extends WifiGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<WifiGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof WifiGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], WifiGroupByOutputType[P]>
+            : GetScalarType<T[P], WifiGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type WifiSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    ssid?: boolean
+    password?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["wifi"]>
+
+
+
+  export type WifiSelectScalar = {
+    id?: boolean
+    ssid?: boolean
+    password?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type WifiOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ssid" | "password" | "createdAt" | "updatedAt", ExtArgs["result"]["wifi"]>
+
+  export type $WifiPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Wifi"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      ssid: string
+      password: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["wifi"]>
+    composites: {}
+  }
+
+  type WifiGetPayload<S extends boolean | null | undefined | WifiDefaultArgs> = $Result.GetResult<Prisma.$WifiPayload, S>
+
+  type WifiCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<WifiFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: WifiCountAggregateInputType | true
+    }
+
+  export interface WifiDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Wifi'], meta: { name: 'Wifi' } }
+    /**
+     * Find zero or one Wifi that matches the filter.
+     * @param {WifiFindUniqueArgs} args - Arguments to find a Wifi
+     * @example
+     * // Get one Wifi
+     * const wifi = await prisma.wifi.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends WifiFindUniqueArgs>(args: SelectSubset<T, WifiFindUniqueArgs<ExtArgs>>): Prisma__WifiClient<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Wifi that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {WifiFindUniqueOrThrowArgs} args - Arguments to find a Wifi
+     * @example
+     * // Get one Wifi
+     * const wifi = await prisma.wifi.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends WifiFindUniqueOrThrowArgs>(args: SelectSubset<T, WifiFindUniqueOrThrowArgs<ExtArgs>>): Prisma__WifiClient<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Wifi that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WifiFindFirstArgs} args - Arguments to find a Wifi
+     * @example
+     * // Get one Wifi
+     * const wifi = await prisma.wifi.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends WifiFindFirstArgs>(args?: SelectSubset<T, WifiFindFirstArgs<ExtArgs>>): Prisma__WifiClient<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Wifi that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WifiFindFirstOrThrowArgs} args - Arguments to find a Wifi
+     * @example
+     * // Get one Wifi
+     * const wifi = await prisma.wifi.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends WifiFindFirstOrThrowArgs>(args?: SelectSubset<T, WifiFindFirstOrThrowArgs<ExtArgs>>): Prisma__WifiClient<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Wifis that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WifiFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Wifis
+     * const wifis = await prisma.wifi.findMany()
+     * 
+     * // Get first 10 Wifis
+     * const wifis = await prisma.wifi.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const wifiWithIdOnly = await prisma.wifi.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends WifiFindManyArgs>(args?: SelectSubset<T, WifiFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Wifi.
+     * @param {WifiCreateArgs} args - Arguments to create a Wifi.
+     * @example
+     * // Create one Wifi
+     * const Wifi = await prisma.wifi.create({
+     *   data: {
+     *     // ... data to create a Wifi
+     *   }
+     * })
+     * 
+     */
+    create<T extends WifiCreateArgs>(args: SelectSubset<T, WifiCreateArgs<ExtArgs>>): Prisma__WifiClient<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Wifis.
+     * @param {WifiCreateManyArgs} args - Arguments to create many Wifis.
+     * @example
+     * // Create many Wifis
+     * const wifi = await prisma.wifi.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends WifiCreateManyArgs>(args?: SelectSubset<T, WifiCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Wifi.
+     * @param {WifiDeleteArgs} args - Arguments to delete one Wifi.
+     * @example
+     * // Delete one Wifi
+     * const Wifi = await prisma.wifi.delete({
+     *   where: {
+     *     // ... filter to delete one Wifi
+     *   }
+     * })
+     * 
+     */
+    delete<T extends WifiDeleteArgs>(args: SelectSubset<T, WifiDeleteArgs<ExtArgs>>): Prisma__WifiClient<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Wifi.
+     * @param {WifiUpdateArgs} args - Arguments to update one Wifi.
+     * @example
+     * // Update one Wifi
+     * const wifi = await prisma.wifi.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends WifiUpdateArgs>(args: SelectSubset<T, WifiUpdateArgs<ExtArgs>>): Prisma__WifiClient<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Wifis.
+     * @param {WifiDeleteManyArgs} args - Arguments to filter Wifis to delete.
+     * @example
+     * // Delete a few Wifis
+     * const { count } = await prisma.wifi.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends WifiDeleteManyArgs>(args?: SelectSubset<T, WifiDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Wifis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WifiUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Wifis
+     * const wifi = await prisma.wifi.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends WifiUpdateManyArgs>(args: SelectSubset<T, WifiUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Wifi.
+     * @param {WifiUpsertArgs} args - Arguments to update or create a Wifi.
+     * @example
+     * // Update or create a Wifi
+     * const wifi = await prisma.wifi.upsert({
+     *   create: {
+     *     // ... data to create a Wifi
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Wifi we want to update
+     *   }
+     * })
+     */
+    upsert<T extends WifiUpsertArgs>(args: SelectSubset<T, WifiUpsertArgs<ExtArgs>>): Prisma__WifiClient<$Result.GetResult<Prisma.$WifiPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Wifis.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WifiCountArgs} args - Arguments to filter Wifis to count.
+     * @example
+     * // Count the number of Wifis
+     * const count = await prisma.wifi.count({
+     *   where: {
+     *     // ... the filter for the Wifis we want to count
+     *   }
+     * })
+    **/
+    count<T extends WifiCountArgs>(
+      args?: Subset<T, WifiCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], WifiCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Wifi.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WifiAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends WifiAggregateArgs>(args: Subset<T, WifiAggregateArgs>): Prisma.PrismaPromise<GetWifiAggregateType<T>>
+
+    /**
+     * Group by Wifi.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {WifiGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends WifiGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: WifiGroupByArgs['orderBy'] }
+        : { orderBy?: WifiGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, WifiGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetWifiGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Wifi model
+   */
+  readonly fields: WifiFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Wifi.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__WifiClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Wifi model
+   */
+  interface WifiFieldRefs {
+    readonly id: FieldRef<"Wifi", 'Int'>
+    readonly ssid: FieldRef<"Wifi", 'String'>
+    readonly password: FieldRef<"Wifi", 'String'>
+    readonly createdAt: FieldRef<"Wifi", 'DateTime'>
+    readonly updatedAt: FieldRef<"Wifi", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Wifi findUnique
+   */
+  export type WifiFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * Filter, which Wifi to fetch.
+     */
+    where: WifiWhereUniqueInput
+  }
+
+  /**
+   * Wifi findUniqueOrThrow
+   */
+  export type WifiFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * Filter, which Wifi to fetch.
+     */
+    where: WifiWhereUniqueInput
+  }
+
+  /**
+   * Wifi findFirst
+   */
+  export type WifiFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * Filter, which Wifi to fetch.
+     */
+    where?: WifiWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wifis to fetch.
+     */
+    orderBy?: WifiOrderByWithRelationInput | WifiOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Wifis.
+     */
+    cursor?: WifiWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wifis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wifis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Wifis.
+     */
+    distinct?: WifiScalarFieldEnum | WifiScalarFieldEnum[]
+  }
+
+  /**
+   * Wifi findFirstOrThrow
+   */
+  export type WifiFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * Filter, which Wifi to fetch.
+     */
+    where?: WifiWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wifis to fetch.
+     */
+    orderBy?: WifiOrderByWithRelationInput | WifiOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Wifis.
+     */
+    cursor?: WifiWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wifis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wifis.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Wifis.
+     */
+    distinct?: WifiScalarFieldEnum | WifiScalarFieldEnum[]
+  }
+
+  /**
+   * Wifi findMany
+   */
+  export type WifiFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * Filter, which Wifis to fetch.
+     */
+    where?: WifiWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Wifis to fetch.
+     */
+    orderBy?: WifiOrderByWithRelationInput | WifiOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Wifis.
+     */
+    cursor?: WifiWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Wifis from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Wifis.
+     */
+    skip?: number
+    distinct?: WifiScalarFieldEnum | WifiScalarFieldEnum[]
+  }
+
+  /**
+   * Wifi create
+   */
+  export type WifiCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Wifi.
+     */
+    data: XOR<WifiCreateInput, WifiUncheckedCreateInput>
+  }
+
+  /**
+   * Wifi createMany
+   */
+  export type WifiCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Wifis.
+     */
+    data: WifiCreateManyInput | WifiCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Wifi update
+   */
+  export type WifiUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Wifi.
+     */
+    data: XOR<WifiUpdateInput, WifiUncheckedUpdateInput>
+    /**
+     * Choose, which Wifi to update.
+     */
+    where: WifiWhereUniqueInput
+  }
+
+  /**
+   * Wifi updateMany
+   */
+  export type WifiUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Wifis.
+     */
+    data: XOR<WifiUpdateManyMutationInput, WifiUncheckedUpdateManyInput>
+    /**
+     * Filter which Wifis to update
+     */
+    where?: WifiWhereInput
+    /**
+     * Limit how many Wifis to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Wifi upsert
+   */
+  export type WifiUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Wifi to update in case it exists.
+     */
+    where: WifiWhereUniqueInput
+    /**
+     * In case the Wifi found by the `where` argument doesn't exist, create a new Wifi with this data.
+     */
+    create: XOR<WifiCreateInput, WifiUncheckedCreateInput>
+    /**
+     * In case the Wifi was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<WifiUpdateInput, WifiUncheckedUpdateInput>
+  }
+
+  /**
+   * Wifi delete
+   */
+  export type WifiDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+    /**
+     * Filter which Wifi to delete.
+     */
+    where: WifiWhereUniqueInput
+  }
+
+  /**
+   * Wifi deleteMany
+   */
+  export type WifiDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Wifis to delete
+     */
+    where?: WifiWhereInput
+    /**
+     * Limit how many Wifis to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Wifi without action
+   */
+  export type WifiDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Wifi
+     */
+    select?: WifiSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Wifi
+     */
+    omit?: WifiOmit<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AuditLog
+   */
+
+  export type AggregateAuditLog = {
+    _count: AuditLogCountAggregateOutputType | null
+    _avg: AuditLogAvgAggregateOutputType | null
+    _sum: AuditLogSumAggregateOutputType | null
+    _min: AuditLogMinAggregateOutputType | null
+    _max: AuditLogMaxAggregateOutputType | null
+  }
+
+  export type AuditLogAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AuditLogSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type AuditLogMinAggregateOutputType = {
+    id: number | null
+    timestamp: Date | null
+    adminUser: string | null
+    action: string | null
+    targetType: string | null
+    targetName: string | null
+    details: string | null
+    ipAddress: string | null
+  }
+
+  export type AuditLogMaxAggregateOutputType = {
+    id: number | null
+    timestamp: Date | null
+    adminUser: string | null
+    action: string | null
+    targetType: string | null
+    targetName: string | null
+    details: string | null
+    ipAddress: string | null
+  }
+
+  export type AuditLogCountAggregateOutputType = {
+    id: number
+    timestamp: number
+    adminUser: number
+    action: number
+    targetType: number
+    targetName: number
+    details: number
+    ipAddress: number
+    _all: number
+  }
+
+
+  export type AuditLogAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type AuditLogSumAggregateInputType = {
+    id?: true
+  }
+
+  export type AuditLogMinAggregateInputType = {
+    id?: true
+    timestamp?: true
+    adminUser?: true
+    action?: true
+    targetType?: true
+    targetName?: true
+    details?: true
+    ipAddress?: true
+  }
+
+  export type AuditLogMaxAggregateInputType = {
+    id?: true
+    timestamp?: true
+    adminUser?: true
+    action?: true
+    targetType?: true
+    targetName?: true
+    details?: true
+    ipAddress?: true
+  }
+
+  export type AuditLogCountAggregateInputType = {
+    id?: true
+    timestamp?: true
+    adminUser?: true
+    action?: true
+    targetType?: true
+    targetName?: true
+    details?: true
+    ipAddress?: true
+    _all?: true
+  }
+
+  export type AuditLogAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditLog to aggregate.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AuditLogs
+    **/
+    _count?: true | AuditLogCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AuditLogAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AuditLogSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AuditLogMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AuditLogMaxAggregateInputType
+  }
+
+  export type GetAuditLogAggregateType<T extends AuditLogAggregateArgs> = {
+        [P in keyof T & keyof AggregateAuditLog]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAuditLog[P]>
+      : GetScalarType<T[P], AggregateAuditLog[P]>
+  }
+
+
+
+
+  export type AuditLogGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AuditLogWhereInput
+    orderBy?: AuditLogOrderByWithAggregationInput | AuditLogOrderByWithAggregationInput[]
+    by: AuditLogScalarFieldEnum[] | AuditLogScalarFieldEnum
+    having?: AuditLogScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AuditLogCountAggregateInputType | true
+    _avg?: AuditLogAvgAggregateInputType
+    _sum?: AuditLogSumAggregateInputType
+    _min?: AuditLogMinAggregateInputType
+    _max?: AuditLogMaxAggregateInputType
+  }
+
+  export type AuditLogGroupByOutputType = {
+    id: number
+    timestamp: Date
+    adminUser: string
+    action: string
+    targetType: string
+    targetName: string | null
+    details: string | null
+    ipAddress: string | null
+    _count: AuditLogCountAggregateOutputType | null
+    _avg: AuditLogAvgAggregateOutputType | null
+    _sum: AuditLogSumAggregateOutputType | null
+    _min: AuditLogMinAggregateOutputType | null
+    _max: AuditLogMaxAggregateOutputType | null
+  }
+
+  type GetAuditLogGroupByPayload<T extends AuditLogGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AuditLogGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AuditLogGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AuditLogGroupByOutputType[P]>
+            : GetScalarType<T[P], AuditLogGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AuditLogSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    timestamp?: boolean
+    adminUser?: boolean
+    action?: boolean
+    targetType?: boolean
+    targetName?: boolean
+    details?: boolean
+    ipAddress?: boolean
+  }, ExtArgs["result"]["auditLog"]>
+
+
+
+  export type AuditLogSelectScalar = {
+    id?: boolean
+    timestamp?: boolean
+    adminUser?: boolean
+    action?: boolean
+    targetType?: boolean
+    targetName?: boolean
+    details?: boolean
+    ipAddress?: boolean
+  }
+
+  export type AuditLogOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "timestamp" | "adminUser" | "action" | "targetType" | "targetName" | "details" | "ipAddress", ExtArgs["result"]["auditLog"]>
+
+  export type $AuditLogPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AuditLog"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      timestamp: Date
+      adminUser: string
+      action: string
+      targetType: string
+      targetName: string | null
+      details: string | null
+      ipAddress: string | null
+    }, ExtArgs["result"]["auditLog"]>
+    composites: {}
+  }
+
+  type AuditLogGetPayload<S extends boolean | null | undefined | AuditLogDefaultArgs> = $Result.GetResult<Prisma.$AuditLogPayload, S>
+
+  type AuditLogCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AuditLogFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AuditLogCountAggregateInputType | true
+    }
+
+  export interface AuditLogDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AuditLog'], meta: { name: 'AuditLog' } }
+    /**
+     * Find zero or one AuditLog that matches the filter.
+     * @param {AuditLogFindUniqueArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AuditLogFindUniqueArgs>(args: SelectSubset<T, AuditLogFindUniqueArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AuditLog that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AuditLogFindUniqueOrThrowArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AuditLogFindUniqueOrThrowArgs>(args: SelectSubset<T, AuditLogFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditLog that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindFirstArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AuditLogFindFirstArgs>(args?: SelectSubset<T, AuditLogFindFirstArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AuditLog that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindFirstOrThrowArgs} args - Arguments to find a AuditLog
+     * @example
+     * // Get one AuditLog
+     * const auditLog = await prisma.auditLog.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AuditLogFindFirstOrThrowArgs>(args?: SelectSubset<T, AuditLogFindFirstOrThrowArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AuditLogs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AuditLogs
+     * const auditLogs = await prisma.auditLog.findMany()
+     * 
+     * // Get first 10 AuditLogs
+     * const auditLogs = await prisma.auditLog.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const auditLogWithIdOnly = await prisma.auditLog.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AuditLogFindManyArgs>(args?: SelectSubset<T, AuditLogFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AuditLog.
+     * @param {AuditLogCreateArgs} args - Arguments to create a AuditLog.
+     * @example
+     * // Create one AuditLog
+     * const AuditLog = await prisma.auditLog.create({
+     *   data: {
+     *     // ... data to create a AuditLog
+     *   }
+     * })
+     * 
+     */
+    create<T extends AuditLogCreateArgs>(args: SelectSubset<T, AuditLogCreateArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AuditLogs.
+     * @param {AuditLogCreateManyArgs} args - Arguments to create many AuditLogs.
+     * @example
+     * // Create many AuditLogs
+     * const auditLog = await prisma.auditLog.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AuditLogCreateManyArgs>(args?: SelectSubset<T, AuditLogCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a AuditLog.
+     * @param {AuditLogDeleteArgs} args - Arguments to delete one AuditLog.
+     * @example
+     * // Delete one AuditLog
+     * const AuditLog = await prisma.auditLog.delete({
+     *   where: {
+     *     // ... filter to delete one AuditLog
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AuditLogDeleteArgs>(args: SelectSubset<T, AuditLogDeleteArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AuditLog.
+     * @param {AuditLogUpdateArgs} args - Arguments to update one AuditLog.
+     * @example
+     * // Update one AuditLog
+     * const auditLog = await prisma.auditLog.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AuditLogUpdateArgs>(args: SelectSubset<T, AuditLogUpdateArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AuditLogs.
+     * @param {AuditLogDeleteManyArgs} args - Arguments to filter AuditLogs to delete.
+     * @example
+     * // Delete a few AuditLogs
+     * const { count } = await prisma.auditLog.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AuditLogDeleteManyArgs>(args?: SelectSubset<T, AuditLogDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AuditLogs
+     * const auditLog = await prisma.auditLog.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AuditLogUpdateManyArgs>(args: SelectSubset<T, AuditLogUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one AuditLog.
+     * @param {AuditLogUpsertArgs} args - Arguments to update or create a AuditLog.
+     * @example
+     * // Update or create a AuditLog
+     * const auditLog = await prisma.auditLog.upsert({
+     *   create: {
+     *     // ... data to create a AuditLog
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AuditLog we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AuditLogUpsertArgs>(args: SelectSubset<T, AuditLogUpsertArgs<ExtArgs>>): Prisma__AuditLogClient<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AuditLogs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogCountArgs} args - Arguments to filter AuditLogs to count.
+     * @example
+     * // Count the number of AuditLogs
+     * const count = await prisma.auditLog.count({
+     *   where: {
+     *     // ... the filter for the AuditLogs we want to count
+     *   }
+     * })
+    **/
+    count<T extends AuditLogCountArgs>(
+      args?: Subset<T, AuditLogCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AuditLogCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AuditLogAggregateArgs>(args: Subset<T, AuditLogAggregateArgs>): Prisma.PrismaPromise<GetAuditLogAggregateType<T>>
+
+    /**
+     * Group by AuditLog.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AuditLogGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AuditLogGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AuditLogGroupByArgs['orderBy'] }
+        : { orderBy?: AuditLogGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AuditLogGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAuditLogGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AuditLog model
+   */
+  readonly fields: AuditLogFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AuditLog.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AuditLogClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AuditLog model
+   */
+  interface AuditLogFieldRefs {
+    readonly id: FieldRef<"AuditLog", 'Int'>
+    readonly timestamp: FieldRef<"AuditLog", 'DateTime'>
+    readonly adminUser: FieldRef<"AuditLog", 'String'>
+    readonly action: FieldRef<"AuditLog", 'String'>
+    readonly targetType: FieldRef<"AuditLog", 'String'>
+    readonly targetName: FieldRef<"AuditLog", 'String'>
+    readonly details: FieldRef<"AuditLog", 'String'>
+    readonly ipAddress: FieldRef<"AuditLog", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AuditLog findUnique
+   */
+  export type AuditLogFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog findUniqueOrThrow
+   */
+  export type AuditLogFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog findFirst
+   */
+  export type AuditLogFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditLogs.
+     */
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog findFirstOrThrow
+   */
+  export type AuditLogFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditLog to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AuditLogs.
+     */
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog findMany
+   */
+  export type AuditLogFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Filter, which AuditLogs to fetch.
+     */
+    where?: AuditLogWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AuditLogs to fetch.
+     */
+    orderBy?: AuditLogOrderByWithRelationInput | AuditLogOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AuditLogs.
+     */
+    cursor?: AuditLogWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AuditLogs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AuditLogs.
+     */
+    skip?: number
+    distinct?: AuditLogScalarFieldEnum | AuditLogScalarFieldEnum[]
+  }
+
+  /**
+   * AuditLog create
+   */
+  export type AuditLogCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AuditLog.
+     */
+    data: XOR<AuditLogCreateInput, AuditLogUncheckedCreateInput>
+  }
+
+  /**
+   * AuditLog createMany
+   */
+  export type AuditLogCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AuditLogs.
+     */
+    data: AuditLogCreateManyInput | AuditLogCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AuditLog update
+   */
+  export type AuditLogUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AuditLog.
+     */
+    data: XOR<AuditLogUpdateInput, AuditLogUncheckedUpdateInput>
+    /**
+     * Choose, which AuditLog to update.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog updateMany
+   */
+  export type AuditLogUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AuditLogs.
+     */
+    data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyInput>
+    /**
+     * Filter which AuditLogs to update
+     */
+    where?: AuditLogWhereInput
+    /**
+     * Limit how many AuditLogs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditLog upsert
+   */
+  export type AuditLogUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AuditLog to update in case it exists.
+     */
+    where: AuditLogWhereUniqueInput
+    /**
+     * In case the AuditLog found by the `where` argument doesn't exist, create a new AuditLog with this data.
+     */
+    create: XOR<AuditLogCreateInput, AuditLogUncheckedCreateInput>
+    /**
+     * In case the AuditLog was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AuditLogUpdateInput, AuditLogUncheckedUpdateInput>
+  }
+
+  /**
+   * AuditLog delete
+   */
+  export type AuditLogDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+    /**
+     * Filter which AuditLog to delete.
+     */
+    where: AuditLogWhereUniqueInput
+  }
+
+  /**
+   * AuditLog deleteMany
+   */
+  export type AuditLogDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AuditLogs to delete
+     */
+    where?: AuditLogWhereInput
+    /**
+     * Limit how many AuditLogs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AuditLog without action
+   */
+  export type AuditLogDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AuditLog
+     */
+    select?: AuditLogSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AuditLog
+     */
+    omit?: AuditLogOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -12153,9 +19631,11 @@ export namespace Prisma {
   export const UserinfoScalarFieldEnum: {
     id: 'id',
     username: 'username',
+    type: 'type',
     fullName: 'fullName',
     department: 'department',
-    createdBy: 'createdBy'
+    createdBy: 'createdBy',
+    status: 'status'
   };
 
   export type UserinfoScalarFieldEnum = (typeof UserinfoScalarFieldEnum)[keyof typeof UserinfoScalarFieldEnum]
@@ -12169,6 +19649,98 @@ export namespace Prisma {
   };
 
   export type AdminScalarFieldEnum = (typeof AdminScalarFieldEnum)[keyof typeof AdminScalarFieldEnum]
+
+
+  export const GroupMetadataScalarFieldEnum: {
+    groupname: 'groupname',
+    type: 'type',
+    description: 'description'
+  };
+
+  export type GroupMetadataScalarFieldEnum = (typeof GroupMetadataScalarFieldEnum)[keyof typeof GroupMetadataScalarFieldEnum]
+
+
+  export const RadiusPoolScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description'
+  };
+
+  export type RadiusPoolScalarFieldEnum = (typeof RadiusPoolScalarFieldEnum)[keyof typeof RadiusPoolScalarFieldEnum]
+
+
+  export const RadippoolScalarFieldEnum: {
+    id: 'id',
+    pool_name: 'pool_name',
+    framedipaddress: 'framedipaddress',
+    nasipaddress: 'nasipaddress',
+    calledstationid: 'calledstationid',
+    callingstationid: 'callingstationid',
+    expiry_time: 'expiry_time',
+    username: 'username',
+    pool_key: 'pool_key'
+  };
+
+  export type RadippoolScalarFieldEnum = (typeof RadippoolScalarFieldEnum)[keyof typeof RadippoolScalarFieldEnum]
+
+
+  export const MikrotikConfigScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    host: 'host',
+    port: 'port',
+    username: 'username',
+    password: 'password',
+    useSsl: 'useSsl',
+    wgPublicHost: 'wgPublicHost',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MikrotikConfigScalarFieldEnum = (typeof MikrotikConfigScalarFieldEnum)[keyof typeof MikrotikConfigScalarFieldEnum]
+
+
+  export const WireguardPeerScalarFieldEnum: {
+    id: 'id',
+    mikrotikId: 'mikrotikId',
+    mikrotikPeerId: 'mikrotikPeerId',
+    name: 'name',
+    publicKey: 'publicKey',
+    privateKey: 'privateKey',
+    allowedIps: 'allowedIps',
+    interface: 'interface',
+    listenPort: 'listenPort',
+    endpoint: 'endpoint',
+    comment: 'comment',
+    createdAt: 'createdAt'
+  };
+
+  export type WireguardPeerScalarFieldEnum = (typeof WireguardPeerScalarFieldEnum)[keyof typeof WireguardPeerScalarFieldEnum]
+
+
+  export const WifiScalarFieldEnum: {
+    id: 'id',
+    ssid: 'ssid',
+    password: 'password',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type WifiScalarFieldEnum = (typeof WifiScalarFieldEnum)[keyof typeof WifiScalarFieldEnum]
+
+
+  export const AuditLogScalarFieldEnum: {
+    id: 'id',
+    timestamp: 'timestamp',
+    adminUser: 'adminUser',
+    action: 'action',
+    targetType: 'targetType',
+    targetName: 'targetName',
+    details: 'details',
+    ipAddress: 'ipAddress'
+  };
+
+  export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12294,9 +19866,11 @@ export namespace Prisma {
 
   export const userinfoOrderByRelevanceFieldEnum: {
     username: 'username',
+    type: 'type',
     fullName: 'fullName',
     department: 'department',
-    createdBy: 'createdBy'
+    createdBy: 'createdBy',
+    status: 'status'
   };
 
   export type userinfoOrderByRelevanceFieldEnum = (typeof userinfoOrderByRelevanceFieldEnum)[keyof typeof userinfoOrderByRelevanceFieldEnum]
@@ -12309,6 +19883,81 @@ export namespace Prisma {
   };
 
   export type adminOrderByRelevanceFieldEnum = (typeof adminOrderByRelevanceFieldEnum)[keyof typeof adminOrderByRelevanceFieldEnum]
+
+
+  export const GroupMetadataOrderByRelevanceFieldEnum: {
+    groupname: 'groupname',
+    type: 'type',
+    description: 'description'
+  };
+
+  export type GroupMetadataOrderByRelevanceFieldEnum = (typeof GroupMetadataOrderByRelevanceFieldEnum)[keyof typeof GroupMetadataOrderByRelevanceFieldEnum]
+
+
+  export const RadiusPoolOrderByRelevanceFieldEnum: {
+    name: 'name',
+    description: 'description'
+  };
+
+  export type RadiusPoolOrderByRelevanceFieldEnum = (typeof RadiusPoolOrderByRelevanceFieldEnum)[keyof typeof RadiusPoolOrderByRelevanceFieldEnum]
+
+
+  export const radippoolOrderByRelevanceFieldEnum: {
+    pool_name: 'pool_name',
+    framedipaddress: 'framedipaddress',
+    nasipaddress: 'nasipaddress',
+    calledstationid: 'calledstationid',
+    callingstationid: 'callingstationid',
+    username: 'username',
+    pool_key: 'pool_key'
+  };
+
+  export type radippoolOrderByRelevanceFieldEnum = (typeof radippoolOrderByRelevanceFieldEnum)[keyof typeof radippoolOrderByRelevanceFieldEnum]
+
+
+  export const MikrotikConfigOrderByRelevanceFieldEnum: {
+    name: 'name',
+    host: 'host',
+    username: 'username',
+    password: 'password',
+    wgPublicHost: 'wgPublicHost'
+  };
+
+  export type MikrotikConfigOrderByRelevanceFieldEnum = (typeof MikrotikConfigOrderByRelevanceFieldEnum)[keyof typeof MikrotikConfigOrderByRelevanceFieldEnum]
+
+
+  export const WireguardPeerOrderByRelevanceFieldEnum: {
+    mikrotikPeerId: 'mikrotikPeerId',
+    name: 'name',
+    publicKey: 'publicKey',
+    privateKey: 'privateKey',
+    allowedIps: 'allowedIps',
+    interface: 'interface',
+    endpoint: 'endpoint',
+    comment: 'comment'
+  };
+
+  export type WireguardPeerOrderByRelevanceFieldEnum = (typeof WireguardPeerOrderByRelevanceFieldEnum)[keyof typeof WireguardPeerOrderByRelevanceFieldEnum]
+
+
+  export const WifiOrderByRelevanceFieldEnum: {
+    ssid: 'ssid',
+    password: 'password'
+  };
+
+  export type WifiOrderByRelevanceFieldEnum = (typeof WifiOrderByRelevanceFieldEnum)[keyof typeof WifiOrderByRelevanceFieldEnum]
+
+
+  export const AuditLogOrderByRelevanceFieldEnum: {
+    adminUser: 'adminUser',
+    action: 'action',
+    targetType: 'targetType',
+    targetName: 'targetName',
+    details: 'details',
+    ipAddress: 'ipAddress'
+  };
+
+  export type AuditLogOrderByRelevanceFieldEnum = (typeof AuditLogOrderByRelevanceFieldEnum)[keyof typeof AuditLogOrderByRelevanceFieldEnum]
 
 
   /**
@@ -12341,6 +19990,13 @@ export namespace Prisma {
    * Reference to a field of type 'BigInt'
    */
   export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -12930,6 +20586,7 @@ export namespace Prisma {
     username?: StringFilter<"radusergroup"> | string
     groupname?: StringFilter<"radusergroup"> | string
     priority?: IntFilter<"radusergroup"> | number
+    groupMetadata?: XOR<GroupMetadataNullableScalarRelationFilter, GroupMetadataWhereInput> | null
   }
 
   export type radusergroupOrderByWithRelationInput = {
@@ -12937,6 +20594,7 @@ export namespace Prisma {
     username?: SortOrder
     groupname?: SortOrder
     priority?: SortOrder
+    groupMetadata?: GroupMetadataOrderByWithRelationInput
     _relevance?: radusergroupOrderByRelevanceInput
   }
 
@@ -12948,6 +20606,7 @@ export namespace Prisma {
     username?: StringFilter<"radusergroup"> | string
     groupname?: StringFilter<"radusergroup"> | string
     priority?: IntFilter<"radusergroup"> | number
+    groupMetadata?: XOR<GroupMetadataNullableScalarRelationFilter, GroupMetadataWhereInput> | null
   }, "id">
 
   export type radusergroupOrderByWithAggregationInput = {
@@ -12978,37 +20637,46 @@ export namespace Prisma {
     NOT?: userinfoWhereInput | userinfoWhereInput[]
     id?: IntFilter<"userinfo"> | number
     username?: StringFilter<"userinfo"> | string
+    type?: StringFilter<"userinfo"> | string
     fullName?: StringFilter<"userinfo"> | string
     department?: StringFilter<"userinfo"> | string
     createdBy?: StringNullableFilter<"userinfo"> | string | null
+    status?: StringFilter<"userinfo"> | string
   }
 
   export type userinfoOrderByWithRelationInput = {
     id?: SortOrder
     username?: SortOrder
+    type?: SortOrder
     fullName?: SortOrder
     department?: SortOrder
     createdBy?: SortOrderInput | SortOrder
+    status?: SortOrder
     _relevance?: userinfoOrderByRelevanceInput
   }
 
   export type userinfoWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    username?: string
+    username_type?: userinfoUsername_typeCompoundUniqueInput
     AND?: userinfoWhereInput | userinfoWhereInput[]
     OR?: userinfoWhereInput[]
     NOT?: userinfoWhereInput | userinfoWhereInput[]
+    username?: StringFilter<"userinfo"> | string
+    type?: StringFilter<"userinfo"> | string
     fullName?: StringFilter<"userinfo"> | string
     department?: StringFilter<"userinfo"> | string
     createdBy?: StringNullableFilter<"userinfo"> | string | null
-  }, "id" | "username">
+    status?: StringFilter<"userinfo"> | string
+  }, "id" | "username_type">
 
   export type userinfoOrderByWithAggregationInput = {
     id?: SortOrder
     username?: SortOrder
+    type?: SortOrder
     fullName?: SortOrder
     department?: SortOrder
     createdBy?: SortOrderInput | SortOrder
+    status?: SortOrder
     _count?: userinfoCountOrderByAggregateInput
     _avg?: userinfoAvgOrderByAggregateInput
     _max?: userinfoMaxOrderByAggregateInput
@@ -13022,9 +20690,11 @@ export namespace Prisma {
     NOT?: userinfoScalarWhereWithAggregatesInput | userinfoScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"userinfo"> | number
     username?: StringWithAggregatesFilter<"userinfo"> | string
+    type?: StringWithAggregatesFilter<"userinfo"> | string
     fullName?: StringWithAggregatesFilter<"userinfo"> | string
     department?: StringWithAggregatesFilter<"userinfo"> | string
     createdBy?: StringNullableWithAggregatesFilter<"userinfo"> | string | null
+    status?: StringWithAggregatesFilter<"userinfo"> | string
   }
 
   export type adminWhereInput = {
@@ -13075,6 +20745,473 @@ export namespace Prisma {
     username?: StringWithAggregatesFilter<"admin"> | string
     password?: StringWithAggregatesFilter<"admin"> | string
     role?: StringWithAggregatesFilter<"admin"> | string
+  }
+
+  export type GroupMetadataWhereInput = {
+    AND?: GroupMetadataWhereInput | GroupMetadataWhereInput[]
+    OR?: GroupMetadataWhereInput[]
+    NOT?: GroupMetadataWhereInput | GroupMetadataWhereInput[]
+    groupname?: StringFilter<"GroupMetadata"> | string
+    type?: StringFilter<"GroupMetadata"> | string
+    description?: StringNullableFilter<"GroupMetadata"> | string | null
+    radusergroups?: RadusergroupListRelationFilter
+  }
+
+  export type GroupMetadataOrderByWithRelationInput = {
+    groupname?: SortOrder
+    type?: SortOrder
+    description?: SortOrderInput | SortOrder
+    radusergroups?: radusergroupOrderByRelationAggregateInput
+    _relevance?: GroupMetadataOrderByRelevanceInput
+  }
+
+  export type GroupMetadataWhereUniqueInput = Prisma.AtLeast<{
+    groupname?: string
+    AND?: GroupMetadataWhereInput | GroupMetadataWhereInput[]
+    OR?: GroupMetadataWhereInput[]
+    NOT?: GroupMetadataWhereInput | GroupMetadataWhereInput[]
+    type?: StringFilter<"GroupMetadata"> | string
+    description?: StringNullableFilter<"GroupMetadata"> | string | null
+    radusergroups?: RadusergroupListRelationFilter
+  }, "groupname">
+
+  export type GroupMetadataOrderByWithAggregationInput = {
+    groupname?: SortOrder
+    type?: SortOrder
+    description?: SortOrderInput | SortOrder
+    _count?: GroupMetadataCountOrderByAggregateInput
+    _max?: GroupMetadataMaxOrderByAggregateInput
+    _min?: GroupMetadataMinOrderByAggregateInput
+  }
+
+  export type GroupMetadataScalarWhereWithAggregatesInput = {
+    AND?: GroupMetadataScalarWhereWithAggregatesInput | GroupMetadataScalarWhereWithAggregatesInput[]
+    OR?: GroupMetadataScalarWhereWithAggregatesInput[]
+    NOT?: GroupMetadataScalarWhereWithAggregatesInput | GroupMetadataScalarWhereWithAggregatesInput[]
+    groupname?: StringWithAggregatesFilter<"GroupMetadata"> | string
+    type?: StringWithAggregatesFilter<"GroupMetadata"> | string
+    description?: StringNullableWithAggregatesFilter<"GroupMetadata"> | string | null
+  }
+
+  export type RadiusPoolWhereInput = {
+    AND?: RadiusPoolWhereInput | RadiusPoolWhereInput[]
+    OR?: RadiusPoolWhereInput[]
+    NOT?: RadiusPoolWhereInput | RadiusPoolWhereInput[]
+    id?: IntFilter<"RadiusPool"> | number
+    name?: StringFilter<"RadiusPool"> | string
+    description?: StringNullableFilter<"RadiusPool"> | string | null
+  }
+
+  export type RadiusPoolOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    _relevance?: RadiusPoolOrderByRelevanceInput
+  }
+
+  export type RadiusPoolWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    name?: string
+    AND?: RadiusPoolWhereInput | RadiusPoolWhereInput[]
+    OR?: RadiusPoolWhereInput[]
+    NOT?: RadiusPoolWhereInput | RadiusPoolWhereInput[]
+    description?: StringNullableFilter<"RadiusPool"> | string | null
+  }, "id" | "name">
+
+  export type RadiusPoolOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    _count?: RadiusPoolCountOrderByAggregateInput
+    _avg?: RadiusPoolAvgOrderByAggregateInput
+    _max?: RadiusPoolMaxOrderByAggregateInput
+    _min?: RadiusPoolMinOrderByAggregateInput
+    _sum?: RadiusPoolSumOrderByAggregateInput
+  }
+
+  export type RadiusPoolScalarWhereWithAggregatesInput = {
+    AND?: RadiusPoolScalarWhereWithAggregatesInput | RadiusPoolScalarWhereWithAggregatesInput[]
+    OR?: RadiusPoolScalarWhereWithAggregatesInput[]
+    NOT?: RadiusPoolScalarWhereWithAggregatesInput | RadiusPoolScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"RadiusPool"> | number
+    name?: StringWithAggregatesFilter<"RadiusPool"> | string
+    description?: StringNullableWithAggregatesFilter<"RadiusPool"> | string | null
+  }
+
+  export type radippoolWhereInput = {
+    AND?: radippoolWhereInput | radippoolWhereInput[]
+    OR?: radippoolWhereInput[]
+    NOT?: radippoolWhereInput | radippoolWhereInput[]
+    id?: IntFilter<"radippool"> | number
+    pool_name?: StringFilter<"radippool"> | string
+    framedipaddress?: StringFilter<"radippool"> | string
+    nasipaddress?: StringFilter<"radippool"> | string
+    calledstationid?: StringFilter<"radippool"> | string
+    callingstationid?: StringFilter<"radippool"> | string
+    expiry_time?: DateTimeNullableFilter<"radippool"> | Date | string | null
+    username?: StringFilter<"radippool"> | string
+    pool_key?: StringFilter<"radippool"> | string
+  }
+
+  export type radippoolOrderByWithRelationInput = {
+    id?: SortOrder
+    pool_name?: SortOrder
+    framedipaddress?: SortOrder
+    nasipaddress?: SortOrder
+    calledstationid?: SortOrder
+    callingstationid?: SortOrder
+    expiry_time?: SortOrderInput | SortOrder
+    username?: SortOrder
+    pool_key?: SortOrder
+    _relevance?: radippoolOrderByRelevanceInput
+  }
+
+  export type radippoolWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: radippoolWhereInput | radippoolWhereInput[]
+    OR?: radippoolWhereInput[]
+    NOT?: radippoolWhereInput | radippoolWhereInput[]
+    pool_name?: StringFilter<"radippool"> | string
+    framedipaddress?: StringFilter<"radippool"> | string
+    nasipaddress?: StringFilter<"radippool"> | string
+    calledstationid?: StringFilter<"radippool"> | string
+    callingstationid?: StringFilter<"radippool"> | string
+    expiry_time?: DateTimeNullableFilter<"radippool"> | Date | string | null
+    username?: StringFilter<"radippool"> | string
+    pool_key?: StringFilter<"radippool"> | string
+  }, "id">
+
+  export type radippoolOrderByWithAggregationInput = {
+    id?: SortOrder
+    pool_name?: SortOrder
+    framedipaddress?: SortOrder
+    nasipaddress?: SortOrder
+    calledstationid?: SortOrder
+    callingstationid?: SortOrder
+    expiry_time?: SortOrderInput | SortOrder
+    username?: SortOrder
+    pool_key?: SortOrder
+    _count?: radippoolCountOrderByAggregateInput
+    _avg?: radippoolAvgOrderByAggregateInput
+    _max?: radippoolMaxOrderByAggregateInput
+    _min?: radippoolMinOrderByAggregateInput
+    _sum?: radippoolSumOrderByAggregateInput
+  }
+
+  export type radippoolScalarWhereWithAggregatesInput = {
+    AND?: radippoolScalarWhereWithAggregatesInput | radippoolScalarWhereWithAggregatesInput[]
+    OR?: radippoolScalarWhereWithAggregatesInput[]
+    NOT?: radippoolScalarWhereWithAggregatesInput | radippoolScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"radippool"> | number
+    pool_name?: StringWithAggregatesFilter<"radippool"> | string
+    framedipaddress?: StringWithAggregatesFilter<"radippool"> | string
+    nasipaddress?: StringWithAggregatesFilter<"radippool"> | string
+    calledstationid?: StringWithAggregatesFilter<"radippool"> | string
+    callingstationid?: StringWithAggregatesFilter<"radippool"> | string
+    expiry_time?: DateTimeNullableWithAggregatesFilter<"radippool"> | Date | string | null
+    username?: StringWithAggregatesFilter<"radippool"> | string
+    pool_key?: StringWithAggregatesFilter<"radippool"> | string
+  }
+
+  export type MikrotikConfigWhereInput = {
+    AND?: MikrotikConfigWhereInput | MikrotikConfigWhereInput[]
+    OR?: MikrotikConfigWhereInput[]
+    NOT?: MikrotikConfigWhereInput | MikrotikConfigWhereInput[]
+    id?: IntFilter<"MikrotikConfig"> | number
+    name?: StringFilter<"MikrotikConfig"> | string
+    host?: StringFilter<"MikrotikConfig"> | string
+    port?: IntFilter<"MikrotikConfig"> | number
+    username?: StringFilter<"MikrotikConfig"> | string
+    password?: StringFilter<"MikrotikConfig"> | string
+    useSsl?: BoolFilter<"MikrotikConfig"> | boolean
+    wgPublicHost?: StringNullableFilter<"MikrotikConfig"> | string | null
+    createdAt?: DateTimeFilter<"MikrotikConfig"> | Date | string
+    updatedAt?: DateTimeFilter<"MikrotikConfig"> | Date | string
+    peers?: WireguardPeerListRelationFilter
+  }
+
+  export type MikrotikConfigOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    host?: SortOrder
+    port?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    useSsl?: SortOrder
+    wgPublicHost?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    peers?: WireguardPeerOrderByRelationAggregateInput
+    _relevance?: MikrotikConfigOrderByRelevanceInput
+  }
+
+  export type MikrotikConfigWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    name?: string
+    AND?: MikrotikConfigWhereInput | MikrotikConfigWhereInput[]
+    OR?: MikrotikConfigWhereInput[]
+    NOT?: MikrotikConfigWhereInput | MikrotikConfigWhereInput[]
+    host?: StringFilter<"MikrotikConfig"> | string
+    port?: IntFilter<"MikrotikConfig"> | number
+    username?: StringFilter<"MikrotikConfig"> | string
+    password?: StringFilter<"MikrotikConfig"> | string
+    useSsl?: BoolFilter<"MikrotikConfig"> | boolean
+    wgPublicHost?: StringNullableFilter<"MikrotikConfig"> | string | null
+    createdAt?: DateTimeFilter<"MikrotikConfig"> | Date | string
+    updatedAt?: DateTimeFilter<"MikrotikConfig"> | Date | string
+    peers?: WireguardPeerListRelationFilter
+  }, "id" | "name">
+
+  export type MikrotikConfigOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    host?: SortOrder
+    port?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    useSsl?: SortOrder
+    wgPublicHost?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MikrotikConfigCountOrderByAggregateInput
+    _avg?: MikrotikConfigAvgOrderByAggregateInput
+    _max?: MikrotikConfigMaxOrderByAggregateInput
+    _min?: MikrotikConfigMinOrderByAggregateInput
+    _sum?: MikrotikConfigSumOrderByAggregateInput
+  }
+
+  export type MikrotikConfigScalarWhereWithAggregatesInput = {
+    AND?: MikrotikConfigScalarWhereWithAggregatesInput | MikrotikConfigScalarWhereWithAggregatesInput[]
+    OR?: MikrotikConfigScalarWhereWithAggregatesInput[]
+    NOT?: MikrotikConfigScalarWhereWithAggregatesInput | MikrotikConfigScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"MikrotikConfig"> | number
+    name?: StringWithAggregatesFilter<"MikrotikConfig"> | string
+    host?: StringWithAggregatesFilter<"MikrotikConfig"> | string
+    port?: IntWithAggregatesFilter<"MikrotikConfig"> | number
+    username?: StringWithAggregatesFilter<"MikrotikConfig"> | string
+    password?: StringWithAggregatesFilter<"MikrotikConfig"> | string
+    useSsl?: BoolWithAggregatesFilter<"MikrotikConfig"> | boolean
+    wgPublicHost?: StringNullableWithAggregatesFilter<"MikrotikConfig"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"MikrotikConfig"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MikrotikConfig"> | Date | string
+  }
+
+  export type WireguardPeerWhereInput = {
+    AND?: WireguardPeerWhereInput | WireguardPeerWhereInput[]
+    OR?: WireguardPeerWhereInput[]
+    NOT?: WireguardPeerWhereInput | WireguardPeerWhereInput[]
+    id?: IntFilter<"WireguardPeer"> | number
+    mikrotikId?: IntFilter<"WireguardPeer"> | number
+    mikrotikPeerId?: StringNullableFilter<"WireguardPeer"> | string | null
+    name?: StringFilter<"WireguardPeer"> | string
+    publicKey?: StringFilter<"WireguardPeer"> | string
+    privateKey?: StringFilter<"WireguardPeer"> | string
+    allowedIps?: StringFilter<"WireguardPeer"> | string
+    interface?: StringFilter<"WireguardPeer"> | string
+    listenPort?: IntNullableFilter<"WireguardPeer"> | number | null
+    endpoint?: StringNullableFilter<"WireguardPeer"> | string | null
+    comment?: StringNullableFilter<"WireguardPeer"> | string | null
+    createdAt?: DateTimeFilter<"WireguardPeer"> | Date | string
+    mikrotik?: XOR<MikrotikConfigScalarRelationFilter, MikrotikConfigWhereInput>
+  }
+
+  export type WireguardPeerOrderByWithRelationInput = {
+    id?: SortOrder
+    mikrotikId?: SortOrder
+    mikrotikPeerId?: SortOrderInput | SortOrder
+    name?: SortOrder
+    publicKey?: SortOrder
+    privateKey?: SortOrder
+    allowedIps?: SortOrder
+    interface?: SortOrder
+    listenPort?: SortOrderInput | SortOrder
+    endpoint?: SortOrderInput | SortOrder
+    comment?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    mikrotik?: MikrotikConfigOrderByWithRelationInput
+    _relevance?: WireguardPeerOrderByRelevanceInput
+  }
+
+  export type WireguardPeerWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: WireguardPeerWhereInput | WireguardPeerWhereInput[]
+    OR?: WireguardPeerWhereInput[]
+    NOT?: WireguardPeerWhereInput | WireguardPeerWhereInput[]
+    mikrotikId?: IntFilter<"WireguardPeer"> | number
+    mikrotikPeerId?: StringNullableFilter<"WireguardPeer"> | string | null
+    name?: StringFilter<"WireguardPeer"> | string
+    publicKey?: StringFilter<"WireguardPeer"> | string
+    privateKey?: StringFilter<"WireguardPeer"> | string
+    allowedIps?: StringFilter<"WireguardPeer"> | string
+    interface?: StringFilter<"WireguardPeer"> | string
+    listenPort?: IntNullableFilter<"WireguardPeer"> | number | null
+    endpoint?: StringNullableFilter<"WireguardPeer"> | string | null
+    comment?: StringNullableFilter<"WireguardPeer"> | string | null
+    createdAt?: DateTimeFilter<"WireguardPeer"> | Date | string
+    mikrotik?: XOR<MikrotikConfigScalarRelationFilter, MikrotikConfigWhereInput>
+  }, "id">
+
+  export type WireguardPeerOrderByWithAggregationInput = {
+    id?: SortOrder
+    mikrotikId?: SortOrder
+    mikrotikPeerId?: SortOrderInput | SortOrder
+    name?: SortOrder
+    publicKey?: SortOrder
+    privateKey?: SortOrder
+    allowedIps?: SortOrder
+    interface?: SortOrder
+    listenPort?: SortOrderInput | SortOrder
+    endpoint?: SortOrderInput | SortOrder
+    comment?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: WireguardPeerCountOrderByAggregateInput
+    _avg?: WireguardPeerAvgOrderByAggregateInput
+    _max?: WireguardPeerMaxOrderByAggregateInput
+    _min?: WireguardPeerMinOrderByAggregateInput
+    _sum?: WireguardPeerSumOrderByAggregateInput
+  }
+
+  export type WireguardPeerScalarWhereWithAggregatesInput = {
+    AND?: WireguardPeerScalarWhereWithAggregatesInput | WireguardPeerScalarWhereWithAggregatesInput[]
+    OR?: WireguardPeerScalarWhereWithAggregatesInput[]
+    NOT?: WireguardPeerScalarWhereWithAggregatesInput | WireguardPeerScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"WireguardPeer"> | number
+    mikrotikId?: IntWithAggregatesFilter<"WireguardPeer"> | number
+    mikrotikPeerId?: StringNullableWithAggregatesFilter<"WireguardPeer"> | string | null
+    name?: StringWithAggregatesFilter<"WireguardPeer"> | string
+    publicKey?: StringWithAggregatesFilter<"WireguardPeer"> | string
+    privateKey?: StringWithAggregatesFilter<"WireguardPeer"> | string
+    allowedIps?: StringWithAggregatesFilter<"WireguardPeer"> | string
+    interface?: StringWithAggregatesFilter<"WireguardPeer"> | string
+    listenPort?: IntNullableWithAggregatesFilter<"WireguardPeer"> | number | null
+    endpoint?: StringNullableWithAggregatesFilter<"WireguardPeer"> | string | null
+    comment?: StringNullableWithAggregatesFilter<"WireguardPeer"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"WireguardPeer"> | Date | string
+  }
+
+  export type WifiWhereInput = {
+    AND?: WifiWhereInput | WifiWhereInput[]
+    OR?: WifiWhereInput[]
+    NOT?: WifiWhereInput | WifiWhereInput[]
+    id?: IntFilter<"Wifi"> | number
+    ssid?: StringFilter<"Wifi"> | string
+    password?: StringFilter<"Wifi"> | string
+    createdAt?: DateTimeFilter<"Wifi"> | Date | string
+    updatedAt?: DateTimeFilter<"Wifi"> | Date | string
+  }
+
+  export type WifiOrderByWithRelationInput = {
+    id?: SortOrder
+    ssid?: SortOrder
+    password?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _relevance?: WifiOrderByRelevanceInput
+  }
+
+  export type WifiWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    ssid?: string
+    AND?: WifiWhereInput | WifiWhereInput[]
+    OR?: WifiWhereInput[]
+    NOT?: WifiWhereInput | WifiWhereInput[]
+    password?: StringFilter<"Wifi"> | string
+    createdAt?: DateTimeFilter<"Wifi"> | Date | string
+    updatedAt?: DateTimeFilter<"Wifi"> | Date | string
+  }, "id" | "ssid">
+
+  export type WifiOrderByWithAggregationInput = {
+    id?: SortOrder
+    ssid?: SortOrder
+    password?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: WifiCountOrderByAggregateInput
+    _avg?: WifiAvgOrderByAggregateInput
+    _max?: WifiMaxOrderByAggregateInput
+    _min?: WifiMinOrderByAggregateInput
+    _sum?: WifiSumOrderByAggregateInput
+  }
+
+  export type WifiScalarWhereWithAggregatesInput = {
+    AND?: WifiScalarWhereWithAggregatesInput | WifiScalarWhereWithAggregatesInput[]
+    OR?: WifiScalarWhereWithAggregatesInput[]
+    NOT?: WifiScalarWhereWithAggregatesInput | WifiScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Wifi"> | number
+    ssid?: StringWithAggregatesFilter<"Wifi"> | string
+    password?: StringWithAggregatesFilter<"Wifi"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Wifi"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Wifi"> | Date | string
+  }
+
+  export type AuditLogWhereInput = {
+    AND?: AuditLogWhereInput | AuditLogWhereInput[]
+    OR?: AuditLogWhereInput[]
+    NOT?: AuditLogWhereInput | AuditLogWhereInput[]
+    id?: IntFilter<"AuditLog"> | number
+    timestamp?: DateTimeFilter<"AuditLog"> | Date | string
+    adminUser?: StringFilter<"AuditLog"> | string
+    action?: StringFilter<"AuditLog"> | string
+    targetType?: StringFilter<"AuditLog"> | string
+    targetName?: StringNullableFilter<"AuditLog"> | string | null
+    details?: StringNullableFilter<"AuditLog"> | string | null
+    ipAddress?: StringNullableFilter<"AuditLog"> | string | null
+  }
+
+  export type AuditLogOrderByWithRelationInput = {
+    id?: SortOrder
+    timestamp?: SortOrder
+    adminUser?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrder
+    targetName?: SortOrderInput | SortOrder
+    details?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    _relevance?: AuditLogOrderByRelevanceInput
+  }
+
+  export type AuditLogWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: AuditLogWhereInput | AuditLogWhereInput[]
+    OR?: AuditLogWhereInput[]
+    NOT?: AuditLogWhereInput | AuditLogWhereInput[]
+    timestamp?: DateTimeFilter<"AuditLog"> | Date | string
+    adminUser?: StringFilter<"AuditLog"> | string
+    action?: StringFilter<"AuditLog"> | string
+    targetType?: StringFilter<"AuditLog"> | string
+    targetName?: StringNullableFilter<"AuditLog"> | string | null
+    details?: StringNullableFilter<"AuditLog"> | string | null
+    ipAddress?: StringNullableFilter<"AuditLog"> | string | null
+  }, "id">
+
+  export type AuditLogOrderByWithAggregationInput = {
+    id?: SortOrder
+    timestamp?: SortOrder
+    adminUser?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrder
+    targetName?: SortOrderInput | SortOrder
+    details?: SortOrderInput | SortOrder
+    ipAddress?: SortOrderInput | SortOrder
+    _count?: AuditLogCountOrderByAggregateInput
+    _avg?: AuditLogAvgOrderByAggregateInput
+    _max?: AuditLogMaxOrderByAggregateInput
+    _min?: AuditLogMinOrderByAggregateInput
+    _sum?: AuditLogSumOrderByAggregateInput
+  }
+
+  export type AuditLogScalarWhereWithAggregatesInput = {
+    AND?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
+    OR?: AuditLogScalarWhereWithAggregatesInput[]
+    NOT?: AuditLogScalarWhereWithAggregatesInput | AuditLogScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"AuditLog"> | number
+    timestamp?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
+    adminUser?: StringWithAggregatesFilter<"AuditLog"> | string
+    action?: StringWithAggregatesFilter<"AuditLog"> | string
+    targetType?: StringWithAggregatesFilter<"AuditLog"> | string
+    targetName?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    details?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
+    ipAddress?: StringNullableWithAggregatesFilter<"AuditLog"> | string | null
   }
 
   export type nasCreateInput = {
@@ -13691,8 +21828,8 @@ export namespace Prisma {
 
   export type radusergroupCreateInput = {
     username?: string
-    groupname?: string
     priority?: number
+    groupMetadata?: GroupMetadataCreateNestedOneWithoutRadusergroupsInput
   }
 
   export type radusergroupUncheckedCreateInput = {
@@ -13704,8 +21841,8 @@ export namespace Prisma {
 
   export type radusergroupUpdateInput = {
     username?: StringFieldUpdateOperationsInput | string
-    groupname?: StringFieldUpdateOperationsInput | string
     priority?: IntFieldUpdateOperationsInput | number
+    groupMetadata?: GroupMetadataUpdateOneWithoutRadusergroupsNestedInput
   }
 
   export type radusergroupUncheckedUpdateInput = {
@@ -13724,7 +21861,6 @@ export namespace Prisma {
 
   export type radusergroupUpdateManyMutationInput = {
     username?: StringFieldUpdateOperationsInput | string
-    groupname?: StringFieldUpdateOperationsInput | string
     priority?: IntFieldUpdateOperationsInput | number
   }
 
@@ -13737,55 +21873,69 @@ export namespace Prisma {
 
   export type userinfoCreateInput = {
     username: string
+    type?: string
     fullName?: string
     department?: string
     createdBy?: string | null
+    status?: string
   }
 
   export type userinfoUncheckedCreateInput = {
     id?: number
     username: string
+    type?: string
     fullName?: string
     department?: string
     createdBy?: string | null
+    status?: string
   }
 
   export type userinfoUpdateInput = {
     username?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type userinfoUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     username?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type userinfoCreateManyInput = {
     id?: number
     username: string
+    type?: string
     fullName?: string
     department?: string
     createdBy?: string | null
+    status?: string
   }
 
   export type userinfoUpdateManyMutationInput = {
     username?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type userinfoUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     username?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
     fullName?: StringFieldUpdateOperationsInput | string
     department?: StringFieldUpdateOperationsInput | string
     createdBy?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
   }
 
   export type adminCreateInput = {
@@ -13832,6 +21982,492 @@ export namespace Prisma {
     username?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type GroupMetadataCreateInput = {
+    groupname: string
+    type: string
+    description?: string | null
+    radusergroups?: radusergroupCreateNestedManyWithoutGroupMetadataInput
+  }
+
+  export type GroupMetadataUncheckedCreateInput = {
+    groupname: string
+    type: string
+    description?: string | null
+    radusergroups?: radusergroupUncheckedCreateNestedManyWithoutGroupMetadataInput
+  }
+
+  export type GroupMetadataUpdateInput = {
+    groupname?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    radusergroups?: radusergroupUpdateManyWithoutGroupMetadataNestedInput
+  }
+
+  export type GroupMetadataUncheckedUpdateInput = {
+    groupname?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    radusergroups?: radusergroupUncheckedUpdateManyWithoutGroupMetadataNestedInput
+  }
+
+  export type GroupMetadataCreateManyInput = {
+    groupname: string
+    type: string
+    description?: string | null
+  }
+
+  export type GroupMetadataUpdateManyMutationInput = {
+    groupname?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GroupMetadataUncheckedUpdateManyInput = {
+    groupname?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RadiusPoolCreateInput = {
+    name: string
+    description?: string | null
+  }
+
+  export type RadiusPoolUncheckedCreateInput = {
+    id?: number
+    name: string
+    description?: string | null
+  }
+
+  export type RadiusPoolUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RadiusPoolUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RadiusPoolCreateManyInput = {
+    id?: number
+    name: string
+    description?: string | null
+  }
+
+  export type RadiusPoolUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type RadiusPoolUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type radippoolCreateInput = {
+    pool_name: string
+    framedipaddress?: string
+    nasipaddress?: string
+    calledstationid: string
+    callingstationid: string
+    expiry_time?: Date | string | null
+    username?: string
+    pool_key: string
+  }
+
+  export type radippoolUncheckedCreateInput = {
+    id?: number
+    pool_name: string
+    framedipaddress?: string
+    nasipaddress?: string
+    calledstationid: string
+    callingstationid: string
+    expiry_time?: Date | string | null
+    username?: string
+    pool_key: string
+  }
+
+  export type radippoolUpdateInput = {
+    pool_name?: StringFieldUpdateOperationsInput | string
+    framedipaddress?: StringFieldUpdateOperationsInput | string
+    nasipaddress?: StringFieldUpdateOperationsInput | string
+    calledstationid?: StringFieldUpdateOperationsInput | string
+    callingstationid?: StringFieldUpdateOperationsInput | string
+    expiry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    pool_key?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type radippoolUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pool_name?: StringFieldUpdateOperationsInput | string
+    framedipaddress?: StringFieldUpdateOperationsInput | string
+    nasipaddress?: StringFieldUpdateOperationsInput | string
+    calledstationid?: StringFieldUpdateOperationsInput | string
+    callingstationid?: StringFieldUpdateOperationsInput | string
+    expiry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    pool_key?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type radippoolCreateManyInput = {
+    id?: number
+    pool_name: string
+    framedipaddress?: string
+    nasipaddress?: string
+    calledstationid: string
+    callingstationid: string
+    expiry_time?: Date | string | null
+    username?: string
+    pool_key: string
+  }
+
+  export type radippoolUpdateManyMutationInput = {
+    pool_name?: StringFieldUpdateOperationsInput | string
+    framedipaddress?: StringFieldUpdateOperationsInput | string
+    nasipaddress?: StringFieldUpdateOperationsInput | string
+    calledstationid?: StringFieldUpdateOperationsInput | string
+    callingstationid?: StringFieldUpdateOperationsInput | string
+    expiry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    pool_key?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type radippoolUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    pool_name?: StringFieldUpdateOperationsInput | string
+    framedipaddress?: StringFieldUpdateOperationsInput | string
+    nasipaddress?: StringFieldUpdateOperationsInput | string
+    calledstationid?: StringFieldUpdateOperationsInput | string
+    callingstationid?: StringFieldUpdateOperationsInput | string
+    expiry_time?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    username?: StringFieldUpdateOperationsInput | string
+    pool_key?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type MikrotikConfigCreateInput = {
+    name: string
+    host: string
+    port?: number
+    username: string
+    password: string
+    useSsl?: boolean
+    wgPublicHost?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    peers?: WireguardPeerCreateNestedManyWithoutMikrotikInput
+  }
+
+  export type MikrotikConfigUncheckedCreateInput = {
+    id?: number
+    name: string
+    host: string
+    port?: number
+    username: string
+    password: string
+    useSsl?: boolean
+    wgPublicHost?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    peers?: WireguardPeerUncheckedCreateNestedManyWithoutMikrotikInput
+  }
+
+  export type MikrotikConfigUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    host?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    useSsl?: BoolFieldUpdateOperationsInput | boolean
+    wgPublicHost?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    peers?: WireguardPeerUpdateManyWithoutMikrotikNestedInput
+  }
+
+  export type MikrotikConfigUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    host?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    useSsl?: BoolFieldUpdateOperationsInput | boolean
+    wgPublicHost?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    peers?: WireguardPeerUncheckedUpdateManyWithoutMikrotikNestedInput
+  }
+
+  export type MikrotikConfigCreateManyInput = {
+    id?: number
+    name: string
+    host: string
+    port?: number
+    username: string
+    password: string
+    useSsl?: boolean
+    wgPublicHost?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MikrotikConfigUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    host?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    useSsl?: BoolFieldUpdateOperationsInput | boolean
+    wgPublicHost?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MikrotikConfigUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    host?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    useSsl?: BoolFieldUpdateOperationsInput | boolean
+    wgPublicHost?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WireguardPeerCreateInput = {
+    mikrotikPeerId?: string | null
+    name: string
+    publicKey: string
+    privateKey: string
+    allowedIps: string
+    interface?: string
+    listenPort?: number | null
+    endpoint?: string | null
+    comment?: string | null
+    createdAt?: Date | string
+    mikrotik: MikrotikConfigCreateNestedOneWithoutPeersInput
+  }
+
+  export type WireguardPeerUncheckedCreateInput = {
+    id?: number
+    mikrotikId: number
+    mikrotikPeerId?: string | null
+    name: string
+    publicKey: string
+    privateKey: string
+    allowedIps: string
+    interface?: string
+    listenPort?: number | null
+    endpoint?: string | null
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WireguardPeerUpdateInput = {
+    mikrotikPeerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    privateKey?: StringFieldUpdateOperationsInput | string
+    allowedIps?: StringFieldUpdateOperationsInput | string
+    interface?: StringFieldUpdateOperationsInput | string
+    listenPort?: NullableIntFieldUpdateOperationsInput | number | null
+    endpoint?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    mikrotik?: MikrotikConfigUpdateOneRequiredWithoutPeersNestedInput
+  }
+
+  export type WireguardPeerUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    mikrotikId?: IntFieldUpdateOperationsInput | number
+    mikrotikPeerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    privateKey?: StringFieldUpdateOperationsInput | string
+    allowedIps?: StringFieldUpdateOperationsInput | string
+    interface?: StringFieldUpdateOperationsInput | string
+    listenPort?: NullableIntFieldUpdateOperationsInput | number | null
+    endpoint?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WireguardPeerCreateManyInput = {
+    id?: number
+    mikrotikId: number
+    mikrotikPeerId?: string | null
+    name: string
+    publicKey: string
+    privateKey: string
+    allowedIps: string
+    interface?: string
+    listenPort?: number | null
+    endpoint?: string | null
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WireguardPeerUpdateManyMutationInput = {
+    mikrotikPeerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    privateKey?: StringFieldUpdateOperationsInput | string
+    allowedIps?: StringFieldUpdateOperationsInput | string
+    interface?: StringFieldUpdateOperationsInput | string
+    listenPort?: NullableIntFieldUpdateOperationsInput | number | null
+    endpoint?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WireguardPeerUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    mikrotikId?: IntFieldUpdateOperationsInput | number
+    mikrotikPeerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    privateKey?: StringFieldUpdateOperationsInput | string
+    allowedIps?: StringFieldUpdateOperationsInput | string
+    interface?: StringFieldUpdateOperationsInput | string
+    listenPort?: NullableIntFieldUpdateOperationsInput | number | null
+    endpoint?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WifiCreateInput = {
+    ssid: string
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WifiUncheckedCreateInput = {
+    id?: number
+    ssid: string
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WifiUpdateInput = {
+    ssid?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WifiUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    ssid?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WifiCreateManyInput = {
+    id?: number
+    ssid: string
+    password: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type WifiUpdateManyMutationInput = {
+    ssid?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WifiUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    ssid?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AuditLogCreateInput = {
+    timestamp?: Date | string
+    adminUser: string
+    action: string
+    targetType: string
+    targetName?: string | null
+    details?: string | null
+    ipAddress?: string | null
+  }
+
+  export type AuditLogUncheckedCreateInput = {
+    id?: number
+    timestamp?: Date | string
+    adminUser: string
+    action: string
+    targetType: string
+    targetName?: string | null
+    details?: string | null
+    ipAddress?: string | null
+  }
+
+  export type AuditLogUpdateInput = {
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    adminUser?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: StringFieldUpdateOperationsInput | string
+    targetName?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AuditLogUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    adminUser?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: StringFieldUpdateOperationsInput | string
+    targetName?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AuditLogCreateManyInput = {
+    id?: number
+    timestamp?: Date | string
+    adminUser: string
+    action: string
+    targetType: string
+    targetName?: string | null
+    details?: string | null
+    ipAddress?: string | null
+  }
+
+  export type AuditLogUpdateManyMutationInput = {
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    adminUser?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: StringFieldUpdateOperationsInput | string
+    targetName?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type AuditLogUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    timestamp?: DateTimeFieldUpdateOperationsInput | Date | string
+    adminUser?: StringFieldUpdateOperationsInput | string
+    action?: StringFieldUpdateOperationsInput | string
+    targetType?: StringFieldUpdateOperationsInput | string
+    targetName?: NullableStringFieldUpdateOperationsInput | string | null
+    details?: NullableStringFieldUpdateOperationsInput | string | null
+    ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -14447,6 +23083,11 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type GroupMetadataNullableScalarRelationFilter = {
+    is?: GroupMetadataWhereInput | null
+    isNot?: GroupMetadataWhereInput | null
+  }
+
   export type radusergroupOrderByRelevanceInput = {
     fields: radusergroupOrderByRelevanceFieldEnum | radusergroupOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -14490,12 +23131,19 @@ export namespace Prisma {
     search: string
   }
 
+  export type userinfoUsername_typeCompoundUniqueInput = {
+    username: string
+    type: string
+  }
+
   export type userinfoCountOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
+    type?: SortOrder
     fullName?: SortOrder
     department?: SortOrder
     createdBy?: SortOrder
+    status?: SortOrder
   }
 
   export type userinfoAvgOrderByAggregateInput = {
@@ -14505,17 +23153,21 @@ export namespace Prisma {
   export type userinfoMaxOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
+    type?: SortOrder
     fullName?: SortOrder
     department?: SortOrder
     createdBy?: SortOrder
+    status?: SortOrder
   }
 
   export type userinfoMinOrderByAggregateInput = {
     id?: SortOrder
     username?: SortOrder
+    type?: SortOrder
     fullName?: SortOrder
     department?: SortOrder
     createdBy?: SortOrder
+    status?: SortOrder
   }
 
   export type userinfoSumOrderByAggregateInput = {
@@ -14554,6 +23206,353 @@ export namespace Prisma {
   }
 
   export type adminSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type RadusergroupListRelationFilter = {
+    every?: radusergroupWhereInput
+    some?: radusergroupWhereInput
+    none?: radusergroupWhereInput
+  }
+
+  export type radusergroupOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GroupMetadataOrderByRelevanceInput = {
+    fields: GroupMetadataOrderByRelevanceFieldEnum | GroupMetadataOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type GroupMetadataCountOrderByAggregateInput = {
+    groupname?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+  }
+
+  export type GroupMetadataMaxOrderByAggregateInput = {
+    groupname?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+  }
+
+  export type GroupMetadataMinOrderByAggregateInput = {
+    groupname?: SortOrder
+    type?: SortOrder
+    description?: SortOrder
+  }
+
+  export type RadiusPoolOrderByRelevanceInput = {
+    fields: RadiusPoolOrderByRelevanceFieldEnum | RadiusPoolOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type RadiusPoolCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+  }
+
+  export type RadiusPoolAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type RadiusPoolMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+  }
+
+  export type RadiusPoolMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+  }
+
+  export type RadiusPoolSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type radippoolOrderByRelevanceInput = {
+    fields: radippoolOrderByRelevanceFieldEnum | radippoolOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type radippoolCountOrderByAggregateInput = {
+    id?: SortOrder
+    pool_name?: SortOrder
+    framedipaddress?: SortOrder
+    nasipaddress?: SortOrder
+    calledstationid?: SortOrder
+    callingstationid?: SortOrder
+    expiry_time?: SortOrder
+    username?: SortOrder
+    pool_key?: SortOrder
+  }
+
+  export type radippoolAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type radippoolMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pool_name?: SortOrder
+    framedipaddress?: SortOrder
+    nasipaddress?: SortOrder
+    calledstationid?: SortOrder
+    callingstationid?: SortOrder
+    expiry_time?: SortOrder
+    username?: SortOrder
+    pool_key?: SortOrder
+  }
+
+  export type radippoolMinOrderByAggregateInput = {
+    id?: SortOrder
+    pool_name?: SortOrder
+    framedipaddress?: SortOrder
+    nasipaddress?: SortOrder
+    calledstationid?: SortOrder
+    callingstationid?: SortOrder
+    expiry_time?: SortOrder
+    username?: SortOrder
+    pool_key?: SortOrder
+  }
+
+  export type radippoolSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type WireguardPeerListRelationFilter = {
+    every?: WireguardPeerWhereInput
+    some?: WireguardPeerWhereInput
+    none?: WireguardPeerWhereInput
+  }
+
+  export type WireguardPeerOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MikrotikConfigOrderByRelevanceInput = {
+    fields: MikrotikConfigOrderByRelevanceFieldEnum | MikrotikConfigOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type MikrotikConfigCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    host?: SortOrder
+    port?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    useSsl?: SortOrder
+    wgPublicHost?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MikrotikConfigAvgOrderByAggregateInput = {
+    id?: SortOrder
+    port?: SortOrder
+  }
+
+  export type MikrotikConfigMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    host?: SortOrder
+    port?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    useSsl?: SortOrder
+    wgPublicHost?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MikrotikConfigMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    host?: SortOrder
+    port?: SortOrder
+    username?: SortOrder
+    password?: SortOrder
+    useSsl?: SortOrder
+    wgPublicHost?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MikrotikConfigSumOrderByAggregateInput = {
+    id?: SortOrder
+    port?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type MikrotikConfigScalarRelationFilter = {
+    is?: MikrotikConfigWhereInput
+    isNot?: MikrotikConfigWhereInput
+  }
+
+  export type WireguardPeerOrderByRelevanceInput = {
+    fields: WireguardPeerOrderByRelevanceFieldEnum | WireguardPeerOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type WireguardPeerCountOrderByAggregateInput = {
+    id?: SortOrder
+    mikrotikId?: SortOrder
+    mikrotikPeerId?: SortOrder
+    name?: SortOrder
+    publicKey?: SortOrder
+    privateKey?: SortOrder
+    allowedIps?: SortOrder
+    interface?: SortOrder
+    listenPort?: SortOrder
+    endpoint?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WireguardPeerAvgOrderByAggregateInput = {
+    id?: SortOrder
+    mikrotikId?: SortOrder
+    listenPort?: SortOrder
+  }
+
+  export type WireguardPeerMaxOrderByAggregateInput = {
+    id?: SortOrder
+    mikrotikId?: SortOrder
+    mikrotikPeerId?: SortOrder
+    name?: SortOrder
+    publicKey?: SortOrder
+    privateKey?: SortOrder
+    allowedIps?: SortOrder
+    interface?: SortOrder
+    listenPort?: SortOrder
+    endpoint?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WireguardPeerMinOrderByAggregateInput = {
+    id?: SortOrder
+    mikrotikId?: SortOrder
+    mikrotikPeerId?: SortOrder
+    name?: SortOrder
+    publicKey?: SortOrder
+    privateKey?: SortOrder
+    allowedIps?: SortOrder
+    interface?: SortOrder
+    listenPort?: SortOrder
+    endpoint?: SortOrder
+    comment?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type WireguardPeerSumOrderByAggregateInput = {
+    id?: SortOrder
+    mikrotikId?: SortOrder
+    listenPort?: SortOrder
+  }
+
+  export type WifiOrderByRelevanceInput = {
+    fields: WifiOrderByRelevanceFieldEnum | WifiOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type WifiCountOrderByAggregateInput = {
+    id?: SortOrder
+    ssid?: SortOrder
+    password?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WifiAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type WifiMaxOrderByAggregateInput = {
+    id?: SortOrder
+    ssid?: SortOrder
+    password?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WifiMinOrderByAggregateInput = {
+    id?: SortOrder
+    ssid?: SortOrder
+    password?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type WifiSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type AuditLogOrderByRelevanceInput = {
+    fields: AuditLogOrderByRelevanceFieldEnum | AuditLogOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type AuditLogCountOrderByAggregateInput = {
+    id?: SortOrder
+    timestamp?: SortOrder
+    adminUser?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrder
+    targetName?: SortOrder
+    details?: SortOrder
+    ipAddress?: SortOrder
+  }
+
+  export type AuditLogAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type AuditLogMaxOrderByAggregateInput = {
+    id?: SortOrder
+    timestamp?: SortOrder
+    adminUser?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrder
+    targetName?: SortOrder
+    details?: SortOrder
+    ipAddress?: SortOrder
+  }
+
+  export type AuditLogMinOrderByAggregateInput = {
+    id?: SortOrder
+    timestamp?: SortOrder
+    adminUser?: SortOrder
+    action?: SortOrder
+    targetType?: SortOrder
+    targetName?: SortOrder
+    details?: SortOrder
+    ipAddress?: SortOrder
+  }
+
+  export type AuditLogSumOrderByAggregateInput = {
     id?: SortOrder
   }
 
@@ -14603,6 +23602,124 @@ export namespace Prisma {
     decrement?: bigint | number
     multiply?: bigint | number
     divide?: bigint | number
+  }
+
+  export type GroupMetadataCreateNestedOneWithoutRadusergroupsInput = {
+    create?: XOR<GroupMetadataCreateWithoutRadusergroupsInput, GroupMetadataUncheckedCreateWithoutRadusergroupsInput>
+    connectOrCreate?: GroupMetadataCreateOrConnectWithoutRadusergroupsInput
+    connect?: GroupMetadataWhereUniqueInput
+  }
+
+  export type GroupMetadataUpdateOneWithoutRadusergroupsNestedInput = {
+    create?: XOR<GroupMetadataCreateWithoutRadusergroupsInput, GroupMetadataUncheckedCreateWithoutRadusergroupsInput>
+    connectOrCreate?: GroupMetadataCreateOrConnectWithoutRadusergroupsInput
+    upsert?: GroupMetadataUpsertWithoutRadusergroupsInput
+    disconnect?: GroupMetadataWhereInput | boolean
+    delete?: GroupMetadataWhereInput | boolean
+    connect?: GroupMetadataWhereUniqueInput
+    update?: XOR<XOR<GroupMetadataUpdateToOneWithWhereWithoutRadusergroupsInput, GroupMetadataUpdateWithoutRadusergroupsInput>, GroupMetadataUncheckedUpdateWithoutRadusergroupsInput>
+  }
+
+  export type radusergroupCreateNestedManyWithoutGroupMetadataInput = {
+    create?: XOR<radusergroupCreateWithoutGroupMetadataInput, radusergroupUncheckedCreateWithoutGroupMetadataInput> | radusergroupCreateWithoutGroupMetadataInput[] | radusergroupUncheckedCreateWithoutGroupMetadataInput[]
+    connectOrCreate?: radusergroupCreateOrConnectWithoutGroupMetadataInput | radusergroupCreateOrConnectWithoutGroupMetadataInput[]
+    createMany?: radusergroupCreateManyGroupMetadataInputEnvelope
+    connect?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+  }
+
+  export type radusergroupUncheckedCreateNestedManyWithoutGroupMetadataInput = {
+    create?: XOR<radusergroupCreateWithoutGroupMetadataInput, radusergroupUncheckedCreateWithoutGroupMetadataInput> | radusergroupCreateWithoutGroupMetadataInput[] | radusergroupUncheckedCreateWithoutGroupMetadataInput[]
+    connectOrCreate?: radusergroupCreateOrConnectWithoutGroupMetadataInput | radusergroupCreateOrConnectWithoutGroupMetadataInput[]
+    createMany?: radusergroupCreateManyGroupMetadataInputEnvelope
+    connect?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+  }
+
+  export type radusergroupUpdateManyWithoutGroupMetadataNestedInput = {
+    create?: XOR<radusergroupCreateWithoutGroupMetadataInput, radusergroupUncheckedCreateWithoutGroupMetadataInput> | radusergroupCreateWithoutGroupMetadataInput[] | radusergroupUncheckedCreateWithoutGroupMetadataInput[]
+    connectOrCreate?: radusergroupCreateOrConnectWithoutGroupMetadataInput | radusergroupCreateOrConnectWithoutGroupMetadataInput[]
+    upsert?: radusergroupUpsertWithWhereUniqueWithoutGroupMetadataInput | radusergroupUpsertWithWhereUniqueWithoutGroupMetadataInput[]
+    createMany?: radusergroupCreateManyGroupMetadataInputEnvelope
+    set?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+    disconnect?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+    delete?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+    connect?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+    update?: radusergroupUpdateWithWhereUniqueWithoutGroupMetadataInput | radusergroupUpdateWithWhereUniqueWithoutGroupMetadataInput[]
+    updateMany?: radusergroupUpdateManyWithWhereWithoutGroupMetadataInput | radusergroupUpdateManyWithWhereWithoutGroupMetadataInput[]
+    deleteMany?: radusergroupScalarWhereInput | radusergroupScalarWhereInput[]
+  }
+
+  export type radusergroupUncheckedUpdateManyWithoutGroupMetadataNestedInput = {
+    create?: XOR<radusergroupCreateWithoutGroupMetadataInput, radusergroupUncheckedCreateWithoutGroupMetadataInput> | radusergroupCreateWithoutGroupMetadataInput[] | radusergroupUncheckedCreateWithoutGroupMetadataInput[]
+    connectOrCreate?: radusergroupCreateOrConnectWithoutGroupMetadataInput | radusergroupCreateOrConnectWithoutGroupMetadataInput[]
+    upsert?: radusergroupUpsertWithWhereUniqueWithoutGroupMetadataInput | radusergroupUpsertWithWhereUniqueWithoutGroupMetadataInput[]
+    createMany?: radusergroupCreateManyGroupMetadataInputEnvelope
+    set?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+    disconnect?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+    delete?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+    connect?: radusergroupWhereUniqueInput | radusergroupWhereUniqueInput[]
+    update?: radusergroupUpdateWithWhereUniqueWithoutGroupMetadataInput | radusergroupUpdateWithWhereUniqueWithoutGroupMetadataInput[]
+    updateMany?: radusergroupUpdateManyWithWhereWithoutGroupMetadataInput | radusergroupUpdateManyWithWhereWithoutGroupMetadataInput[]
+    deleteMany?: radusergroupScalarWhereInput | radusergroupScalarWhereInput[]
+  }
+
+  export type WireguardPeerCreateNestedManyWithoutMikrotikInput = {
+    create?: XOR<WireguardPeerCreateWithoutMikrotikInput, WireguardPeerUncheckedCreateWithoutMikrotikInput> | WireguardPeerCreateWithoutMikrotikInput[] | WireguardPeerUncheckedCreateWithoutMikrotikInput[]
+    connectOrCreate?: WireguardPeerCreateOrConnectWithoutMikrotikInput | WireguardPeerCreateOrConnectWithoutMikrotikInput[]
+    createMany?: WireguardPeerCreateManyMikrotikInputEnvelope
+    connect?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+  }
+
+  export type WireguardPeerUncheckedCreateNestedManyWithoutMikrotikInput = {
+    create?: XOR<WireguardPeerCreateWithoutMikrotikInput, WireguardPeerUncheckedCreateWithoutMikrotikInput> | WireguardPeerCreateWithoutMikrotikInput[] | WireguardPeerUncheckedCreateWithoutMikrotikInput[]
+    connectOrCreate?: WireguardPeerCreateOrConnectWithoutMikrotikInput | WireguardPeerCreateOrConnectWithoutMikrotikInput[]
+    createMany?: WireguardPeerCreateManyMikrotikInputEnvelope
+    connect?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type WireguardPeerUpdateManyWithoutMikrotikNestedInput = {
+    create?: XOR<WireguardPeerCreateWithoutMikrotikInput, WireguardPeerUncheckedCreateWithoutMikrotikInput> | WireguardPeerCreateWithoutMikrotikInput[] | WireguardPeerUncheckedCreateWithoutMikrotikInput[]
+    connectOrCreate?: WireguardPeerCreateOrConnectWithoutMikrotikInput | WireguardPeerCreateOrConnectWithoutMikrotikInput[]
+    upsert?: WireguardPeerUpsertWithWhereUniqueWithoutMikrotikInput | WireguardPeerUpsertWithWhereUniqueWithoutMikrotikInput[]
+    createMany?: WireguardPeerCreateManyMikrotikInputEnvelope
+    set?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+    disconnect?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+    delete?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+    connect?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+    update?: WireguardPeerUpdateWithWhereUniqueWithoutMikrotikInput | WireguardPeerUpdateWithWhereUniqueWithoutMikrotikInput[]
+    updateMany?: WireguardPeerUpdateManyWithWhereWithoutMikrotikInput | WireguardPeerUpdateManyWithWhereWithoutMikrotikInput[]
+    deleteMany?: WireguardPeerScalarWhereInput | WireguardPeerScalarWhereInput[]
+  }
+
+  export type WireguardPeerUncheckedUpdateManyWithoutMikrotikNestedInput = {
+    create?: XOR<WireguardPeerCreateWithoutMikrotikInput, WireguardPeerUncheckedCreateWithoutMikrotikInput> | WireguardPeerCreateWithoutMikrotikInput[] | WireguardPeerUncheckedCreateWithoutMikrotikInput[]
+    connectOrCreate?: WireguardPeerCreateOrConnectWithoutMikrotikInput | WireguardPeerCreateOrConnectWithoutMikrotikInput[]
+    upsert?: WireguardPeerUpsertWithWhereUniqueWithoutMikrotikInput | WireguardPeerUpsertWithWhereUniqueWithoutMikrotikInput[]
+    createMany?: WireguardPeerCreateManyMikrotikInputEnvelope
+    set?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+    disconnect?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+    delete?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+    connect?: WireguardPeerWhereUniqueInput | WireguardPeerWhereUniqueInput[]
+    update?: WireguardPeerUpdateWithWhereUniqueWithoutMikrotikInput | WireguardPeerUpdateWithWhereUniqueWithoutMikrotikInput[]
+    updateMany?: WireguardPeerUpdateManyWithWhereWithoutMikrotikInput | WireguardPeerUpdateManyWithWhereWithoutMikrotikInput[]
+    deleteMany?: WireguardPeerScalarWhereInput | WireguardPeerScalarWhereInput[]
+  }
+
+  export type MikrotikConfigCreateNestedOneWithoutPeersInput = {
+    create?: XOR<MikrotikConfigCreateWithoutPeersInput, MikrotikConfigUncheckedCreateWithoutPeersInput>
+    connectOrCreate?: MikrotikConfigCreateOrConnectWithoutPeersInput
+    connect?: MikrotikConfigWhereUniqueInput
+  }
+
+  export type MikrotikConfigUpdateOneRequiredWithoutPeersNestedInput = {
+    create?: XOR<MikrotikConfigCreateWithoutPeersInput, MikrotikConfigUncheckedCreateWithoutPeersInput>
+    connectOrCreate?: MikrotikConfigCreateOrConnectWithoutPeersInput
+    upsert?: MikrotikConfigUpsertWithoutPeersInput
+    connect?: MikrotikConfigWhereUniqueInput
+    update?: XOR<XOR<MikrotikConfigUpdateToOneWithWhereWithoutPeersInput, MikrotikConfigUpdateWithoutPeersInput>, MikrotikConfigUncheckedUpdateWithoutPeersInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -14849,6 +23966,321 @@ export namespace Prisma {
     _sum?: NestedBigIntNullableFilter<$PrismaModel>
     _min?: NestedBigIntNullableFilter<$PrismaModel>
     _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type GroupMetadataCreateWithoutRadusergroupsInput = {
+    groupname: string
+    type: string
+    description?: string | null
+  }
+
+  export type GroupMetadataUncheckedCreateWithoutRadusergroupsInput = {
+    groupname: string
+    type: string
+    description?: string | null
+  }
+
+  export type GroupMetadataCreateOrConnectWithoutRadusergroupsInput = {
+    where: GroupMetadataWhereUniqueInput
+    create: XOR<GroupMetadataCreateWithoutRadusergroupsInput, GroupMetadataUncheckedCreateWithoutRadusergroupsInput>
+  }
+
+  export type GroupMetadataUpsertWithoutRadusergroupsInput = {
+    update: XOR<GroupMetadataUpdateWithoutRadusergroupsInput, GroupMetadataUncheckedUpdateWithoutRadusergroupsInput>
+    create: XOR<GroupMetadataCreateWithoutRadusergroupsInput, GroupMetadataUncheckedCreateWithoutRadusergroupsInput>
+    where?: GroupMetadataWhereInput
+  }
+
+  export type GroupMetadataUpdateToOneWithWhereWithoutRadusergroupsInput = {
+    where?: GroupMetadataWhereInput
+    data: XOR<GroupMetadataUpdateWithoutRadusergroupsInput, GroupMetadataUncheckedUpdateWithoutRadusergroupsInput>
+  }
+
+  export type GroupMetadataUpdateWithoutRadusergroupsInput = {
+    groupname?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GroupMetadataUncheckedUpdateWithoutRadusergroupsInput = {
+    groupname?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type radusergroupCreateWithoutGroupMetadataInput = {
+    username?: string
+    priority?: number
+  }
+
+  export type radusergroupUncheckedCreateWithoutGroupMetadataInput = {
+    id?: number
+    username?: string
+    priority?: number
+  }
+
+  export type radusergroupCreateOrConnectWithoutGroupMetadataInput = {
+    where: radusergroupWhereUniqueInput
+    create: XOR<radusergroupCreateWithoutGroupMetadataInput, radusergroupUncheckedCreateWithoutGroupMetadataInput>
+  }
+
+  export type radusergroupCreateManyGroupMetadataInputEnvelope = {
+    data: radusergroupCreateManyGroupMetadataInput | radusergroupCreateManyGroupMetadataInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type radusergroupUpsertWithWhereUniqueWithoutGroupMetadataInput = {
+    where: radusergroupWhereUniqueInput
+    update: XOR<radusergroupUpdateWithoutGroupMetadataInput, radusergroupUncheckedUpdateWithoutGroupMetadataInput>
+    create: XOR<radusergroupCreateWithoutGroupMetadataInput, radusergroupUncheckedCreateWithoutGroupMetadataInput>
+  }
+
+  export type radusergroupUpdateWithWhereUniqueWithoutGroupMetadataInput = {
+    where: radusergroupWhereUniqueInput
+    data: XOR<radusergroupUpdateWithoutGroupMetadataInput, radusergroupUncheckedUpdateWithoutGroupMetadataInput>
+  }
+
+  export type radusergroupUpdateManyWithWhereWithoutGroupMetadataInput = {
+    where: radusergroupScalarWhereInput
+    data: XOR<radusergroupUpdateManyMutationInput, radusergroupUncheckedUpdateManyWithoutGroupMetadataInput>
+  }
+
+  export type radusergroupScalarWhereInput = {
+    AND?: radusergroupScalarWhereInput | radusergroupScalarWhereInput[]
+    OR?: radusergroupScalarWhereInput[]
+    NOT?: radusergroupScalarWhereInput | radusergroupScalarWhereInput[]
+    id?: IntFilter<"radusergroup"> | number
+    username?: StringFilter<"radusergroup"> | string
+    groupname?: StringFilter<"radusergroup"> | string
+    priority?: IntFilter<"radusergroup"> | number
+  }
+
+  export type WireguardPeerCreateWithoutMikrotikInput = {
+    mikrotikPeerId?: string | null
+    name: string
+    publicKey: string
+    privateKey: string
+    allowedIps: string
+    interface?: string
+    listenPort?: number | null
+    endpoint?: string | null
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WireguardPeerUncheckedCreateWithoutMikrotikInput = {
+    id?: number
+    mikrotikPeerId?: string | null
+    name: string
+    publicKey: string
+    privateKey: string
+    allowedIps: string
+    interface?: string
+    listenPort?: number | null
+    endpoint?: string | null
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WireguardPeerCreateOrConnectWithoutMikrotikInput = {
+    where: WireguardPeerWhereUniqueInput
+    create: XOR<WireguardPeerCreateWithoutMikrotikInput, WireguardPeerUncheckedCreateWithoutMikrotikInput>
+  }
+
+  export type WireguardPeerCreateManyMikrotikInputEnvelope = {
+    data: WireguardPeerCreateManyMikrotikInput | WireguardPeerCreateManyMikrotikInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type WireguardPeerUpsertWithWhereUniqueWithoutMikrotikInput = {
+    where: WireguardPeerWhereUniqueInput
+    update: XOR<WireguardPeerUpdateWithoutMikrotikInput, WireguardPeerUncheckedUpdateWithoutMikrotikInput>
+    create: XOR<WireguardPeerCreateWithoutMikrotikInput, WireguardPeerUncheckedCreateWithoutMikrotikInput>
+  }
+
+  export type WireguardPeerUpdateWithWhereUniqueWithoutMikrotikInput = {
+    where: WireguardPeerWhereUniqueInput
+    data: XOR<WireguardPeerUpdateWithoutMikrotikInput, WireguardPeerUncheckedUpdateWithoutMikrotikInput>
+  }
+
+  export type WireguardPeerUpdateManyWithWhereWithoutMikrotikInput = {
+    where: WireguardPeerScalarWhereInput
+    data: XOR<WireguardPeerUpdateManyMutationInput, WireguardPeerUncheckedUpdateManyWithoutMikrotikInput>
+  }
+
+  export type WireguardPeerScalarWhereInput = {
+    AND?: WireguardPeerScalarWhereInput | WireguardPeerScalarWhereInput[]
+    OR?: WireguardPeerScalarWhereInput[]
+    NOT?: WireguardPeerScalarWhereInput | WireguardPeerScalarWhereInput[]
+    id?: IntFilter<"WireguardPeer"> | number
+    mikrotikId?: IntFilter<"WireguardPeer"> | number
+    mikrotikPeerId?: StringNullableFilter<"WireguardPeer"> | string | null
+    name?: StringFilter<"WireguardPeer"> | string
+    publicKey?: StringFilter<"WireguardPeer"> | string
+    privateKey?: StringFilter<"WireguardPeer"> | string
+    allowedIps?: StringFilter<"WireguardPeer"> | string
+    interface?: StringFilter<"WireguardPeer"> | string
+    listenPort?: IntNullableFilter<"WireguardPeer"> | number | null
+    endpoint?: StringNullableFilter<"WireguardPeer"> | string | null
+    comment?: StringNullableFilter<"WireguardPeer"> | string | null
+    createdAt?: DateTimeFilter<"WireguardPeer"> | Date | string
+  }
+
+  export type MikrotikConfigCreateWithoutPeersInput = {
+    name: string
+    host: string
+    port?: number
+    username: string
+    password: string
+    useSsl?: boolean
+    wgPublicHost?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MikrotikConfigUncheckedCreateWithoutPeersInput = {
+    id?: number
+    name: string
+    host: string
+    port?: number
+    username: string
+    password: string
+    useSsl?: boolean
+    wgPublicHost?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MikrotikConfigCreateOrConnectWithoutPeersInput = {
+    where: MikrotikConfigWhereUniqueInput
+    create: XOR<MikrotikConfigCreateWithoutPeersInput, MikrotikConfigUncheckedCreateWithoutPeersInput>
+  }
+
+  export type MikrotikConfigUpsertWithoutPeersInput = {
+    update: XOR<MikrotikConfigUpdateWithoutPeersInput, MikrotikConfigUncheckedUpdateWithoutPeersInput>
+    create: XOR<MikrotikConfigCreateWithoutPeersInput, MikrotikConfigUncheckedCreateWithoutPeersInput>
+    where?: MikrotikConfigWhereInput
+  }
+
+  export type MikrotikConfigUpdateToOneWithWhereWithoutPeersInput = {
+    where?: MikrotikConfigWhereInput
+    data: XOR<MikrotikConfigUpdateWithoutPeersInput, MikrotikConfigUncheckedUpdateWithoutPeersInput>
+  }
+
+  export type MikrotikConfigUpdateWithoutPeersInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    host?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    useSsl?: BoolFieldUpdateOperationsInput | boolean
+    wgPublicHost?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MikrotikConfigUncheckedUpdateWithoutPeersInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    host?: StringFieldUpdateOperationsInput | string
+    port?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    useSsl?: BoolFieldUpdateOperationsInput | boolean
+    wgPublicHost?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type radusergroupCreateManyGroupMetadataInput = {
+    id?: number
+    username?: string
+    priority?: number
+  }
+
+  export type radusergroupUpdateWithoutGroupMetadataInput = {
+    username?: StringFieldUpdateOperationsInput | string
+    priority?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type radusergroupUncheckedUpdateWithoutGroupMetadataInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    priority?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type radusergroupUncheckedUpdateManyWithoutGroupMetadataInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    username?: StringFieldUpdateOperationsInput | string
+    priority?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type WireguardPeerCreateManyMikrotikInput = {
+    id?: number
+    mikrotikPeerId?: string | null
+    name: string
+    publicKey: string
+    privateKey: string
+    allowedIps: string
+    interface?: string
+    listenPort?: number | null
+    endpoint?: string | null
+    comment?: string | null
+    createdAt?: Date | string
+  }
+
+  export type WireguardPeerUpdateWithoutMikrotikInput = {
+    mikrotikPeerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    privateKey?: StringFieldUpdateOperationsInput | string
+    allowedIps?: StringFieldUpdateOperationsInput | string
+    interface?: StringFieldUpdateOperationsInput | string
+    listenPort?: NullableIntFieldUpdateOperationsInput | number | null
+    endpoint?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WireguardPeerUncheckedUpdateWithoutMikrotikInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    mikrotikPeerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    privateKey?: StringFieldUpdateOperationsInput | string
+    allowedIps?: StringFieldUpdateOperationsInput | string
+    interface?: StringFieldUpdateOperationsInput | string
+    listenPort?: NullableIntFieldUpdateOperationsInput | number | null
+    endpoint?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type WireguardPeerUncheckedUpdateManyWithoutMikrotikInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    mikrotikPeerId?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    publicKey?: StringFieldUpdateOperationsInput | string
+    privateKey?: StringFieldUpdateOperationsInput | string
+    allowedIps?: StringFieldUpdateOperationsInput | string
+    interface?: StringFieldUpdateOperationsInput | string
+    listenPort?: NullableIntFieldUpdateOperationsInput | number | null
+    endpoint?: NullableStringFieldUpdateOperationsInput | string | null
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

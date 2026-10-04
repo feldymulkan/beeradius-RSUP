@@ -9,7 +9,8 @@ export const userSchema = z.object({
   passwordType: z.enum(["cleartext", "md5", "sha1"]).default("cleartext"),
   type: z.enum(["hotspot", "vpn"]).default("hotspot"),
   // Tambahan untuk VPN
-  ipAddress: z.string().ip().optional().or(z.literal("")),
+  ipAddress: z.string().ipv4().optional().or(z.literal("")),
+  poolName: z.string().optional(),
 });
 
 export type UserFormData = z.infer<typeof userSchema>;

@@ -6,7 +6,6 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-
 }
 
 model nas {
@@ -132,20 +131,109 @@ model radusergroup {
   groupname String @default("") @db.VarChar(64)
   priority  Int    @default(1)
 
+  groupMetadata GroupMetadata? @relation(fields: [groupname], references: [groupname])
+
   @@index([username(length: 32)], map: "username")
 }
 
 model userinfo {
-  id        Int    @id @default(autoincrement())
-  username  String  @unique @db.VarChar(64)
-  fullName  String  @default("") @db.VarChar(255)
-  department  String @default("") @db.VarChar(64)
-  createdBy String? @db.VarChar(64)
+  id         Int     @id @default(autoincrement())
+  username   String  @db.VarChar(64)
+  type       String  @default("hotspot") @db.VarChar(20)
+  fullName   String  @default("") @db.VarChar(255)
+  department String  @default("") @db.VarChar(64)
+  createdBy  String? @db.VarChar(64)
+  status     String  @default("active") @db.VarChar(20)
+
+  @@unique([username, type], name: "username_type")
 }
 
-model admin{
-  id        Int    @id @default(autoincrement())
-  username  String  @unique
-  password  String
-  role      String  @default("admin")
+model admin {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+  role     String @default("admin")
+}
+
+model GroupMetadata {
+  groupname   String  @id @db.VarChar(64)
+  type        String  @db.VarChar(20)
+  description String? @db.VarChar(255)
+  
+  radusergroups radusergroup[]
+}
+
+model RadiusPool {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique @db.VarChar(64)
+  description String? @db.VarChar(255)
+}
+
+model radippool {
+  id               Int       @id @default(autoincrement()) @db.UnsignedInt
+  pool_name        String    @db.VarChar(30)
+  framedipaddress  String    @default("") @db.VarChar(15)
+  nasipaddress     String    @default("") @db.VarChar(15)
+  calledstationid  String    @db.VarChar(30)
+  callingstationid String    @db.VarChar(30)
+  expiry_time      DateTime? @db.DateTime(0)
+  username         String    @default("") @db.VarChar(64)
+  pool_key         String    @db.VarChar(30)
+
+  @@index([pool_name, framedipaddress], map: "poolname_framedipaddress")
+  @@index([pool_name, expiry_time], map: "poolname_expiry")
+  @@index([pool_key], map: "pool_key")
+}
+
+model MikrotikConfig {
+  id           Int      @id @default(autoincrement())
+  name         String   @unique
+  host         String
+  port         Int      @default(443)
+  username     String
+  password     String
+  useSsl       Boolean  @default(true)
+  wgPublicHost String?  // Added for WireGuard public endpoint
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  peers        WireguardPeer[]
+}
+
+model WireguardPeer {
+  id               Int            @id @default(autoincrement())
+  mikrotikId       Int
+  mikrotik         MikrotikConfig @relation(fields: [mikrotikId], references: [id], onDelete: Cascade)
+  mikrotikPeerId   String?        @db.VarChar(50)
+  name             String
+  publicKey        String         @db.VarChar(255)
+  privateKey       String         @db.VarChar(255)
+  allowedIps       String         @db.VarChar(255)
+  interface        String         @default("wireguard1")
+  listenPort       Int?
+  endpoint         String?
+  comment          String?
+  createdAt        DateTime       @default(now())
+}
+
+model Wifi {
+  id        Int      @id @default(autoincrement())
+  ssid      String   @unique @db.VarChar(128)
+  password  String   @db.VarChar(128)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id          Int      @id @default(autoincrement())
+  timestamp   DateTime @default(now())
+  adminUser   String   @db.VarChar(64)
+  action      String   @db.VarChar(50)
+  targetType  String   @db.VarChar(30)
+  targetName  String?  @db.VarChar(128)
+  details     String?  @db.Text
+  ipAddress   String?  @db.VarChar(45)
+
+  @@index([timestamp])
+  @@index([adminUser])
+  @@index([action])
 }

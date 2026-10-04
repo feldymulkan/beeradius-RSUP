@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -9,6 +9,9 @@ export default function CreateGroupPage() {
 
   // State untuk form input
   const [groupname, setGroupname] = useState("");
+  const [type, setType] = useState<"hotspot" | "vpn">("hotspot");
+  const [poolName, setPoolName] = useState("");
+  const [pools, setPools] = useState<{name: string}[]>([]);
   const [uploadSpeed, setUploadSpeed] = useState("");
   const [downloadSpeed, setDownloadSpeed] = useState("");
   const [simultaneousUse, setSimultaneousUse] = useState(""); // Batas perangkat
@@ -16,6 +19,13 @@ export default function CreateGroupPage() {
   // State untuk status & error
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/radius/pools")
+      .then(res => res.json())
+      .then(data => setPools(data.pools || []))
+      .catch(err => console.error("Gagal mengambil pools:", err));
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,20 +38,43 @@ export default function CreateGroupPage() {
     setIsLoading(true);
     setError(null);
 
+    // Atribut Dasar
+    const finalAttributes = [];
+
     // Atribut Mikrotik-Rate-Limit
-    const rateLimitValue = `${uploadSpeed || 0}M/${downloadSpeed || 0}M`;
-    const finalAttributes = [
-      {
+    if (uploadSpeed || downloadSpeed) {
+      const rateLimitValue = `${uploadSpeed || 0}M/${downloadSpeed || 0}M`;
+      finalAttributes.push({
         attribute: "Mikrotik-Rate-Limit",
         op: ":=",
         value: rateLimitValue,
-      },
-    ];
+      });
+    }
+
+    // Atribut Spesifik VPN
+    if (type === "vpn") {
+      finalAttributes.push(
+        { attribute: "Service-Type", op: ":=", value: "Framed-User" },
+        { attribute: "Framed-Protocol", op: ":=", value: "PPP" },
+        { attribute: "MS-MPPE-Encryption-Policy", op: ":=", value: "1" },
+        { attribute: "MS-MPPE-Encryption-Types", op: ":=", value: "6" }
+      );
+    }
+
+    // Atribut IP Pool
+    if (poolName) {
+      finalAttributes.push({
+        attribute: "Framed-Pool",
+        op: ":=",
+        value: poolName,
+      });
+    }
 
     try {
       // Payload untuk dikirim ke API
       const bodyPayload = {
         groupname,
+        type,
         attributes: finalAttributes,
         simultaneousUse,
       };
@@ -57,7 +90,7 @@ export default function CreateGroupPage() {
         throw new Error(errorData.message || "Gagal membuat grup.");
       }
 
-      router.push("/radius-groups");
+      router.push(`/radius-groups/${type}`);
       router.refresh();
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
@@ -72,41 +105,77 @@ export default function CreateGroupPage() {
       <div className="not-prose">
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            <Link href="/radius-groups" className="btn btn-ghost btn-sm self-start">
+            <Link href={`/radius-groups/${type}`} className="btn btn-ghost btn-sm self-start">
               ← Kembali ke Daftar Grup
             </Link>
 
             <form onSubmit={handleSubmit} className="space-y-6 mt-4">
-              {/* Nama Grup */}
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text font-bold">Nama Grup</span>
-                </label>
-                <input
-                  type="text"
-                  value={groupname}
-                  onChange={(e) => setGroupname(e.target.value)}
-                  className="input input-bordered w-full"
-                  placeholder="Contoh: Paket 10Mbps"
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Nama Grup */}
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text font-bold">Nama Grup</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={groupname}
+                    onChange={(e) => setGroupname(e.target.value)}
+                    className="input input-bordered w-full"
+                    placeholder="Contoh: Paket 10Mbps"
+                    required
+                  />
+                </div>
+
+                {/* Tipe Grup */}
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text font-bold">Tipe Grup</span>
+                  </label>
+                  <select 
+                    value={type} 
+                    onChange={e => setType(e.target.value as any)}
+                    className="select select-bordered w-full"
+                  >
+                    <option value="hotspot">Hotspot</option>
+                    <option value="vpn">VPN (PPP)</option>
+                  </select>
+                </div>
               </div>
 
-              {/* Batas Perangkat */}
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text font-bold">
-                    Batas Perangkat (Simultaneous-Use)
-                  </span>
-                </label>
-                <input
-                  type="number"
-                  value={simultaneousUse}
-                  onChange={(e) => setSimultaneousUse(e.target.value)}
-                  className="input input-bordered w-full"
-                  placeholder="Contoh: 2 (Kosongkan jika tidak ada batas)"
-                  min="0"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Batas Perangkat */}
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text font-bold">
+                      Batas Perangkat (Simultaneous-Use)
+                    </span>
+                  </label>
+                  <input
+                    type="number"
+                    value={simultaneousUse}
+                    onChange={(e) => setSimultaneousUse(e.target.value)}
+                    className="input input-bordered w-full"
+                    placeholder="Contoh: 2 (Kosongkan jika tidak ada batas)"
+                    min="0"
+                  />
+                </div>
+
+                {/* IP Pool */}
+                <div className="form-control w-full">
+                  <label className="label">
+                    <span className="label-text font-bold">IP Pool (Opsional)</span>
+                  </label>
+                  <select 
+                    value={poolName} 
+                    onChange={e => setPoolName(e.target.value)}
+                    className="select select-bordered w-full"
+                  >
+                    <option value="">-- Pilih IP Pool --</option>
+                    {pools.map(pool => (
+                      <option key={pool.name} value={pool.name}>{pool.name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Batas Kecepatan */}

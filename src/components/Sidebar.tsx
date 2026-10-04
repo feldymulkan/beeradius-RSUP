@@ -1,6 +1,7 @@
 "use client";
 
 import ActiveLink from "./ActiveLink";
+import { useSession } from "next-auth/react";
 
 const HomeIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -32,13 +33,52 @@ const OnlineIcon = () => (
   </svg>
 );
 
+const HotspotIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.111 16.556c3.221-3.221 4.557-3.221 7.778 0M5.333 13.021c5.037-5.037 10.297-5.037 15.334 0m-18.667-3.535c6.667-6.667 15.333-6.667 22 0M12 19h.01" />
+  </svg>
+);
+
+const VPNIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+  </svg>
+);
+
 const ReportIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
   </svg>
 );
 
+const PoolIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7c-2 0-3 1-3 3zm0 5h16m-9 5h2" />
+  </svg>
+);
+
+const RouterIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+  </svg>
+);
+
+const HelpIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
+
+const AuditIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+  </svg>
+);
+
 export default function Sidebar() {
+  const { data: session } = useSession();
+  const isSuperAdmin = (session?.user as any)?.role === "superadmin";
+
   return (
     <ul className="menu p-4 w-60 min-h-full bg-gray-800 text-gray-200">
       <li className="menu-title text-white">Menu</li>
@@ -50,55 +90,157 @@ export default function Sidebar() {
         </ActiveLink>
       </li>
       <li>
-        <details>
+        <details open>
           <summary>
             <UsersIcon />
-            Users
+            Management User
           </summary>
           <ul className="menu-dropdown">
             <li>
-              <ActiveLink href="/radius-users">
+              <ActiveLink href="/radius-users/type/hotspot">
                 <ListIcon />
-                Daftar User
+                User Hotspot
               </ActiveLink>
             </li>
             <li>
-              <ActiveLink href="/radius-users/online">
+              <ActiveLink href="/radius-users/type/vpn">
+                <ListIcon />
+                User VPN
+              </ActiveLink>
+            </li>
+            <li>
+              <ActiveLink href="/radius-users/create/hotspot">
+                <HotspotIcon />
+                Tambah Hotspot
+              </ActiveLink>
+            </li>
+            <li>
+              <ActiveLink href="/radius-users/create/vpn">
+                <VPNIcon />
+                Tambah VPN
+              </ActiveLink>
+            </li>
+            <li>
+              <ActiveLink href="/radius-users/online/hotspot">
                 <OnlineIcon />
-                User Online
+                Online Hotspot
               </ActiveLink>
             </li>
-          </ul>
-        </details>
-      </li>
-
-      <li>
-        <ActiveLink href="/radius-groups">
-          <GroupIcon />
-          Groups
-        </ActiveLink>
-      </li>
-
-      <li>
-        <ActiveLink href="/reports">
-          <ReportIcon />
-          Laporan
-        </ActiveLink>
-      </li>
-
-      <li>
-        <details>
-          <summary>Pengaturan</summary>
-          <ul className="menu-dropdown">
             <li>
-              <ActiveLink href="/settings/profile">Profil</ActiveLink>
+              <ActiveLink href="/radius-users/online/vpn">
+                <OnlineIcon />
+                Online VPN
+              </ActiveLink>
             </li>
             <li>
-              <ActiveLink href="/settings/billing">Tagihan</ActiveLink>
+              <ActiveLink href="/vpn-wireguard">
+                <VPNIcon />
+                VPN Wireguard
+              </ActiveLink>
             </li>
-          </ul>
-        </details>
-      </li>
-    </ul>
-  );
-}
+            </ul>
+            </details>
+            </li>
+
+            <li>
+            <details open>
+            <summary>
+            <GroupIcon />
+            Management Grup
+            </summary>
+            <ul className="menu-dropdown">
+            <li>
+              <ActiveLink href="/radius-groups/hotspot">
+                <HotspotIcon />
+                Grup Hotspot
+              </ActiveLink>
+            </li>
+            <li>
+              <ActiveLink href="/radius-groups/vpn">
+                <VPNIcon />
+                Grup VPN
+              </ActiveLink>
+            </li>
+            </ul>
+            </details>
+            </li>
+
+            <li>
+            <details open>
+            <summary>
+            <PoolIcon />
+            IP Management
+            </summary>
+            <ul className="menu-dropdown">
+            <li>
+            <ActiveLink href="/radius-pools">
+            <PoolIcon />
+            IP Pools
+            </ActiveLink>
+            </li>
+
+            {isSuperAdmin && (
+              <li>
+                <ActiveLink href="/nas">
+                  <RouterIcon />
+                  Manajemen Perangkat
+                </ActiveLink>
+              </li>
+            )}
+            </ul>
+            </details>
+            </li>
+
+            <li>
+            <ActiveLink href="/reports">
+            <ReportIcon />
+            Laporan
+            </ActiveLink>
+            </li>
+
+            {isSuperAdmin && (
+            <li>
+            <ActiveLink href="/audit-log">
+            <AuditIcon />
+            Audit Log
+            </ActiveLink>
+            </li>
+            )}
+
+            <li>
+            <ActiveLink href="/wifi">
+            <HotspotIcon />
+            Wifi RSUD NTB
+            </ActiveLink>
+            </li>
+
+            <li>
+            <ActiveLink href="/help">
+            <HelpIcon />
+            Bantuan
+            </ActiveLink>
+            </li>
+
+            <li>
+            <details>
+            <summary>Pengaturan</summary>
+            <ul className="menu-dropdown">
+            <li>
+              <ActiveLink href="/settings/admin">Profil Admin</ActiveLink>
+            </li>
+            {isSuperAdmin && (
+              <li>
+                <ActiveLink href="/settings/mikrotik">Koneksi Mikrotik</ActiveLink>
+              </li>
+            )}
+            {isSuperAdmin && (
+              <li>
+                <ActiveLink href="/settings/admin/manage">Daftar Admin</ActiveLink>
+              </li>
+            )}
+            </ul>
+            </details>
+            </li>
+            </ul>
+            );
+            }

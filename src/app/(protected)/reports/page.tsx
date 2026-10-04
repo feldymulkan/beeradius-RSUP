@@ -1,67 +1,56 @@
-import { getTopUsageReport } from "@/app/actions/reportActions";
-import { formatBytes } from "@/lib/utils";
+import { 
+  getTopUsageReport, 
+  getRecentLoginReport, 
+  getNASActivityReport, 
+  getUserDistributionReport,
+  getBandwidthUsageReport,
+  getDailyActiveUsersReport,
+  getAuthFailureReport,
+  getTypeDistributionReport,
+  getWireguardStatsReport,
+  getYearlyBandwidthTotal
+} from "@/app/actions/reportActions";
+import ReportClient from "@/components/ReportClient";
 
 export default async function ReportsPage() {
-  const result = await getTopUsageReport();
+  const [usageRes, loginRes, nasRes, distRes, bwRes, userRes, failRes, typeRes, wgRes, yearlyRes] = await Promise.all([
+    getTopUsageReport('30d'),
+    getRecentLoginReport(),
+    getNASActivityReport(),
+    getUserDistributionReport(),
+    getBandwidthUsageReport('30d'),
+    getDailyActiveUsersReport('30d'),
+    getAuthFailureReport(),
+    getTypeDistributionReport(),
+    getWireguardStatsReport(),
+    getYearlyBandwidthTotal()
+  ]);
 
-  if (result.error) {
-    return <div className="p-6 text-error">{result.error}</div>;
-  }
-
-  const reports = result.data || [];
-
-  return (
-    <div className="container mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-primary">Laporan Penggunaan Bandwidth</h1>
-        <p className="text-gray-500">20 User dengan penggunaan data terbanyak (Total Download/Upload).</p>
-      </div>
-
-      <div className="grid grid-cols-1 gap-6">
-        <div className="card bg-base-100 shadow-xl border border-base-300">
-          <div className="card-body p-0">
-            <div className="overflow-x-auto">
-              <table className="table table-zebra w-full">
-                <thead className="bg-base-200">
-                  <tr>
-                    <th>Username</th>
-                    <th className="text-right">Total Sesi</th>
-                    <th className="text-right">Upload (Input)</th>
-                    <th className="text-right">Download (Output)</th>
-                    <th className="text-right">Total Data</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {reports.map((report: any) => {
-                    const input = BigInt(report._sum.acctinputoctets || 0);
-                    const output = BigInt(report._sum.acctoutputoctets || 0);
-                    const total = input + output;
-
-                    return (
-                      <tr key={report.username} className="hover">
-                        <td className="font-bold text-primary">{report.username}</td>
-                        <td className="text-right">{report._count.radacctid}</td>
-                        <td className="text-right font-mono text-sm">{formatBytes(input)}</td>
-                        <td className="text-right font-mono text-sm">{formatBytes(output)}</td>
-                        <td className="text-right font-mono font-bold text-secondary">
-                          {formatBytes(total)}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {reports.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="text-center py-10 opacity-50">
-                        Tidak ada data penggunaan ditemukan.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+  if (usageRes.error || loginRes.error || nasRes.error || distRes.error || bwRes.error || userRes.error || failRes.error || typeRes.error || wgRes.error || yearlyRes.error) {
+    return (
+      <div className="p-6">
+        <div className="alert alert-error">
+          <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <span>Terjadi kesalahan saat memuat laporan.</span>
         </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto p-4 md:p-8">
+      <ReportClient 
+        usageData={usageRes.data || []}
+        loginData={loginRes.data || []}
+        nasData={nasRes.data || []}
+        distributionData={distRes.data || []}
+        bandwidthData={bwRes.data || []}
+        dailyUserData={userRes.data || []}
+        failureData={failRes.data || []}
+        typeData={typeRes.data || []}
+        wgData={wgRes.data || {}}
+        yearlyData={yearlyRes.data || { upload: 0, download: 0 }}
+      />
     </div>
   );
 }

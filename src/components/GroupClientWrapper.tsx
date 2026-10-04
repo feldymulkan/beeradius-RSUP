@@ -3,12 +3,13 @@
 import Link from "next/link";
 import DataTable, { type ColumnDef } from "@/components/DataTable";
 import DeleteButton from "@/components/DeleteButton";
-import PaginationControls from "@/components/PaginationControls";
+import SearchInput from "@/components/SearchInput";
 
 // Definisikan tipe data yang diterima
 type Group = {
   id: string;
   groupname: string;
+  type: string;
 };
 
 type Props = {
@@ -24,6 +25,15 @@ export default function GroupClientWrapper({ groups, page, pageSize, totalPages 
     { 
       header: "Nama Grup", 
       accessorKey: "groupname" 
+    },
+    {
+      header: "Tipe",
+      accessorKey: "type",
+      cell: (group) => (
+        <span className={`badge ${group.type === 'vpn' ? 'badge-secondary' : 'badge-primary'}`}>
+          {group.type.toUpperCase()}
+        </span>
+      )
     },
     {
       header: "Actions",
@@ -45,18 +55,16 @@ export default function GroupClientWrapper({ groups, page, pageSize, totalPages 
 
   return (
     <div>
+      <div className="mb-4">
+        <SearchInput placeholder="Cari nama grup..." />
+      </div>
       <DataTable 
         data={groups} 
         columns={columns} 
         page={page}
         pageSize={pageSize}
-        />
-      <PaginationControls
-        currentPage={page}
         totalPages={totalPages}
-        pageSize={pageSize}
-        baseUrl="/radius-groups"
-      />
+        />
     </div>
   );
 }

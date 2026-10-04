@@ -23,7 +23,7 @@ export default function UserDeleteAction({ userId, username }: Props) {
       itemId={userId}
       itemName={username}
       entityType="user"
-      apiEndpoint="/api/radius-users"
+      apiEndpoint="/api/radius/users"
       onSuccess={handleSuccess} // Pass the redirect function as a prop
     />
   );

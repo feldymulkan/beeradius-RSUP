@@ -1,47 +1,66 @@
 import OnlineUserCount from "./OnlineUserCount";
 
 export default function TableSkeleton() {
-  // Membuat array untuk me-looping dan membuat baris skeleton
-  const skeletonRows = Array.from({ length: 10 }); // Jumlah baris placeholder
+  const skeletonRows = Array.from({ length: 10 });
 
   return (
-    <div className="prose lg:prose-xl mb-6">
-      {/* Skeleton untuk Header Halaman */}
+    <div className="prose lg:prose-xl mb-6 max-w-none">
+      {/* Header skeleton */}
       <div className="flex justify-between items-center">
         <div className="skeleton h-10 w-64"></div>
         <div className="skeleton h-12 w-48"></div>
       </div>
 
-      <div className="not-prose">
-        {/* Skeleton untuk Kontrol Tabel */}
-        <div className="flex items-center gap-2 mb-2">
-          <div className="skeleton h-4 w-28"></div>
-          <div className="skeleton h-8 w-24"></div>
+      <div className="not-prose mt-6">
+        {/* Filters & Actions skeleton */}
+        <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="skeleton h-10 w-72"></div>
+            <div className="skeleton h-8 w-32"></div>
+            <div className="skeleton h-8 w-32"></div>
+            <div className="skeleton h-8 w-32"></div>
+            <div className="skeleton h-8 w-20"></div>
+          </div>
+          <div className="flex gap-2">
+            <div className="skeleton h-8 w-28"></div>
+            <div className="skeleton h-8 w-28"></div>
+          </div>
         </div>
 
-        {/* Skeleton untuk Tabel */}
+        {/* Table skeleton */}
         <div className="overflow-x-auto">
-          <table className="table table-zebra">
+          <table className="table table-zebra w-full">
             <thead>
               <tr>
-                <th>No.</th>
-                <th>Username</th>
-                <th>Nama Lengkap</th>
-                <th>Departemen</th>
-                <th className="text-center">Actions</th>
+                <th className="w-12"><div className="skeleton h-4 w-4 mx-auto"></div></th>
+                <th className="w-12"><div className="skeleton h-4 w-4"></div></th>
+                <th><div className="skeleton h-4 w-20"></div></th>
+                <th><div className="skeleton h-4 w-16"></div></th>
+                <th><div className="skeleton h-4 w-24"></div></th>
+                <th><div className="skeleton h-4 w-20"></div></th>
+                <th><div className="skeleton h-4 w-16"></div></th>
+                <th><div className="skeleton h-4 w-24"></div></th>
+                <th><div className="skeleton h-4 w-14"></div></th>
+                <th><div className="skeleton h-4 w-20 mx-auto"></div></th>
               </tr>
             </thead>
             <tbody>
               {skeletonRows.map((_, index) => (
                 <tr key={index}>
-                  <td><div className="skeleton h-4 w-8"></div></td>
-                  <td><div className="skeleton h-4 w-32"></div></td>
-                  <td><div className="skeleton h-4 w-48"></div></td>
+                  <td><div className="skeleton h-4 w-4 mx-auto"></div></td>
+                  <td><div className="skeleton h-4 w-6"></div></td>
                   <td><div className="skeleton h-4 w-24"></div></td>
+                  <td><div className="skeleton h-5 w-16 rounded-full"></div></td>
+                  <td><div className="skeleton h-4 w-32"></div></td>
+                  <td><div className="skeleton h-4 w-24"></div></td>
+                  <td><div className="skeleton h-4 w-20"></div></td>
+                  <td><div className="skeleton h-4 w-28"></div></td>
+                  <td><div className="skeleton h-5 w-14 rounded-full"></div></td>
                   <td>
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="skeleton h-8 w-20"></div>
-                      <div className="skeleton h-8 w-20"></div>
+                    <div className="flex gap-2 justify-center">
+                      <div className="skeleton h-6 w-14"></div>
+                      <div className="skeleton h-6 w-14"></div>
+                      <div className="skeleton h-6 w-14"></div>
                     </div>
                   </td>
                 </tr>
@@ -50,11 +69,16 @@ export default function TableSkeleton() {
           </table>
         </div>
 
-        {/* Skeleton untuk Paginasi */}
-        <div className="join mt-4 flex justify-center">
-          <div className="skeleton h-8 w-16"></div>
-          <div className="skeleton h-8 w-32"></div>
-          <div className="skeleton h-8 w-16"></div>
+        {/* Pagination skeleton */}
+        <div className="flex justify-between items-center mt-6 px-2">
+          <div className="flex items-center gap-2">
+            <div className="skeleton h-6 w-32"></div>
+          </div>
+          <div className="flex gap-1">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="skeleton h-6 w-8"></div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

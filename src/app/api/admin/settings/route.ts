@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth"; // Pastikan path ini benar
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { logAudit } from '@/lib/audit';
 
 /**
  * [FIXED] Mengambil data admin yang sedang login berdasarkan ID dari sesi.
@@ -67,6 +68,7 @@ export async function PUT(request: NextRequest) {
                 where: { id: adminId },
                 data: { password: hashedPassword },
             });
+            await logAudit('UPDATE_PASSWORD', 'admin', admin.username, { id: adminId });
             return NextResponse.json({ message: "Password berhasil diperbarui." }, { status: 200 });
         }
 
@@ -83,6 +85,7 @@ export async function PUT(request: NextRequest) {
                 where: { id: adminId },
                 data: { username },
             });
+            await logAudit('UPDATE_PROFILE', 'admin', username, { id: adminId, oldUsername: admin.username });
             return NextResponse.json({ message: "Profil berhasil diperbarui." }, { status: 200 });
         }
 

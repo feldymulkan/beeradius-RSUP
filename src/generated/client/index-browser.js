@@ -220,9 +220,11 @@ exports.Prisma.RadusergroupScalarFieldEnum = {
 exports.Prisma.UserinfoScalarFieldEnum = {
   id: 'id',
   username: 'username',
+  type: 'type',
   fullName: 'fullName',
   department: 'department',
-  createdBy: 'createdBy'
+  createdBy: 'createdBy',
+  status: 'status'
 };
 
 exports.Prisma.AdminScalarFieldEnum = {
@@ -230,6 +232,77 @@ exports.Prisma.AdminScalarFieldEnum = {
   username: 'username',
   password: 'password',
   role: 'role'
+};
+
+exports.Prisma.GroupMetadataScalarFieldEnum = {
+  groupname: 'groupname',
+  type: 'type',
+  description: 'description'
+};
+
+exports.Prisma.RadiusPoolScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description'
+};
+
+exports.Prisma.RadippoolScalarFieldEnum = {
+  id: 'id',
+  pool_name: 'pool_name',
+  framedipaddress: 'framedipaddress',
+  nasipaddress: 'nasipaddress',
+  calledstationid: 'calledstationid',
+  callingstationid: 'callingstationid',
+  expiry_time: 'expiry_time',
+  username: 'username',
+  pool_key: 'pool_key'
+};
+
+exports.Prisma.MikrotikConfigScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  host: 'host',
+  port: 'port',
+  username: 'username',
+  password: 'password',
+  useSsl: 'useSsl',
+  wgPublicHost: 'wgPublicHost',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WireguardPeerScalarFieldEnum = {
+  id: 'id',
+  mikrotikId: 'mikrotikId',
+  mikrotikPeerId: 'mikrotikPeerId',
+  name: 'name',
+  publicKey: 'publicKey',
+  privateKey: 'privateKey',
+  allowedIps: 'allowedIps',
+  interface: 'interface',
+  listenPort: 'listenPort',
+  endpoint: 'endpoint',
+  comment: 'comment',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.WifiScalarFieldEnum = {
+  id: 'id',
+  ssid: 'ssid',
+  password: 'password',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  timestamp: 'timestamp',
+  adminUser: 'adminUser',
+  action: 'action',
+  targetType: 'targetType',
+  targetName: 'targetName',
+  details: 'details',
+  ipAddress: 'ipAddress'
 };
 
 exports.Prisma.SortOrder = {
@@ -322,15 +395,71 @@ exports.Prisma.radusergroupOrderByRelevanceFieldEnum = {
 
 exports.Prisma.userinfoOrderByRelevanceFieldEnum = {
   username: 'username',
+  type: 'type',
   fullName: 'fullName',
   department: 'department',
-  createdBy: 'createdBy'
+  createdBy: 'createdBy',
+  status: 'status'
 };
 
 exports.Prisma.adminOrderByRelevanceFieldEnum = {
   username: 'username',
   password: 'password',
   role: 'role'
+};
+
+exports.Prisma.GroupMetadataOrderByRelevanceFieldEnum = {
+  groupname: 'groupname',
+  type: 'type',
+  description: 'description'
+};
+
+exports.Prisma.RadiusPoolOrderByRelevanceFieldEnum = {
+  name: 'name',
+  description: 'description'
+};
+
+exports.Prisma.radippoolOrderByRelevanceFieldEnum = {
+  pool_name: 'pool_name',
+  framedipaddress: 'framedipaddress',
+  nasipaddress: 'nasipaddress',
+  calledstationid: 'calledstationid',
+  callingstationid: 'callingstationid',
+  username: 'username',
+  pool_key: 'pool_key'
+};
+
+exports.Prisma.MikrotikConfigOrderByRelevanceFieldEnum = {
+  name: 'name',
+  host: 'host',
+  username: 'username',
+  password: 'password',
+  wgPublicHost: 'wgPublicHost'
+};
+
+exports.Prisma.WireguardPeerOrderByRelevanceFieldEnum = {
+  mikrotikPeerId: 'mikrotikPeerId',
+  name: 'name',
+  publicKey: 'publicKey',
+  privateKey: 'privateKey',
+  allowedIps: 'allowedIps',
+  interface: 'interface',
+  endpoint: 'endpoint',
+  comment: 'comment'
+};
+
+exports.Prisma.WifiOrderByRelevanceFieldEnum = {
+  ssid: 'ssid',
+  password: 'password'
+};
+
+exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
+  adminUser: 'adminUser',
+  action: 'action',
+  targetType: 'targetType',
+  targetName: 'targetName',
+  details: 'details',
+  ipAddress: 'ipAddress'
 };
 
 
@@ -345,7 +474,14 @@ exports.Prisma.ModelName = {
   radreply: 'radreply',
   radusergroup: 'radusergroup',
   userinfo: 'userinfo',
-  admin: 'admin'
+  admin: 'admin',
+  GroupMetadata: 'GroupMetadata',
+  RadiusPool: 'RadiusPool',
+  radippool: 'radippool',
+  MikrotikConfig: 'MikrotikConfig',
+  WireguardPeer: 'WireguardPeer',
+  Wifi: 'Wifi',
+  AuditLog: 'AuditLog'
 };
 
 /**

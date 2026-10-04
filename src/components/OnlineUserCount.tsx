@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { FaWifi, FaShieldAlt } from "react-icons/fa";
 
-// Atur seberapa sering data di-refresh (misalnya, setiap 10 detik)
-const POLLING_INTERVAL = 10000; // 10 detik dalam milidetik
+const POLLING_INTERVAL = 15000;
 
 export default function OnlineUserCount() {
-  const [count, setCount] = useState(0);
+  const [stats, setStats] = useState({ onlineCount: 0, activeCount: 0, staleCount: 0, hotspotCount: 0, vpnCount: 0, othersCount: 0 });
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchOnlineUsers = async () => {
@@ -14,36 +14,68 @@ export default function OnlineUserCount() {
       const res = await fetch('/api/radius/users/online-users');
       if (!res.ok) throw new Error("Gagal fetch data");
       const data = await res.json();
-      setCount(data.onlineCount);
+      setStats({
+        onlineCount: data.onlineCount || 0,
+        activeCount: data.activeCount || 0,
+        staleCount: data.staleCount || 0,
+        hotspotCount: data.hotspotCount || 0,
+        vpnCount: data.vpnCount || 0,
+        othersCount: data.othersCount || 0
+      });
     } catch (error) {
       console.error(error);
-      setCount(0); // Set ke 0 jika terjadi error
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // 1. Ambil data saat komponen pertama kali dimuat
     fetchOnlineUsers();
-
-    // 2. Atur interval untuk mengambil data secara berkala (polling)
     const intervalId = setInterval(fetchOnlineUsers, POLLING_INTERVAL);
-
-    // 3. Bersihkan interval saat komponen tidak lagi ditampilkan
     return () => clearInterval(intervalId);
   }, []);
 
-  // Tampilkan UI (Anda bisa ganti style-nya)
   return (
-    <div className="stat">
-      <div className="stat-figure text-success">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-8 h-8 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+    <>
+      {/* Card Hotspot Aktif */}
+      <div className="card bg-base-100 shadow-xl border-t-4 border-success">
+        <div className="card-body p-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm font-medium text-gray-500 uppercase">Hotspot Aktif</p>
+              <h3 className="text-3xl font-bold">
+                {isLoading ? <span className="loading loading-spinner loading-md"></span> : stats.hotspotCount}
+              </h3>
+            </div>
+            <div className="p-3 bg-success/10 rounded-full text-success">
+              <FaWifi className="w-6 h-6" />
+            </div>
+          </div>
+          {stats.staleCount > 0 && (
+            <div className="mt-2 flex items-center gap-1">
+              <span className="badge badge-warning badge-xs animate-pulse"></span>
+              <span className="text-[10px] text-warning font-bold uppercase">{stats.staleCount} Sesi Gantung</span>
+            </div>
+          )}
+        </div>
       </div>
-      <div className="stat-title">User Online</div>
-      <div className="stat-value text-success">
-        {isLoading ? <span className="loading loading-spinner"></span> : count}
+
+      {/* Card VPN Aktif */}
+      <div className="card bg-base-100 shadow-xl border-t-4 border-secondary">
+        <div className="card-body p-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <p className="text-sm font-medium text-gray-500 uppercase">VPN Aktif</p>
+              <h3 className="text-3xl font-bold">
+                {isLoading ? <span className="loading loading-spinner loading-md"></span> : stats.vpnCount}
+              </h3>
+            </div>
+            <div className="p-3 bg-secondary/10 rounded-full text-secondary">
+              <FaShieldAlt className="w-6 h-6" />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

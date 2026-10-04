@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { logAudit } from '@/lib/audit';
 
 interface ReplyAttribute {
 
@@ -12,6 +13,7 @@ interface PostRequestBody{
     groupname: string;
     attributes: ReplyAttribute[];
     simultaneousUse?: string;
+    type: 'hotspot' | 'vpn';
 }
 
 
@@ -54,7 +56,21 @@ export async function GET(req: NextRequest) {
             });
         }
 
-        return NextResponse.json({groups}, {status: 200});
+        // Ambil metadata untuk grup yang ditemukan
+        const groupNames = groups.map(g => g.groupname);
+        const metadata = await prisma.groupMetadata.findMany({
+            where: { groupname: { in: groupNames } }
+        });
+
+        const groupsWithMetadata = groups.map(g => {
+            const meta = metadata.find(m => m.groupname === g.groupname);
+            return {
+                ...g,
+                type: meta?.type || 'hotspot'
+            };
+        });
+
+        return NextResponse.json({groups: groupsWithMetadata}, {status: 200});
     }catch (error: any) {
         return NextResponse.json({ message: 'Maaf terjadi kesalahan pada server',error: error.message }, { status: 500 });
     }
@@ -64,7 +80,7 @@ export async function POST(request:NextRequest) {
     let groupname: string = ''; 
     try{
         const body: PostRequestBody = await request.json();
-        const { attributes, simultaneousUse } = body;
+        const { attributes, simultaneousUse, type } = body;
         groupname = body.groupname; 
 
         if (!groupname || !attributes || !Array.isArray(attributes) || attributes.length === 0) {
@@ -85,6 +101,17 @@ export async function POST(request:NextRequest) {
             value: attribute.value,
         }));
 
+        // Tambahkan Acct-Interim-Interval secara otomatis
+        const hasInterim = replyDataToCreate.some(a => a.attribute === 'Acct-Interim-Interval');
+        if (!hasInterim) {
+            replyDataToCreate.push({
+                groupname,
+                attribute: 'Acct-Interim-Interval',
+                op: ':=',
+                value: '300'
+            });
+        }
+
         const operation =  [];
 
         operation.push(
@@ -104,7 +131,18 @@ export async function POST(request:NextRequest) {
             )
         }
 
+        // Simpan Metadata
+        operation.push(
+            prisma.groupMetadata.create({
+                data: {
+                    groupname,
+                    type: type || 'hotspot'
+                }
+            })
+        );
+
         await prisma.$transaction(operation);
+        await logAudit('CREATE_GROUP', 'group', groupname, { type });
         return NextResponse.json({ message: 'Group berhasil disimpan' }, { status: 201 });
 
 
