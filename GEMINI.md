@@ -49,6 +49,12 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - Menghapus pembungkus `prose` Tailwind agar hierarki margin dan tombol aksi tetap rapi.
   - Komponen `ImportUser.tsx` menggunakan **Modal Dialog Interaktif** (DaisyUI modal) sehingga kotak upload file mentah tidak lagi merusak tampilan toolbar utama.
   - Tombol aksi utama diletakkan di header kanan: `+ Tambah User`, `Import CSV`, dan `Export CSV`.
+- **Form Tambah User Hotspot & VPN (`/radius-users/create/hotspot` & `/radius-users/create/vpn`)**:
+  - Mengadopsi arsitektur layout 2-kolom terpadu sesuai standar **Stitch UI/UX**:
+    - **Kolom Utama (Form Grid)**: Terbagi menjadi 3 panel kartu terstruktur: (1) *Kredensial & Autentikasi RADIUS* (username monospace, toggle reveal password, generator *Acak Password*, dan live meter kekuatan password), (2) *Profil Pengguna & Unit RSUD NTB* (nama lengkap, departemen/instalasi, dan dropdown grup bandwidth dinamis), serta (3) *Alokasi IP & Jaringan VPN* (khusus VPN: dropdown IP pool MikroTik dan input static Framed-IP-Address monospace).
+    - **Kolom Samping (NOC Telemetry & Security Specs)**: Menampilkan spesifikasi real-time profil layanan, status isolasi sesi (`Framed` / `NAS-Port`), sinkronisasi status ke MySQL, serta panduan operasional NOC RSUD NTB.
+    - **Unified Footer Bar**: Tombol *Batalkan* dan tombol *Simpan & Aktifkan User* berstatus loading reaktif dengan glowing shadow.
+  - Kompatibel penuh dengan tema ganda: Gelap (`beeradius`) dan Terang (`beeradius-light`) menggunakan token semantik `text-base-content`, `border-base-300`, dan `bg-base-100`.
 - **Halaman Laporan & Statistik (`/reports`)**:
   - Mengadopsi prinsip desain **Telemetry Dark Glass** (`#131b2e` border `primary/10`, aksen cyan `#38bdf8`) dengan tata letak **Single-Row Unified Navigation Bar** untuk beralih antar tab (Ringkasan, Penggunaan Data, Distribusi Grup, Aktivitas Login, Sistem & NAS) tanpa *stacked clutter*.
   - **KPI Metric Cards**: 4 kartu berjejer horizontal (Total Download, Total Upload, User Aktif Harian, Auth Rejects) dengan angka metrik tebal berfont monospace (`font-mono`) serta border aksen warna fungsional (*cyan, emerald, amber, rose*).
