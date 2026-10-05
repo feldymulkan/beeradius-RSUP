@@ -100,16 +100,24 @@ export default function CreateGroupPage() {
   };
 
   return (
-    <div className="prose lg:prose-xl">
-      <h1>Tambah Grup RADIUS Baru</h1>
-      <div className="not-prose">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <Link href={`/radius-groups/${type}`} className="btn btn-ghost btn-sm self-start">
-              ← Kembali ke Daftar Grup
-            </Link>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-base-content flex items-center gap-2">
+            Tambah Grup <span className="text-primary">RADIUS</span>
+          </h1>
+          <p className="text-xs text-base-content/70 mt-1">
+            Buat profil grup baru dengan batasan bandwidth rate-limit dan alokasi IP pool.
+          </p>
+        </div>
+        <Link href={`/radius-groups/${type}`} className="btn btn-ghost btn-sm border border-base-300">
+          ← Kembali ke Daftar
+        </Link>
+      </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+      <div className="card bg-base-100 shadow-xl border border-primary/10">
+        <div className="card-body">
+          <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Nama Grup */}
                 <div className="form-control w-full">
@@ -231,7 +239,6 @@ export default function CreateGroupPage() {
             </form>
           </div>
         </div>
-      </div>
     </div>
   );
 }

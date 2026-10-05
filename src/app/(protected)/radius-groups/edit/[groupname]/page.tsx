@@ -152,12 +152,24 @@ export default function EditGroupPage() {
   if (isFetching) return <EditFormSkeleton />;
 
   return (
-    <div className="prose lg:prose-xl">
-      <h1>Edit Grup: {originalGroupname}</h1>
-      <div className="not-prose">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-base-content flex items-center gap-2">
+            Edit Grup: <span className="text-primary">{originalGroupname}</span>
+          </h1>
+          <p className="text-xs text-base-content/70 mt-1">
+            Ubah nama grup, alokasi IP pool, batas kecepatan (rate limit), dan simultaneous-use.
+          </p>
+        </div>
+        <Link href={`/radius-groups/${type}`} className="btn btn-ghost btn-sm border border-base-300">
+          ← Kembali ke Daftar
+        </Link>
+      </div>
+
+      <div className="card bg-base-100 shadow-xl border border-primary/10">
+        <div className="card-body">
+          <form onSubmit={handleSubmit} className="space-y-6">
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="form-control w-full">
@@ -236,7 +248,6 @@ export default function EditGroupPage() {
             </form>
           </div>
         </div>
-      </div>
     </div>
   );
 }

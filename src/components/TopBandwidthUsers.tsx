@@ -86,7 +86,7 @@ export default function TopBandwidthUsers() {
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="font-mono text-[11px] text-slate-500 w-3">{index + 1}</span>
                       <div className="truncate">
-                        <span className="font-medium text-slate-200">{user.username}</span>
+                        <span className="font-medium text-base-content">{user.username}</span>
                         {user.fullName && (
                           <span className="text-[11px] text-slate-400 ml-1.5 truncate">({user.fullName})</span>
                         )}

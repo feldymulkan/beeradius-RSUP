@@ -20,7 +20,7 @@ export default function ActiveLink({ href, children, ...rest }: ActiveLinkProps)
       className={`group flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all border-l-2 ${
         isActive
           ? "bg-primary/10 text-primary border-primary font-medium"
-          : "text-slate-400 border-transparent hover:bg-primary/5 hover:text-slate-100"
+          : "text-slate-400 border-transparent hover:bg-primary/5 hover:text-base-content"
       }`}
       {...rest}
     >

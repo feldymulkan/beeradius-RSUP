@@ -39,7 +39,7 @@ export default function Navbar() {
               {role && <p className="text-[10px] uppercase tracking-wider text-slate-500 font-mono">{role}</p>}
             </div>
           </div>
-          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-10 p-2 w-52 rounded-box shadow-xl">
+          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-50 p-2 w-52 bg-base-100 border border-base-300 rounded-box shadow-2xl">
             <li><Link href="/settings/admin">Profil &amp; Pengaturan</Link></li>
             <li><button onClick={() => signOut({ callbackUrl: "/login" })}>Keluar</button></li>
           </ul>

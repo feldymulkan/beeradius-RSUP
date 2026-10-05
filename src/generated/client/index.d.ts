@@ -108,6 +108,11 @@ export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
  * 
  */
 export type SwitchDevice = $Result.DefaultSelection<Prisma.$SwitchDevicePayload>
+/**
+ * Model NetworkTopology
+ * 
+ */
+export type NetworkTopology = $Result.DefaultSelection<Prisma.$NetworkTopologyPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -416,6 +421,16 @@ export class PrismaClient<
     * ```
     */
   get switchDevice(): Prisma.SwitchDeviceDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.networkTopology`: Exposes CRUD operations for the **NetworkTopology** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more NetworkTopologies
+    * const networkTopologies = await prisma.networkTopology.findMany()
+    * ```
+    */
+  get networkTopology(): Prisma.NetworkTopologyDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -874,7 +889,8 @@ export namespace Prisma {
     WireguardPeer: 'WireguardPeer',
     Wifi: 'Wifi',
     AuditLog: 'AuditLog',
-    SwitchDevice: 'SwitchDevice'
+    SwitchDevice: 'SwitchDevice',
+    NetworkTopology: 'NetworkTopology'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -893,7 +909,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "nas" | "nasreload" | "radacct" | "radcheck" | "radgroupcheck" | "radgroupreply" | "radpostauth" | "radreply" | "radusergroup" | "userinfo" | "admin" | "groupMetadata" | "radiusPool" | "radippool" | "mikrotikConfig" | "wireguardPeer" | "wifi" | "auditLog" | "switchDevice"
+      modelProps: "nas" | "nasreload" | "radacct" | "radcheck" | "radgroupcheck" | "radgroupreply" | "radpostauth" | "radreply" | "radusergroup" | "userinfo" | "admin" | "groupMetadata" | "radiusPool" | "radippool" | "mikrotikConfig" | "wireguardPeer" | "wifi" | "auditLog" | "switchDevice" | "networkTopology"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2151,6 +2167,72 @@ export namespace Prisma {
           }
         }
       }
+      NetworkTopology: {
+        payload: Prisma.$NetworkTopologyPayload<ExtArgs>
+        fields: Prisma.NetworkTopologyFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NetworkTopologyFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NetworkTopologyFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload>
+          }
+          findFirst: {
+            args: Prisma.NetworkTopologyFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NetworkTopologyFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload>
+          }
+          findMany: {
+            args: Prisma.NetworkTopologyFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload>[]
+          }
+          create: {
+            args: Prisma.NetworkTopologyCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload>
+          }
+          createMany: {
+            args: Prisma.NetworkTopologyCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.NetworkTopologyDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload>
+          }
+          update: {
+            args: Prisma.NetworkTopologyUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload>
+          }
+          deleteMany: {
+            args: Prisma.NetworkTopologyDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NetworkTopologyUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.NetworkTopologyUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NetworkTopologyPayload>
+          }
+          aggregate: {
+            args: Prisma.NetworkTopologyAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNetworkTopology>
+          }
+          groupBy: {
+            args: Prisma.NetworkTopologyGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NetworkTopologyGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NetworkTopologyCountArgs<ExtArgs>
+            result: $Utils.Optional<NetworkTopologyCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2266,6 +2348,7 @@ export namespace Prisma {
     wifi?: WifiOmit
     auditLog?: AuditLogOmit
     switchDevice?: SwitchDeviceOmit
+    networkTopology?: NetworkTopologyOmit
   }
 
   /* Types for Logging */
@@ -19611,6 +19694,8 @@ export namespace Prisma {
     vlans: string | null
     ports: string | null
     lastPolled: Date | null
+    deviceType: string | null
+    connMethod: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19631,6 +19716,8 @@ export namespace Prisma {
     vlans: string | null
     ports: string | null
     lastPolled: Date | null
+    deviceType: string | null
+    connMethod: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -19651,6 +19738,8 @@ export namespace Prisma {
     vlans: number
     ports: number
     lastPolled: number
+    deviceType: number
+    connMethod: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -19683,6 +19772,8 @@ export namespace Prisma {
     vlans?: true
     ports?: true
     lastPolled?: true
+    deviceType?: true
+    connMethod?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19703,6 +19794,8 @@ export namespace Prisma {
     vlans?: true
     ports?: true
     lastPolled?: true
+    deviceType?: true
+    connMethod?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -19723,6 +19816,8 @@ export namespace Prisma {
     vlans?: true
     ports?: true
     lastPolled?: true
+    deviceType?: true
+    connMethod?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -19830,6 +19925,8 @@ export namespace Prisma {
     vlans: string | null
     ports: string | null
     lastPolled: Date | null
+    deviceType: string | null
+    connMethod: string | null
     createdAt: Date
     updatedAt: Date
     _count: SwitchDeviceCountAggregateOutputType | null
@@ -19869,6 +19966,8 @@ export namespace Prisma {
     vlans?: boolean
     ports?: boolean
     lastPolled?: boolean
+    deviceType?: boolean
+    connMethod?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["switchDevice"]>
@@ -19891,11 +19990,13 @@ export namespace Prisma {
     vlans?: boolean
     ports?: boolean
     lastPolled?: boolean
+    deviceType?: boolean
+    connMethod?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SwitchDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ip" | "community" | "snmpVersion" | "port" | "brand" | "model" | "sysDescr" | "location" | "status" | "uptime" | "vlans" | "ports" | "lastPolled" | "createdAt" | "updatedAt", ExtArgs["result"]["switchDevice"]>
+  export type SwitchDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ip" | "community" | "snmpVersion" | "port" | "brand" | "model" | "sysDescr" | "location" | "status" | "uptime" | "vlans" | "ports" | "lastPolled" | "deviceType" | "connMethod" | "createdAt" | "updatedAt", ExtArgs["result"]["switchDevice"]>
 
   export type $SwitchDevicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SwitchDevice"
@@ -19916,6 +20017,8 @@ export namespace Prisma {
       vlans: string | null
       ports: string | null
       lastPolled: Date | null
+      deviceType: string | null
+      connMethod: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["switchDevice"]>
@@ -20302,6 +20405,8 @@ export namespace Prisma {
     readonly vlans: FieldRef<"SwitchDevice", 'String'>
     readonly ports: FieldRef<"SwitchDevice", 'String'>
     readonly lastPolled: FieldRef<"SwitchDevice", 'DateTime'>
+    readonly deviceType: FieldRef<"SwitchDevice", 'String'>
+    readonly connMethod: FieldRef<"SwitchDevice", 'String'>
     readonly createdAt: FieldRef<"SwitchDevice", 'DateTime'>
     readonly updatedAt: FieldRef<"SwitchDevice", 'DateTime'>
   }
@@ -20626,6 +20731,966 @@ export namespace Prisma {
 
 
   /**
+   * Model NetworkTopology
+   */
+
+  export type AggregateNetworkTopology = {
+    _count: NetworkTopologyCountAggregateOutputType | null
+    _avg: NetworkTopologyAvgAggregateOutputType | null
+    _sum: NetworkTopologySumAggregateOutputType | null
+    _min: NetworkTopologyMinAggregateOutputType | null
+    _max: NetworkTopologyMaxAggregateOutputType | null
+  }
+
+  export type NetworkTopologyAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type NetworkTopologySumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type NetworkTopologyMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    description: string | null
+    isDefault: boolean | null
+    nodes: string | null
+    edges: string | null
+    viewport: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NetworkTopologyMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    description: string | null
+    isDefault: boolean | null
+    nodes: string | null
+    edges: string | null
+    viewport: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type NetworkTopologyCountAggregateOutputType = {
+    id: number
+    name: number
+    description: number
+    isDefault: number
+    nodes: number
+    edges: number
+    viewport: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type NetworkTopologyAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type NetworkTopologySumAggregateInputType = {
+    id?: true
+  }
+
+  export type NetworkTopologyMinAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isDefault?: true
+    nodes?: true
+    edges?: true
+    viewport?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NetworkTopologyMaxAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isDefault?: true
+    nodes?: true
+    edges?: true
+    viewport?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type NetworkTopologyCountAggregateInputType = {
+    id?: true
+    name?: true
+    description?: true
+    isDefault?: true
+    nodes?: true
+    edges?: true
+    viewport?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type NetworkTopologyAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NetworkTopology to aggregate.
+     */
+    where?: NetworkTopologyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NetworkTopologies to fetch.
+     */
+    orderBy?: NetworkTopologyOrderByWithRelationInput | NetworkTopologyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: NetworkTopologyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NetworkTopologies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NetworkTopologies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned NetworkTopologies
+    **/
+    _count?: true | NetworkTopologyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: NetworkTopologyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: NetworkTopologySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: NetworkTopologyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: NetworkTopologyMaxAggregateInputType
+  }
+
+  export type GetNetworkTopologyAggregateType<T extends NetworkTopologyAggregateArgs> = {
+        [P in keyof T & keyof AggregateNetworkTopology]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNetworkTopology[P]>
+      : GetScalarType<T[P], AggregateNetworkTopology[P]>
+  }
+
+
+
+
+  export type NetworkTopologyGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NetworkTopologyWhereInput
+    orderBy?: NetworkTopologyOrderByWithAggregationInput | NetworkTopologyOrderByWithAggregationInput[]
+    by: NetworkTopologyScalarFieldEnum[] | NetworkTopologyScalarFieldEnum
+    having?: NetworkTopologyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NetworkTopologyCountAggregateInputType | true
+    _avg?: NetworkTopologyAvgAggregateInputType
+    _sum?: NetworkTopologySumAggregateInputType
+    _min?: NetworkTopologyMinAggregateInputType
+    _max?: NetworkTopologyMaxAggregateInputType
+  }
+
+  export type NetworkTopologyGroupByOutputType = {
+    id: number
+    name: string
+    description: string | null
+    isDefault: boolean
+    nodes: string
+    edges: string
+    viewport: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: NetworkTopologyCountAggregateOutputType | null
+    _avg: NetworkTopologyAvgAggregateOutputType | null
+    _sum: NetworkTopologySumAggregateOutputType | null
+    _min: NetworkTopologyMinAggregateOutputType | null
+    _max: NetworkTopologyMaxAggregateOutputType | null
+  }
+
+  type GetNetworkTopologyGroupByPayload<T extends NetworkTopologyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NetworkTopologyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NetworkTopologyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NetworkTopologyGroupByOutputType[P]>
+            : GetScalarType<T[P], NetworkTopologyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NetworkTopologySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isDefault?: boolean
+    nodes?: boolean
+    edges?: boolean
+    viewport?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["networkTopology"]>
+
+
+
+  export type NetworkTopologySelectScalar = {
+    id?: boolean
+    name?: boolean
+    description?: boolean
+    isDefault?: boolean
+    nodes?: boolean
+    edges?: boolean
+    viewport?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type NetworkTopologyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "isDefault" | "nodes" | "edges" | "viewport" | "createdAt" | "updatedAt", ExtArgs["result"]["networkTopology"]>
+
+  export type $NetworkTopologyPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "NetworkTopology"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      description: string | null
+      isDefault: boolean
+      nodes: string
+      edges: string
+      viewport: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["networkTopology"]>
+    composites: {}
+  }
+
+  type NetworkTopologyGetPayload<S extends boolean | null | undefined | NetworkTopologyDefaultArgs> = $Result.GetResult<Prisma.$NetworkTopologyPayload, S>
+
+  type NetworkTopologyCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NetworkTopologyFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NetworkTopologyCountAggregateInputType | true
+    }
+
+  export interface NetworkTopologyDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['NetworkTopology'], meta: { name: 'NetworkTopology' } }
+    /**
+     * Find zero or one NetworkTopology that matches the filter.
+     * @param {NetworkTopologyFindUniqueArgs} args - Arguments to find a NetworkTopology
+     * @example
+     * // Get one NetworkTopology
+     * const networkTopology = await prisma.networkTopology.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NetworkTopologyFindUniqueArgs>(args: SelectSubset<T, NetworkTopologyFindUniqueArgs<ExtArgs>>): Prisma__NetworkTopologyClient<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one NetworkTopology that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NetworkTopologyFindUniqueOrThrowArgs} args - Arguments to find a NetworkTopology
+     * @example
+     * // Get one NetworkTopology
+     * const networkTopology = await prisma.networkTopology.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NetworkTopologyFindUniqueOrThrowArgs>(args: SelectSubset<T, NetworkTopologyFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NetworkTopologyClient<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NetworkTopology that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NetworkTopologyFindFirstArgs} args - Arguments to find a NetworkTopology
+     * @example
+     * // Get one NetworkTopology
+     * const networkTopology = await prisma.networkTopology.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NetworkTopologyFindFirstArgs>(args?: SelectSubset<T, NetworkTopologyFindFirstArgs<ExtArgs>>): Prisma__NetworkTopologyClient<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first NetworkTopology that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NetworkTopologyFindFirstOrThrowArgs} args - Arguments to find a NetworkTopology
+     * @example
+     * // Get one NetworkTopology
+     * const networkTopology = await prisma.networkTopology.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NetworkTopologyFindFirstOrThrowArgs>(args?: SelectSubset<T, NetworkTopologyFindFirstOrThrowArgs<ExtArgs>>): Prisma__NetworkTopologyClient<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more NetworkTopologies that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NetworkTopologyFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all NetworkTopologies
+     * const networkTopologies = await prisma.networkTopology.findMany()
+     * 
+     * // Get first 10 NetworkTopologies
+     * const networkTopologies = await prisma.networkTopology.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const networkTopologyWithIdOnly = await prisma.networkTopology.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends NetworkTopologyFindManyArgs>(args?: SelectSubset<T, NetworkTopologyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a NetworkTopology.
+     * @param {NetworkTopologyCreateArgs} args - Arguments to create a NetworkTopology.
+     * @example
+     * // Create one NetworkTopology
+     * const NetworkTopology = await prisma.networkTopology.create({
+     *   data: {
+     *     // ... data to create a NetworkTopology
+     *   }
+     * })
+     * 
+     */
+    create<T extends NetworkTopologyCreateArgs>(args: SelectSubset<T, NetworkTopologyCreateArgs<ExtArgs>>): Prisma__NetworkTopologyClient<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many NetworkTopologies.
+     * @param {NetworkTopologyCreateManyArgs} args - Arguments to create many NetworkTopologies.
+     * @example
+     * // Create many NetworkTopologies
+     * const networkTopology = await prisma.networkTopology.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends NetworkTopologyCreateManyArgs>(args?: SelectSubset<T, NetworkTopologyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a NetworkTopology.
+     * @param {NetworkTopologyDeleteArgs} args - Arguments to delete one NetworkTopology.
+     * @example
+     * // Delete one NetworkTopology
+     * const NetworkTopology = await prisma.networkTopology.delete({
+     *   where: {
+     *     // ... filter to delete one NetworkTopology
+     *   }
+     * })
+     * 
+     */
+    delete<T extends NetworkTopologyDeleteArgs>(args: SelectSubset<T, NetworkTopologyDeleteArgs<ExtArgs>>): Prisma__NetworkTopologyClient<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one NetworkTopology.
+     * @param {NetworkTopologyUpdateArgs} args - Arguments to update one NetworkTopology.
+     * @example
+     * // Update one NetworkTopology
+     * const networkTopology = await prisma.networkTopology.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends NetworkTopologyUpdateArgs>(args: SelectSubset<T, NetworkTopologyUpdateArgs<ExtArgs>>): Prisma__NetworkTopologyClient<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more NetworkTopologies.
+     * @param {NetworkTopologyDeleteManyArgs} args - Arguments to filter NetworkTopologies to delete.
+     * @example
+     * // Delete a few NetworkTopologies
+     * const { count } = await prisma.networkTopology.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends NetworkTopologyDeleteManyArgs>(args?: SelectSubset<T, NetworkTopologyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more NetworkTopologies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NetworkTopologyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many NetworkTopologies
+     * const networkTopology = await prisma.networkTopology.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends NetworkTopologyUpdateManyArgs>(args: SelectSubset<T, NetworkTopologyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one NetworkTopology.
+     * @param {NetworkTopologyUpsertArgs} args - Arguments to update or create a NetworkTopology.
+     * @example
+     * // Update or create a NetworkTopology
+     * const networkTopology = await prisma.networkTopology.upsert({
+     *   create: {
+     *     // ... data to create a NetworkTopology
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the NetworkTopology we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NetworkTopologyUpsertArgs>(args: SelectSubset<T, NetworkTopologyUpsertArgs<ExtArgs>>): Prisma__NetworkTopologyClient<$Result.GetResult<Prisma.$NetworkTopologyPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of NetworkTopologies.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NetworkTopologyCountArgs} args - Arguments to filter NetworkTopologies to count.
+     * @example
+     * // Count the number of NetworkTopologies
+     * const count = await prisma.networkTopology.count({
+     *   where: {
+     *     // ... the filter for the NetworkTopologies we want to count
+     *   }
+     * })
+    **/
+    count<T extends NetworkTopologyCountArgs>(
+      args?: Subset<T, NetworkTopologyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NetworkTopologyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a NetworkTopology.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NetworkTopologyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NetworkTopologyAggregateArgs>(args: Subset<T, NetworkTopologyAggregateArgs>): Prisma.PrismaPromise<GetNetworkTopologyAggregateType<T>>
+
+    /**
+     * Group by NetworkTopology.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NetworkTopologyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends NetworkTopologyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NetworkTopologyGroupByArgs['orderBy'] }
+        : { orderBy?: NetworkTopologyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NetworkTopologyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNetworkTopologyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the NetworkTopology model
+   */
+  readonly fields: NetworkTopologyFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for NetworkTopology.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NetworkTopologyClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the NetworkTopology model
+   */
+  interface NetworkTopologyFieldRefs {
+    readonly id: FieldRef<"NetworkTopology", 'Int'>
+    readonly name: FieldRef<"NetworkTopology", 'String'>
+    readonly description: FieldRef<"NetworkTopology", 'String'>
+    readonly isDefault: FieldRef<"NetworkTopology", 'Boolean'>
+    readonly nodes: FieldRef<"NetworkTopology", 'String'>
+    readonly edges: FieldRef<"NetworkTopology", 'String'>
+    readonly viewport: FieldRef<"NetworkTopology", 'String'>
+    readonly createdAt: FieldRef<"NetworkTopology", 'DateTime'>
+    readonly updatedAt: FieldRef<"NetworkTopology", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * NetworkTopology findUnique
+   */
+  export type NetworkTopologyFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * Filter, which NetworkTopology to fetch.
+     */
+    where: NetworkTopologyWhereUniqueInput
+  }
+
+  /**
+   * NetworkTopology findUniqueOrThrow
+   */
+  export type NetworkTopologyFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * Filter, which NetworkTopology to fetch.
+     */
+    where: NetworkTopologyWhereUniqueInput
+  }
+
+  /**
+   * NetworkTopology findFirst
+   */
+  export type NetworkTopologyFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * Filter, which NetworkTopology to fetch.
+     */
+    where?: NetworkTopologyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NetworkTopologies to fetch.
+     */
+    orderBy?: NetworkTopologyOrderByWithRelationInput | NetworkTopologyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NetworkTopologies.
+     */
+    cursor?: NetworkTopologyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NetworkTopologies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NetworkTopologies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NetworkTopologies.
+     */
+    distinct?: NetworkTopologyScalarFieldEnum | NetworkTopologyScalarFieldEnum[]
+  }
+
+  /**
+   * NetworkTopology findFirstOrThrow
+   */
+  export type NetworkTopologyFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * Filter, which NetworkTopology to fetch.
+     */
+    where?: NetworkTopologyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NetworkTopologies to fetch.
+     */
+    orderBy?: NetworkTopologyOrderByWithRelationInput | NetworkTopologyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for NetworkTopologies.
+     */
+    cursor?: NetworkTopologyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NetworkTopologies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NetworkTopologies.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of NetworkTopologies.
+     */
+    distinct?: NetworkTopologyScalarFieldEnum | NetworkTopologyScalarFieldEnum[]
+  }
+
+  /**
+   * NetworkTopology findMany
+   */
+  export type NetworkTopologyFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * Filter, which NetworkTopologies to fetch.
+     */
+    where?: NetworkTopologyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of NetworkTopologies to fetch.
+     */
+    orderBy?: NetworkTopologyOrderByWithRelationInput | NetworkTopologyOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing NetworkTopologies.
+     */
+    cursor?: NetworkTopologyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` NetworkTopologies from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` NetworkTopologies.
+     */
+    skip?: number
+    distinct?: NetworkTopologyScalarFieldEnum | NetworkTopologyScalarFieldEnum[]
+  }
+
+  /**
+   * NetworkTopology create
+   */
+  export type NetworkTopologyCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * The data needed to create a NetworkTopology.
+     */
+    data: XOR<NetworkTopologyCreateInput, NetworkTopologyUncheckedCreateInput>
+  }
+
+  /**
+   * NetworkTopology createMany
+   */
+  export type NetworkTopologyCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many NetworkTopologies.
+     */
+    data: NetworkTopologyCreateManyInput | NetworkTopologyCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * NetworkTopology update
+   */
+  export type NetworkTopologyUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * The data needed to update a NetworkTopology.
+     */
+    data: XOR<NetworkTopologyUpdateInput, NetworkTopologyUncheckedUpdateInput>
+    /**
+     * Choose, which NetworkTopology to update.
+     */
+    where: NetworkTopologyWhereUniqueInput
+  }
+
+  /**
+   * NetworkTopology updateMany
+   */
+  export type NetworkTopologyUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update NetworkTopologies.
+     */
+    data: XOR<NetworkTopologyUpdateManyMutationInput, NetworkTopologyUncheckedUpdateManyInput>
+    /**
+     * Filter which NetworkTopologies to update
+     */
+    where?: NetworkTopologyWhereInput
+    /**
+     * Limit how many NetworkTopologies to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * NetworkTopology upsert
+   */
+  export type NetworkTopologyUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * The filter to search for the NetworkTopology to update in case it exists.
+     */
+    where: NetworkTopologyWhereUniqueInput
+    /**
+     * In case the NetworkTopology found by the `where` argument doesn't exist, create a new NetworkTopology with this data.
+     */
+    create: XOR<NetworkTopologyCreateInput, NetworkTopologyUncheckedCreateInput>
+    /**
+     * In case the NetworkTopology was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NetworkTopologyUpdateInput, NetworkTopologyUncheckedUpdateInput>
+  }
+
+  /**
+   * NetworkTopology delete
+   */
+  export type NetworkTopologyDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+    /**
+     * Filter which NetworkTopology to delete.
+     */
+    where: NetworkTopologyWhereUniqueInput
+  }
+
+  /**
+   * NetworkTopology deleteMany
+   */
+  export type NetworkTopologyDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which NetworkTopologies to delete
+     */
+    where?: NetworkTopologyWhereInput
+    /**
+     * Limit how many NetworkTopologies to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * NetworkTopology without action
+   */
+  export type NetworkTopologyDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the NetworkTopology
+     */
+    select?: NetworkTopologySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the NetworkTopology
+     */
+    omit?: NetworkTopologyOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -20894,11 +21959,28 @@ export namespace Prisma {
     vlans: 'vlans',
     ports: 'ports',
     lastPolled: 'lastPolled',
+    deviceType: 'deviceType',
+    connMethod: 'connMethod',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type SwitchDeviceScalarFieldEnum = (typeof SwitchDeviceScalarFieldEnum)[keyof typeof SwitchDeviceScalarFieldEnum]
+
+
+  export const NetworkTopologyScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    isDefault: 'isDefault',
+    nodes: 'nodes',
+    edges: 'edges',
+    viewport: 'viewport',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type NetworkTopologyScalarFieldEnum = (typeof NetworkTopologyScalarFieldEnum)[keyof typeof NetworkTopologyScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -21130,10 +22212,23 @@ export namespace Prisma {
     status: 'status',
     uptime: 'uptime',
     vlans: 'vlans',
-    ports: 'ports'
+    ports: 'ports',
+    deviceType: 'deviceType',
+    connMethod: 'connMethod'
   };
 
   export type SwitchDeviceOrderByRelevanceFieldEnum = (typeof SwitchDeviceOrderByRelevanceFieldEnum)[keyof typeof SwitchDeviceOrderByRelevanceFieldEnum]
+
+
+  export const NetworkTopologyOrderByRelevanceFieldEnum: {
+    name: 'name',
+    description: 'description',
+    nodes: 'nodes',
+    edges: 'edges',
+    viewport: 'viewport'
+  };
+
+  export type NetworkTopologyOrderByRelevanceFieldEnum = (typeof NetworkTopologyOrderByRelevanceFieldEnum)[keyof typeof NetworkTopologyOrderByRelevanceFieldEnum]
 
 
   /**
@@ -22409,6 +23504,8 @@ export namespace Prisma {
     vlans?: StringNullableFilter<"SwitchDevice"> | string | null
     ports?: StringNullableFilter<"SwitchDevice"> | string | null
     lastPolled?: DateTimeNullableFilter<"SwitchDevice"> | Date | string | null
+    deviceType?: StringNullableFilter<"SwitchDevice"> | string | null
+    connMethod?: StringNullableFilter<"SwitchDevice"> | string | null
     createdAt?: DateTimeFilter<"SwitchDevice"> | Date | string
     updatedAt?: DateTimeFilter<"SwitchDevice"> | Date | string
   }
@@ -22429,6 +23526,8 @@ export namespace Prisma {
     vlans?: SortOrderInput | SortOrder
     ports?: SortOrderInput | SortOrder
     lastPolled?: SortOrderInput | SortOrder
+    deviceType?: SortOrderInput | SortOrder
+    connMethod?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _relevance?: SwitchDeviceOrderByRelevanceInput
@@ -22453,6 +23552,8 @@ export namespace Prisma {
     vlans?: StringNullableFilter<"SwitchDevice"> | string | null
     ports?: StringNullableFilter<"SwitchDevice"> | string | null
     lastPolled?: DateTimeNullableFilter<"SwitchDevice"> | Date | string | null
+    deviceType?: StringNullableFilter<"SwitchDevice"> | string | null
+    connMethod?: StringNullableFilter<"SwitchDevice"> | string | null
     createdAt?: DateTimeFilter<"SwitchDevice"> | Date | string
     updatedAt?: DateTimeFilter<"SwitchDevice"> | Date | string
   }, "id" | "ip">
@@ -22473,6 +23574,8 @@ export namespace Prisma {
     vlans?: SortOrderInput | SortOrder
     ports?: SortOrderInput | SortOrder
     lastPolled?: SortOrderInput | SortOrder
+    deviceType?: SortOrderInput | SortOrder
+    connMethod?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: SwitchDeviceCountOrderByAggregateInput
@@ -22501,8 +23604,85 @@ export namespace Prisma {
     vlans?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
     ports?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
     lastPolled?: DateTimeNullableWithAggregatesFilter<"SwitchDevice"> | Date | string | null
+    deviceType?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    connMethod?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SwitchDevice"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SwitchDevice"> | Date | string
+  }
+
+  export type NetworkTopologyWhereInput = {
+    AND?: NetworkTopologyWhereInput | NetworkTopologyWhereInput[]
+    OR?: NetworkTopologyWhereInput[]
+    NOT?: NetworkTopologyWhereInput | NetworkTopologyWhereInput[]
+    id?: IntFilter<"NetworkTopology"> | number
+    name?: StringFilter<"NetworkTopology"> | string
+    description?: StringNullableFilter<"NetworkTopology"> | string | null
+    isDefault?: BoolFilter<"NetworkTopology"> | boolean
+    nodes?: StringFilter<"NetworkTopology"> | string
+    edges?: StringFilter<"NetworkTopology"> | string
+    viewport?: StringNullableFilter<"NetworkTopology"> | string | null
+    createdAt?: DateTimeFilter<"NetworkTopology"> | Date | string
+    updatedAt?: DateTimeFilter<"NetworkTopology"> | Date | string
+  }
+
+  export type NetworkTopologyOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isDefault?: SortOrder
+    nodes?: SortOrder
+    edges?: SortOrder
+    viewport?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _relevance?: NetworkTopologyOrderByRelevanceInput
+  }
+
+  export type NetworkTopologyWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: NetworkTopologyWhereInput | NetworkTopologyWhereInput[]
+    OR?: NetworkTopologyWhereInput[]
+    NOT?: NetworkTopologyWhereInput | NetworkTopologyWhereInput[]
+    name?: StringFilter<"NetworkTopology"> | string
+    description?: StringNullableFilter<"NetworkTopology"> | string | null
+    isDefault?: BoolFilter<"NetworkTopology"> | boolean
+    nodes?: StringFilter<"NetworkTopology"> | string
+    edges?: StringFilter<"NetworkTopology"> | string
+    viewport?: StringNullableFilter<"NetworkTopology"> | string | null
+    createdAt?: DateTimeFilter<"NetworkTopology"> | Date | string
+    updatedAt?: DateTimeFilter<"NetworkTopology"> | Date | string
+  }, "id">
+
+  export type NetworkTopologyOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrderInput | SortOrder
+    isDefault?: SortOrder
+    nodes?: SortOrder
+    edges?: SortOrder
+    viewport?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: NetworkTopologyCountOrderByAggregateInput
+    _avg?: NetworkTopologyAvgOrderByAggregateInput
+    _max?: NetworkTopologyMaxOrderByAggregateInput
+    _min?: NetworkTopologyMinOrderByAggregateInput
+    _sum?: NetworkTopologySumOrderByAggregateInput
+  }
+
+  export type NetworkTopologyScalarWhereWithAggregatesInput = {
+    AND?: NetworkTopologyScalarWhereWithAggregatesInput | NetworkTopologyScalarWhereWithAggregatesInput[]
+    OR?: NetworkTopologyScalarWhereWithAggregatesInput[]
+    NOT?: NetworkTopologyScalarWhereWithAggregatesInput | NetworkTopologyScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"NetworkTopology"> | number
+    name?: StringWithAggregatesFilter<"NetworkTopology"> | string
+    description?: StringNullableWithAggregatesFilter<"NetworkTopology"> | string | null
+    isDefault?: BoolWithAggregatesFilter<"NetworkTopology"> | boolean
+    nodes?: StringWithAggregatesFilter<"NetworkTopology"> | string
+    edges?: StringWithAggregatesFilter<"NetworkTopology"> | string
+    viewport?: StringNullableWithAggregatesFilter<"NetworkTopology"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"NetworkTopology"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"NetworkTopology"> | Date | string
   }
 
   export type nasCreateInput = {
@@ -23776,6 +24956,8 @@ export namespace Prisma {
     vlans?: string | null
     ports?: string | null
     lastPolled?: Date | string | null
+    deviceType?: string | null
+    connMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23796,6 +24978,8 @@ export namespace Prisma {
     vlans?: string | null
     ports?: string | null
     lastPolled?: Date | string | null
+    deviceType?: string | null
+    connMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23815,6 +24999,8 @@ export namespace Prisma {
     vlans?: NullableStringFieldUpdateOperationsInput | string | null
     ports?: NullableStringFieldUpdateOperationsInput | string | null
     lastPolled?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    connMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23835,6 +25021,8 @@ export namespace Prisma {
     vlans?: NullableStringFieldUpdateOperationsInput | string | null
     ports?: NullableStringFieldUpdateOperationsInput | string | null
     lastPolled?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    connMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23855,6 +25043,8 @@ export namespace Prisma {
     vlans?: string | null
     ports?: string | null
     lastPolled?: Date | string | null
+    deviceType?: string | null
+    connMethod?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -23874,6 +25064,8 @@ export namespace Prisma {
     vlans?: NullableStringFieldUpdateOperationsInput | string | null
     ports?: NullableStringFieldUpdateOperationsInput | string | null
     lastPolled?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    connMethod?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23894,6 +25086,89 @@ export namespace Prisma {
     vlans?: NullableStringFieldUpdateOperationsInput | string | null
     ports?: NullableStringFieldUpdateOperationsInput | string | null
     lastPolled?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deviceType?: NullableStringFieldUpdateOperationsInput | string | null
+    connMethod?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NetworkTopologyCreateInput = {
+    name: string
+    description?: string | null
+    isDefault?: boolean
+    nodes: string
+    edges: string
+    viewport?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NetworkTopologyUncheckedCreateInput = {
+    id?: number
+    name: string
+    description?: string | null
+    isDefault?: boolean
+    nodes: string
+    edges: string
+    viewport?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NetworkTopologyUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    nodes?: StringFieldUpdateOperationsInput | string
+    edges?: StringFieldUpdateOperationsInput | string
+    viewport?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NetworkTopologyUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    nodes?: StringFieldUpdateOperationsInput | string
+    edges?: StringFieldUpdateOperationsInput | string
+    viewport?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NetworkTopologyCreateManyInput = {
+    id?: number
+    name: string
+    description?: string | null
+    isDefault?: boolean
+    nodes: string
+    edges: string
+    viewport?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type NetworkTopologyUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    nodes?: StringFieldUpdateOperationsInput | string
+    edges?: StringFieldUpdateOperationsInput | string
+    viewport?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type NetworkTopologyUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    isDefault?: BoolFieldUpdateOperationsInput | boolean
+    nodes?: StringFieldUpdateOperationsInput | string
+    edges?: StringFieldUpdateOperationsInput | string
+    viewport?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -25006,6 +26281,8 @@ export namespace Prisma {
     vlans?: SortOrder
     ports?: SortOrder
     lastPolled?: SortOrder
+    deviceType?: SortOrder
+    connMethod?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -25031,6 +26308,8 @@ export namespace Prisma {
     vlans?: SortOrder
     ports?: SortOrder
     lastPolled?: SortOrder
+    deviceType?: SortOrder
+    connMethod?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -25051,6 +26330,8 @@ export namespace Prisma {
     vlans?: SortOrder
     ports?: SortOrder
     lastPolled?: SortOrder
+    deviceType?: SortOrder
+    connMethod?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -25058,6 +26339,56 @@ export namespace Prisma {
   export type SwitchDeviceSumOrderByAggregateInput = {
     id?: SortOrder
     port?: SortOrder
+  }
+
+  export type NetworkTopologyOrderByRelevanceInput = {
+    fields: NetworkTopologyOrderByRelevanceFieldEnum | NetworkTopologyOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type NetworkTopologyCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isDefault?: SortOrder
+    nodes?: SortOrder
+    edges?: SortOrder
+    viewport?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NetworkTopologyAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type NetworkTopologyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isDefault?: SortOrder
+    nodes?: SortOrder
+    edges?: SortOrder
+    viewport?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NetworkTopologyMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    description?: SortOrder
+    isDefault?: SortOrder
+    nodes?: SortOrder
+    edges?: SortOrder
+    viewport?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type NetworkTopologySumOrderByAggregateInput = {
+    id?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {

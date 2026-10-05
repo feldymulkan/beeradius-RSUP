@@ -65,23 +65,30 @@ export default async function RadiusGroupsPage({
   });
 
   return (
-    <div className="prose lg:prose-xl mb-6 max-w-none">
-      <div className="flex justify-between items-center">
-        <h1 className="capitalize">Manajemen Grup {type}</h1>
-        <Link href="/radius-groups/create" className="btn btn-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-          Tambah Grup Baru
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-base-content flex items-center gap-2">
+            Manajemen Grup <span className="text-primary uppercase">{type}</span>
+          </h1>
+          <p className="text-xs text-base-content/70 mt-1">
+            Kelola profil bandwidth, batasan kecepatan (rate limit), dan alokasi IP pool untuk grup {type}.
+          </p>
+        </div>
+        <Link
+          href="/radius-groups/create"
+          className="btn btn-primary btn-sm gap-1.5 shadow-[0_0_12px_rgba(56,189,248,0.25)] self-start sm:self-auto"
+        >
+          <span>+</span> Tambah Grup Baru
         </Link>
       </div>
 
-      <div className="not-prose mt-6">
-        <GroupClientWrapper 
-          groups={groupsWithId}
-          page={page}
-          pageSize={pageSize}
-          totalPages={totalPages}
-        />
-      </div>
+      <GroupClientWrapper 
+        groups={groupsWithId}
+        page={page}
+        pageSize={pageSize}
+        totalPages={totalPages}
+      />
     </div>
   );
 }

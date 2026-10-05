@@ -235,7 +235,7 @@ export default function OverviewDashboard({ initialData }: { initialData: Server
                   <tbody>
                     {initialData.recentSessions.map((session, idx) => (
                       <tr key={idx} className="hover">
-                        <td className="font-medium text-slate-200">{session.username}</td>
+                        <td className="font-medium text-base-content">{session.username}</td>
                         <td className="font-mono text-[11px] text-slate-400">
                           {session.acctstarttime ? formatDate(new Date(session.acctstarttime)) : "-"}
                         </td>

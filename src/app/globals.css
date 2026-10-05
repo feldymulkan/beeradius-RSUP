@@ -116,6 +116,10 @@
   --btn-default-bg: rgba(30, 41, 59, 0.6);
   --btn-default-border: rgba(148, 163, 184, 0.2);
   --btn-default-color: #e2e8f0;
+  --topo-canvas-bg: #070b15;
+  --topo-grid-color: rgba(56, 189, 248, 0.1);
+  --topo-cable-bg: #0b1326;
+  --topo-cable-text: #f8fafc;
 }
 
 [data-theme="beeradius-light"] {
@@ -137,6 +141,10 @@
   --btn-default-bg: #f1f5f9;
   --btn-default-border: #cbd5e1;
   --btn-default-color: #1e293b;
+  --topo-canvas-bg: #f1f5f9;
+  --topo-grid-color: rgba(37, 99, 235, 0.15);
+  --topo-cable-bg: #ffffff;
+  --topo-cable-text: #0f172a;
 }
 
 html,
@@ -299,12 +307,16 @@ body {
   background: var(--glass-bg);
   border: 1px solid var(--glass-border);
 }
+.modal {
+  z-index: 50;
+}
 .modal-box,
 .dropdown-content {
   background-color: var(--modal-bg);
   border: 1px solid var(--glass-border-strong);
   backdrop-filter: blur(24px);
   color: inherit;
+  z-index: 50;
 }
 
 /* ---------- Util ---------- */

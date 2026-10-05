@@ -62,7 +62,18 @@ export async function PUT(
     const { id } = await params;
     const switchId = parseInt(id, 10);
     const body = await req.json();
-    const { name, ip, community, snmpVersion, port, location } = body;
+    const {
+      name,
+      ip,
+      community,
+      snmpVersion,
+      port,
+      location,
+      deviceType,
+      connMethod,
+      brand,
+      model,
+    } = body;
 
     const updated = await prisma.switchDevice.update({
       where: { id: switchId },
@@ -73,10 +84,14 @@ export async function PUT(
         snmpVersion,
         port: port ? Number(port) : undefined,
         location,
+        deviceType: deviceType || undefined,
+        connMethod: connMethod || undefined,
+        brand: brand || undefined,
+        model: model || undefined,
       },
     });
 
-    await logAudit("UPDATE_SWITCH", "switch", ip, { id: switchId, name });
+    await logAudit("UPDATE_SWITCH", deviceType || "switch", ip, { id: switchId, name });
 
     return NextResponse.json({
       message: "Switch berhasil diperbarui",

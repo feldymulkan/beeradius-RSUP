@@ -289,12 +289,12 @@ export default function ReportClient({
     {
       header: "User",
       accessorKey: "username",
-      cell: (log) => <span className="font-semibold text-white">{log.username}</span>,
+      cell: (log) => <span className="font-semibold text-base-content">{log.username}</span>,
     },
     {
       header: "Waktu Login",
       cell: (log) => (
-        <span className="font-mono text-xs text-slate-300">
+        <span className="font-mono text-xs text-base-content/80">
           {formatDate(log.acctstarttime || log.authdate)}
         </span>
       ),
@@ -321,12 +321,12 @@ export default function ReportClient({
     {
       header: "User",
       accessorKey: "username",
-      cell: (log) => <span className="font-semibold text-white">{log.username}</span>,
+      cell: (log) => <span className="font-semibold text-base-content">{log.username}</span>,
     },
     {
       header: "Waktu",
       cell: (log) => (
-        <span className="font-mono text-xs text-slate-300">
+        <span className="font-mono text-xs text-base-content/80">
           {formatDate(log.authdate)}
         </span>
       ),
@@ -353,7 +353,7 @@ export default function ReportClient({
     {
       header: "Total Sesi",
       cell: (row) => (
-        <span className="font-mono font-medium text-white">
+        <span className="font-mono font-medium text-base-content">
           {row.total_sessions || row._count?.radacctid || "0"}
         </span>
       ),
@@ -396,14 +396,14 @@ export default function ReportClient({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold tracking-tight text-white">
+            <h1 className="text-2xl font-bold tracking-tight text-base-content">
               Laporan & Statistik
             </h1>
             <span className="badge badge-primary badge-sm font-mono text-[10px] font-semibold bg-primary/20 text-primary border border-primary/30">
               Live Telemetry
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-base-content/70 mt-1">
             Analisis performa throughput bandwidth, distribusi kuota, dan statistik autentikasi RADIUS RSUD NTB.
           </p>
         </div>
@@ -420,10 +420,10 @@ export default function ReportClient({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap cursor-pointer ${
                   isActive
                     ? "bg-primary/20 text-primary border border-primary/30 shadow-[0_0_12px_rgba(56,189,248,0.2)] font-semibold"
-                    : "text-slate-400 hover:text-white hover:bg-base-200/50"
+                    : "text-base-content/70 hover:text-base-content hover:bg-base-200"
                 }`}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -435,8 +435,8 @@ export default function ReportClient({
 
         {/* Status Telemetry Pill */}
         <div className="flex items-center gap-2 self-end md:self-center px-2">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             FreeRADIUS Synchronized
           </span>
         </div>
@@ -450,7 +450,7 @@ export default function ReportClient({
             {/* Total Download */}
             <div className="border-l-4 border-l-cyan-400 bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg relative overflow-hidden group hover:border-cyan-500/30 transition-all">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono font-semibold tracking-wider text-slate-400 uppercase">
+                <span className="text-[10px] font-mono font-semibold tracking-wider text-base-content/60 uppercase">
                   TOTAL DOWNLOAD
                 </span>
                 <div className="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
@@ -458,14 +458,14 @@ export default function ReportClient({
                 </div>
               </div>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-2xl lg:text-3xl font-mono font-bold text-white tracking-tight">
+                <span className="text-2xl lg:text-3xl font-mono font-bold text-base-content tracking-tight">
                   {formatBytes(yearlyData?.download || 0).split(" ")[0]}
                 </span>
-                <span className="text-xs font-mono font-semibold text-cyan-400">
+                <span className="text-xs font-mono font-semibold text-cyan-500 dark:text-cyan-400">
                   {formatBytes(yearlyData?.download || 0).split(" ")[1]}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-2">
+              <p className="text-[11px] text-base-content/60 mt-2">
                 Akumulasi trafik Rx tahun berjalan
               </p>
             </div>
@@ -473,7 +473,7 @@ export default function ReportClient({
             {/* Total Upload */}
             <div className="border-l-4 border-l-emerald-400 bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg relative overflow-hidden group hover:border-emerald-500/30 transition-all">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono font-semibold tracking-wider text-slate-400 uppercase">
+                <span className="text-[10px] font-mono font-semibold tracking-wider text-base-content/60 uppercase">
                   TOTAL UPLOAD
                 </span>
                 <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
@@ -481,14 +481,14 @@ export default function ReportClient({
                 </div>
               </div>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-2xl lg:text-3xl font-mono font-bold text-white tracking-tight">
+                <span className="text-2xl lg:text-3xl font-mono font-bold text-base-content tracking-tight">
                   {formatBytes(yearlyData?.upload || 0).split(" ")[0]}
                 </span>
-                <span className="text-xs font-mono font-semibold text-emerald-400">
+                <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
                   {formatBytes(yearlyData?.upload || 0).split(" ")[1]}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 mt-2">
+              <p className="text-[11px] text-base-content/60 mt-2">
                 Akumulasi trafik Tx tahun berjalan
               </p>
             </div>
@@ -496,17 +496,17 @@ export default function ReportClient({
             {/* Active Users */}
             <div className="border-l-4 border-l-amber-400 bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg relative overflow-hidden group hover:border-amber-500/30 transition-all">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-mono font-semibold tracking-wider text-slate-400 uppercase">
+                <span className="text-[10px] font-mono font-semibold tracking-wider text-base-content/60 uppercase">
                   USER AKTIF HARIAN
                 </span>
                 <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
                   <FaUsers className="h-3.5 w-3.5" />
                 </div>
               </div>
-              <div className="text-2xl lg:text-3xl font-mono font-bold text-white tracking-tight">
+              <div className="text-2xl lg:text-3xl font-mono font-bold text-base-content tracking-tight">
                 {(initialDailyUserData[initialDailyUserData.length - 1]?.userCount || 0).toLocaleString()}
               </div>
-              <p className="text-[11px] text-slate-400 mt-2">
+              <p className="text-[11px] text-base-content/60 mt-2">
                 {hotspotCount} Hotspot · {vpnCount} VPN terdaftar
               </p>
             </div>
@@ -541,7 +541,7 @@ export default function ReportClient({
               )}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
                 <div>
-                  <h2 className="text-base font-bold text-white flex items-center gap-2">
+                  <h2 className="text-base font-bold text-base-content flex items-center gap-2">
                     Tren Bandwidth & Throughput
                   </h2>
                   <p className="text-xs text-slate-400">
@@ -611,10 +611,10 @@ export default function ReportClient({
               )}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
                 <div>
-                  <h2 className="text-base font-bold text-white flex items-center gap-2">
+                  <h2 className="text-base font-bold text-base-content flex items-center gap-2">
                     Tren User Aktif & Sesi
                   </h2>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-base-content/70">
                     Jumlah user login harian terotentikasi
                   </p>
                 </div>
@@ -662,11 +662,11 @@ export default function ReportClient({
               <div className="space-y-3">
                 <div>
                   <div className="flex justify-between text-xs font-mono mb-1">
-                    <span className="text-slate-300 flex items-center gap-1.5">
+                    <span className="text-base-content/80 flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-cyan-400" />
                       Hotspot
                     </span>
-                    <span className="font-bold text-white">
+                    <span className="font-bold text-base-content">
                       {hotspotCount} ({totalUsersCount > 0 ? ((hotspotCount / totalUsersCount) * 100).toFixed(0) : 0}%)
                     </span>
                   </div>
@@ -678,11 +678,11 @@ export default function ReportClient({
                 </div>
                 <div>
                   <div className="flex justify-between text-xs font-mono mb-1">
-                    <span className="text-slate-300 flex items-center gap-1.5">
+                    <span className="text-base-content/80 flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-400" />
                       VPN (WireGuard / PPP)
                     </span>
-                    <span className="font-bold text-white">
+                    <span className="font-bold text-base-content">
                       {vpnCount} ({totalUsersCount > 0 ? ((vpnCount / totalUsersCount) * 100).toFixed(0) : 0}%)
                     </span>
                   </div>
@@ -723,8 +723,8 @@ export default function ReportClient({
               </h3>
               <div className="flex items-center justify-between py-1">
                 <div>
-                  <p className="text-2xl font-mono font-bold text-white tracking-tight">{trafficRatio}</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">Rasio Download vs Upload</p>
+                  <p className="text-2xl font-mono font-bold text-base-content tracking-tight">{trafficRatio}</p>
+                  <p className="text-[10px] text-base-content/70 mt-0.5">Rasio Download vs Upload</p>
                 </div>
                 <div className="text-right">
                   <span className="text-xs font-mono font-semibold text-primary">
@@ -749,8 +749,8 @@ export default function ReportClient({
             )}
             <div className="p-5 border-b border-primary/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h2 className="text-base font-bold text-white">Top Pengguna Data Kuota</h2>
-                <p className="text-xs text-slate-400">
+                <h2 className="text-base font-bold text-base-content">Top Pengguna Data Kuota</h2>
+                <p className="text-xs text-base-content/70">
                   Peringkat konsumsi kuota bandwidth berdasarkan log akuntansi RADIUS
                 </p>
               </div>
@@ -797,11 +797,11 @@ export default function ReportClient({
                               <span className="text-slate-500 text-xs">{i + 1}</span>
                             )}
                           </td>
-                          <td className="font-semibold text-white">{u.username}</td>
-                          <td className="font-mono text-xs text-slate-300">
+                          <td className="font-semibold text-base-content">{u.username}</td>
+                          <td className="font-mono text-xs text-base-content/80">
                             {formatBytes(u._sum?.acctinputoctets || u.upload || 0)}
                           </td>
-                          <td className="font-mono text-xs text-slate-300">
+                          <td className="font-mono text-xs text-base-content/80">
                             {formatBytes(u._sum?.acctoutputoctets || u.download || 0)}
                           </td>
                           <td className="font-mono text-xs font-bold text-primary">
@@ -844,8 +844,8 @@ export default function ReportClient({
             {/* Pie Chart Card */}
             <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-xl">
               <div className="mb-4">
-                <h2 className="text-base font-bold text-white">Visualisasi Distribusi Grup</h2>
-                <p className="text-xs text-slate-400">
+                <h2 className="text-base font-bold text-base-content">Visualisasi Distribusi Grup</h2>
+                <p className="text-xs text-base-content/70">
                   Proporsi pengguna aktif per profil grup RADIUS
                 </p>
               </div>
@@ -885,15 +885,15 @@ export default function ReportClient({
             {/* Table Detail Card */}
             <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl overflow-hidden shadow-xl flex flex-col">
               <div className="p-5 border-b border-primary/10">
-                <h2 className="text-base font-bold text-white">Rincian Grup Pengguna</h2>
-                <p className="text-xs text-slate-400">
+                <h2 className="text-base font-bold text-base-content">Rincian Grup Pengguna</h2>
+                <p className="text-xs text-base-content/70">
                   Total kuantitas akun pengguna yang terdaftar di masing-masing grup
                 </p>
               </div>
               <div className="overflow-x-auto flex-1">
                 <table className="table w-full">
                   <thead>
-                    <tr className="bg-[#0f172a] text-[11px] font-mono uppercase tracking-wider text-slate-400 border-b border-primary/10">
+                    <tr className="bg-base-200/60 text-[11px] font-mono uppercase tracking-wider text-base-content/70 border-b border-primary/10">
                       <th className="w-12 text-center">#</th>
                       <th>Nama Grup</th>
                       <th>Total User</th>
@@ -908,8 +908,8 @@ export default function ReportClient({
                         const color = CHART_COLORS[i % CHART_COLORS.length];
                         return (
                           <tr key={i} className="hover:bg-primary/5 transition-colors">
-                            <td className="text-center font-mono text-slate-500 text-xs">{i + 1}</td>
-                            <td className="font-semibold text-white flex items-center gap-2">
+                            <td className="text-center font-mono text-base-content/50 text-xs">{i + 1}</td>
+                            <td className="font-semibold text-base-content flex items-center gap-2">
                               <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
                               {g.groupname}
                             </td>
@@ -933,15 +933,15 @@ export default function ReportClient({
                       });
                     })()}
                   </tbody>
-                  <tfoot className="bg-[#0f172a]/80 font-mono text-xs border-t border-primary/10">
+                  <tfoot className="bg-base-200/60 font-mono text-xs border-t border-primary/10">
                     <tr>
-                      <th colSpan={2} className="text-right text-slate-400">
+                      <th colSpan={2} className="text-right text-base-content/70">
                         Total Seluruh Pengguna:
                       </th>
                       <th className="text-primary font-bold text-sm">
                         {totalUsersCount} User
                       </th>
-                      <th className="text-slate-400">100%</th>
+                      <th className="text-base-content/70">100%</th>
                     </tr>
                   </tfoot>
                 </table>
@@ -958,7 +958,7 @@ export default function ReportClient({
           <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl overflow-hidden shadow-xl">
             <div className="p-5 border-b border-primary/10 flex items-center justify-between">
               <div>
-                <h2 className="text-base font-bold text-white flex items-center gap-2">
+                <h2 className="text-base font-bold text-base-content flex items-center gap-2">
                   <FaHistory className="text-primary h-4 w-4" />
                   Log Login Terbaru (Realtime Sesi)
                 </h2>

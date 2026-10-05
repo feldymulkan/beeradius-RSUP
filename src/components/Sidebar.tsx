@@ -17,6 +17,7 @@ import {
   FaQuestionCircle,
   FaCog,
   FaUserShield,
+  FaProjectDiagram,
 } from "react-icons/fa";
 import type { ReactNode } from "react";
 
@@ -69,6 +70,7 @@ export default function Sidebar() {
           <li><ActiveLink href="/radius-groups/vpn"><FaLayerGroup className={icon} />Grup VPN</ActiveLink></li>
           <li><ActiveLink href="/radius-pools"><FaNetworkWired className={icon} />IP Pools</ActiveLink></li>
           <li><ActiveLink href="/switches"><FaNetworkWired className={icon} />Switch &amp; VLAN</ActiveLink></li>
+          <li><ActiveLink href="/topology"><FaProjectDiagram className={icon} />Topologi Jaringan</ActiveLink></li>
           {isSuperAdmin && (
             <li><ActiveLink href="/nas"><FaServer className={icon} />Perangkat</ActiveLink></li>
           )}

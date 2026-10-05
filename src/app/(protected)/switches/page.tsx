@@ -17,6 +17,10 @@ import {
   FaClock,
   FaMapMarkerAlt,
   FaTimes,
+  FaRoute,
+  FaVideo,
+  FaWifi,
+  FaShieldAlt,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 
@@ -49,6 +53,8 @@ interface SwitchDevice {
   sysDescr?: string;
   location?: string;
   status: "online" | "offline";
+  deviceType?: string;
+  connMethod?: string;
   uptime?: string;
   vlans: SwitchVlan[];
   ports: SwitchPort[];
@@ -62,6 +68,7 @@ export default function SwitchesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedBrand, setSelectedBrand] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedType, setSelectedType] = useState("all");
 
   // State polling/scanning per ID
   const [scanningId, setScanningId] = useState<number | null>(null);
@@ -76,9 +83,13 @@ export default function SwitchesPage() {
   const [formData, setFormData] = useState({
     name: "",
     ip: "",
+    deviceType: "switch",
+    connMethod: "snmp",
     community: "public",
     snmpVersion: "2c",
     port: 161,
+    brand: "",
+    model: "",
     location: "Ruang Server RSUD NTB",
   });
   const [savingSwitch, setSavingSwitch] = useState(false);
@@ -129,10 +140,11 @@ export default function SwitchesPage() {
         (sw.brand && sw.brand.toLowerCase().includes(selectedBrand.toLowerCase()));
 
       const matchStatus = selectedStatus === "all" || sw.status === selectedStatus;
+      const matchType = selectedType === "all" || (sw.deviceType || "switch") === selectedType;
 
-      return matchQuery && matchBrand && matchStatus;
+      return matchQuery && matchBrand && matchStatus && matchType;
     });
-  }, [switches, searchQuery, selectedBrand, selectedStatus]);
+  }, [switches, searchQuery, selectedBrand, selectedStatus, selectedType]);
 
   // Summary Metrics
   const metrics = useMemo(() => {
@@ -145,8 +157,25 @@ export default function SwitchesPage() {
       (acc, s) => acc + (s.ports?.filter((p) => p.status === "up").length || 0),
       0
     );
+    const switchesCount = switches.filter((s) => (s.deviceType || "switch") === "switch").length;
+    const routersCount = switches.filter((s) => s.deviceType === "router").length;
+    const serversCount = switches.filter((s) => s.deviceType === "server").length;
+    const nvrsCount = switches.filter((s) => s.deviceType === "nvr" || s.deviceType === "cctv").length;
+    const apsCount = switches.filter((s) => s.deviceType === "ap").length;
 
-    return { total, online, offline, totalVlans, totalPorts, upPorts };
+    return {
+      total,
+      online,
+      offline,
+      totalVlans,
+      totalPorts,
+      upPorts,
+      switchesCount,
+      routersCount,
+      serversCount,
+      nvrsCount,
+      apsCount,
+    };
   }, [switches]);
 
   // Trigger SNMP Scan
@@ -267,6 +296,18 @@ export default function SwitchesPage() {
     return "bg-slate-500/10 text-slate-400 border-slate-500/30";
   };
 
+  const getDeviceIcon = (t?: string) => {
+    switch (t) {
+      case "router": return <FaRoute className="h-4 w-4 text-sky-400" />;
+      case "switch": return <FaNetworkWired className="h-4 w-4 text-emerald-400" />;
+      case "nvr": case "cctv": return <FaVideo className="h-4 w-4 text-amber-400" />;
+      case "ap": return <FaWifi className="h-4 w-4 text-purple-400" />;
+      case "server": return <FaServer className="h-4 w-4 text-indigo-400" />;
+      case "firewall": return <FaShieldAlt className="h-4 w-4 text-rose-400" />;
+      default: return <FaNetworkWired className="h-4 w-4 text-emerald-400" />;
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header Bar */}
@@ -276,10 +317,10 @@ export default function SwitchesPage() {
             <span className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
               <FaNetworkWired className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-bold tracking-tight">Manajemen Switch &amp; VLAN</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Manajemen Switch, VLAN &amp; Perangkat Jaringan</h1>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Deteksi otomatis konfigurasi perangkat switch (Ruijie, ZTE, TP-Link, Cisco) dan pemetaan VLAN via SNMP RFC 2674
+            Deteksi otomatis &amp; inventaris perangkat fisik RSUD NTB (Switch, Router, NVR CCTV, Server, Access Point, Firewall) via SNMP, Ping, dan API
           </p>
         </div>
 
@@ -300,9 +341,13 @@ export default function SwitchesPage() {
               setFormData({
                 name: "",
                 ip: "",
+                deviceType: "switch",
+                connMethod: "snmp",
                 community: "public",
                 snmpVersion: "2c",
                 port: 161,
+                brand: "",
+                model: "",
                 location: "Ruang Server RSUD NTB",
               });
               setIsAddModalOpen(true);
@@ -310,7 +355,7 @@ export default function SwitchesPage() {
             className="btn btn-sm btn-primary gap-2 shadow-[0_0_12px_rgba(37,99,235,0.3)]"
           >
             <FaPlus />
-            Tambah Switch
+            Tambah Perangkat
           </button>
           <button
             onClick={fetchSwitches}
@@ -450,12 +495,13 @@ export default function SwitchesPage() {
             <option value="offline">Offline</option>
           </select>
 
-          {(searchQuery || selectedBrand !== "all" || selectedStatus !== "all") && (
+          {(searchQuery || selectedBrand !== "all" || selectedStatus !== "all" || selectedType !== "all") && (
             <button
               onClick={() => {
                 setSearchQuery("");
                 setSelectedBrand("all");
                 setSelectedStatus("all");
+                setSelectedType("all");
               }}
               className="btn btn-sm btn-ghost text-xs gap-1 border border-base-300 hover:text-rose-400"
               title="Reset semua filter dan pencarian"
@@ -465,6 +511,30 @@ export default function SwitchesPage() {
             </button>
           )}
         </div>
+      </div>
+
+      {/* Sub-bar Filter Jenis Perangkat */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-mono">
+        {[
+          { id: "all", label: `Semua Perangkat (${metrics.total})` },
+          { id: "switch", label: `Switch (${metrics.switchesCount})` },
+          { id: "router", label: `Router (${metrics.routersCount})` },
+          { id: "server", label: `Server (${metrics.serversCount})` },
+          { id: "nvr", label: `NVR & CCTV (${metrics.nvrsCount})` },
+          { id: "ap", label: `Access Point (${metrics.apsCount})` },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setSelectedType(tab.id)}
+            className={`px-3 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all ${
+              selectedType === tab.id
+                ? "bg-primary text-black border-primary font-bold shadow-xs"
+                : "bg-base-200/50 border-base-300 text-base-content/60 hover:text-base-content"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
       {/* Switch Table */}
@@ -487,15 +557,15 @@ export default function SwitchesPage() {
                 <tr>
                   <td colSpan={7} className="text-center py-12">
                     <span className="loading loading-spinner text-primary loading-md" />
-                    <p className="text-xs text-slate-400 mt-2">Memuat daftar switch...</p>
+                    <p className="text-xs text-base-content/60 mt-2">Memuat daftar switch...</p>
                   </td>
                 </tr>
               ) : filteredSwitches.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="text-center py-12">
-                    <FaNetworkWired className="h-10 w-10 text-slate-600 mx-auto mb-2 opacity-50" />
-                    <p className="font-semibold text-slate-300">Belum ada switch yang ditemukan</p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <FaNetworkWired className="h-10 w-10 text-base-content/30 mx-auto mb-2 opacity-50" />
+                    <p className="font-semibold text-base-content/80">Belum ada switch yang ditemukan</p>
+                    <p className="text-xs text-base-content/60 mt-1">
                       Klik "+ Tambah Switch" untuk mendaftarkan switch atau "Uji Probe SNMP" untuk test koneksi
                     </p>
                   </td>
@@ -509,10 +579,29 @@ export default function SwitchesPage() {
                   return (
                     <tr key={sw.id} className="hover">
                       <td>
-                        <div className="font-medium text-sm text-slate-200">{sw.name}</div>
-                        <div className="text-xs font-mono text-primary flex items-center gap-1.5 mt-0.5">
-                          <span>{sw.ip}</span>
-                          <span className="text-[10px] text-slate-500">:{sw.port} (v{sw.snmpVersion})</span>
+                        <div className="flex items-center gap-2.5">
+                          <span className="p-1.5 rounded-lg bg-base-200 border border-base-300 shadow-xs shrink-0">
+                            {getDeviceIcon(sw.deviceType)}
+                          </span>
+                          <div className="min-w-0">
+                            <div className="font-semibold text-sm text-base-content flex items-center gap-1.5 flex-wrap">
+                              <span className="truncate">{sw.name}</span>
+                              <span className="badge badge-xs badge-outline border-base-300 font-mono text-[8px] uppercase">
+                                {sw.deviceType || "SWITCH"}
+                              </span>
+                              <span className="badge badge-xs bg-primary/10 text-primary border border-primary/20 font-mono text-[8px] uppercase">
+                                {sw.connMethod || "SNMP"}
+                              </span>
+                            </div>
+                            <div className="text-xs font-mono text-primary flex items-center gap-1.5 mt-0.5">
+                              <span>{sw.ip}</span>
+                              {sw.connMethod === "snmp" && (
+                                <span className="text-[10px] text-slate-500">
+                                  :{sw.port} (v{sw.snmpVersion})
+                                </span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </td>
                       <td>
@@ -583,12 +672,12 @@ export default function SwitchesPage() {
                         )}
                       </td>
                       <td>
-                        <div className="text-xs text-slate-300 flex items-center gap-1">
-                          <FaClock className="h-3 w-3 text-slate-500" />
+                        <div className="text-xs text-base-content/80 flex items-center gap-1">
+                          <FaClock className="h-3 w-3 text-base-content/50" />
                           <span className="font-mono">{sw.uptime || "-"}</span>
                         </div>
-                        <div className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
-                          <FaMapMarkerAlt className="h-2.5 w-2.5 text-slate-500" />
+                        <div className="text-[11px] text-base-content/60 flex items-center gap-1 mt-0.5">
+                          <FaMapMarkerAlt className="h-2.5 w-2.5 text-base-content/50" />
                           <span className="truncate max-w-[140px]">{sw.location || "RSUD NTB"}</span>
                         </div>
                       </td>
@@ -611,7 +700,7 @@ export default function SwitchesPage() {
                             className="btn btn-xs btn-ghost border border-base-300 hover:border-primary/40"
                             title="Scan Ulang SNMP"
                           >
-                            <FaSyncAlt className={`text-slate-300 ${isScanning ? "animate-spin text-primary" : ""}`} />
+                            <FaSyncAlt className={`text-base-content/70 ${isScanning ? "animate-spin text-primary" : ""}`} />
                           </button>
                           <button
                             onClick={() => {
@@ -619,15 +708,19 @@ export default function SwitchesPage() {
                               setFormData({
                                 name: sw.name,
                                 ip: sw.ip,
+                                deviceType: sw.deviceType || "switch",
+                                connMethod: sw.connMethod || "snmp",
                                 community: sw.community,
                                 snmpVersion: sw.snmpVersion,
                                 port: sw.port,
+                                brand: sw.brand || "",
+                                model: sw.model || "",
                                 location: sw.location || "",
                               });
                               setIsAddModalOpen(true);
                             }}
-                            className="btn btn-xs btn-ghost text-slate-400 hover:text-slate-200"
-                            title="Edit Switch"
+                            className="btn btn-xs btn-ghost text-base-content/60 hover:text-base-content"
+                            title="Edit Perangkat"
                           >
                             <FaEdit />
                           </button>
@@ -651,7 +744,7 @@ export default function SwitchesPage() {
 
       {/* MODAL 1: Detail VLAN & Port Matrix */}
       {detailSwitch && (
-        <div className="modal modal-open">
+        <div className="modal modal-open z-50">
           <div className="modal-box max-w-4xl max-h-[90vh] flex flex-col p-6 border border-primary/20">
             {/* Modal Header */}
             <div className="flex items-start justify-between pb-4 border-b border-primary/10">
@@ -661,7 +754,7 @@ export default function SwitchesPage() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-lg text-slate-100">{detailSwitch.name}</h3>
+                    <h3 className="font-bold text-lg text-base-content">{detailSwitch.name}</h3>
                     <span className={`badge badge-sm border ${getBrandBadge(detailSwitch.brand)}`}>
                       {detailSwitch.brand}
                     </span>
@@ -731,7 +824,7 @@ export default function SwitchesPage() {
                                   {vlan.vlanId}
                                 </span>
                               </td>
-                              <td className="font-semibold text-slate-200">{vlan.name}</td>
+                              <td className="font-semibold text-base-content">{vlan.name}</td>
                               <td>
                                 <div className="flex flex-wrap gap-1 max-w-sm">
                                   {vlan.untaggedPorts && vlan.untaggedPorts.length > 0 ? (
@@ -813,16 +906,16 @@ export default function SwitchesPage() {
                             <p className="text-xs font-mono font-bold">P{port.index}</p>
                             <div className="mt-1 flex items-center justify-center gap-1">
                               <span
-                                className={`h-1.5 w-1.5 rounded-full ${
+                                className={`h-1.5 w-1.5 rounded-full shrink-0 ${
                                   isUp ? "bg-emerald-400" : "bg-slate-600"
                                 }`}
                               />
-                              <span className="text-[10px] font-mono">
+                              <span className="text-[10px] font-mono truncate max-w-[48px]">
                                 {isUp ? (port.speed || "UP") : "DOWN"}
                               </span>
                             </div>
                             {port.pvid && (
-                              <p className="text-[9px] font-mono text-sky-400 mt-0.5">
+                              <p className="text-[9px] font-mono text-sky-400 mt-0.5 truncate">
                                 V{port.pvid}
                               </p>
                             )}
@@ -845,19 +938,19 @@ export default function SwitchesPage() {
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider font-mono">
                       System Description (sysDescr)
                     </p>
-                    <p className="text-xs font-mono text-slate-200 bg-base-200/90 p-3 rounded border border-primary/10 whitespace-pre-wrap break-all">
+                    <p className="text-xs font-mono text-base-content bg-base-200/90 p-3 rounded border border-primary/10 whitespace-pre-wrap break-all">
                       {detailSwitch.sysDescr || "Tidak ada deskripsi sistem dari SNMP"}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-3 rounded-lg bg-base-300/20 border border-base-300 text-xs space-y-1">
-                      <p className="text-slate-400">SNMP Community</p>
+                      <p className="text-base-content/70">SNMP Community</p>
                       <p className="font-mono text-primary font-bold">{detailSwitch.community}</p>
                     </div>
                     <div className="p-3 rounded-lg bg-base-300/20 border border-base-300 text-xs space-y-1">
-                      <p className="text-slate-400">SNMP Version &amp; Port</p>
-                      <p className="font-mono text-slate-200">
+                      <p className="text-base-content/70">SNMP Version &amp; Port</p>
+                      <p className="font-mono text-base-content font-medium">
                         Version {detailSwitch.snmpVersion} · Port {detailSwitch.port}
                       </p>
                     </div>
@@ -881,27 +974,61 @@ export default function SwitchesPage() {
               </button>
             </div>
           </div>
+          <div className="modal-backdrop" onClick={() => setDetailSwitch(null)}></div>
         </div>
       )}
 
-      {/* MODAL 2: Tambah / Edit Switch */}
+      {/* MODAL 2: Tambah / Edit Perangkat */}
       {isAddModalOpen && (
-        <div className="modal modal-open">
+        <div className="modal modal-open z-50">
           <div className="modal-box max-w-lg border border-primary/20">
-            <h3 className="font-bold text-lg text-slate-100 flex items-center gap-2">
+            <h3 className="font-bold text-lg text-base-content flex items-center gap-2">
               <FaNetworkWired className="text-primary" />
-              {editingSwitch ? "Edit Switch" : "Tambah Perangkat Switch Baru"}
+              {editingSwitch ? "Edit Perangkat Jaringan" : "Tambah Perangkat Jaringan Baru"}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
-              BeeRadius akan otomatis mendeteksi brand, model, dan VLAN via SNMP setelah disimpan.
+            <p className="text-xs text-base-content/70 mt-1">
+              Daftarkan perangkat fisik rumah sakit (Switch, Router, NVR CCTV, Server, Access Point, Firewall).
             </p>
 
             <form onSubmit={handleSubmitForm} className="space-y-4 mt-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="form-control">
+                  <label className="label text-xs font-semibold text-base-content/80">Jenis Perangkat</label>
+                  <select
+                    value={formData.deviceType}
+                    onChange={(e) => setFormData({ ...formData, deviceType: e.target.value })}
+                    className="select select-sm w-full font-semibold"
+                  >
+                    <option value="switch">Switch Managed</option>
+                    <option value="router">Router Core / Gateway</option>
+                    <option value="nvr">NVR / CCTV Storage</option>
+                    <option value="server">Server (SIMRS / DB)</option>
+                    <option value="ap">Access Point Wi-Fi</option>
+                    <option value="firewall">Hardware Firewall</option>
+                    <option value="cctv">IP Camera</option>
+                  </select>
+                </div>
+
+                <div className="form-control">
+                  <label className="label text-xs font-semibold text-base-content/80">Metode Koneksi</label>
+                  <select
+                    value={formData.connMethod}
+                    onChange={(e) => setFormData({ ...formData, connMethod: e.target.value })}
+                    className="select select-sm w-full font-semibold"
+                  >
+                    <option value="snmp">SNMP (v1 / v2c)</option>
+                    <option value="ping">ICMP Ping / Monitoring</option>
+                    <option value="api">RouterOS / API</option>
+                    <option value="manual">Manual / Static</option>
+                  </select>
+                </div>
+              </div>
+
               <div className="form-control">
-                <label className="label text-xs font-semibold text-slate-300">Nama Switch</label>
+                <label className="label text-xs font-semibold text-base-content/80">Nama Perangkat</label>
                 <input
                   type="text"
-                  placeholder="Contoh: SW-Core-Ruang-Server, SW-Dist-Lt2"
+                  placeholder="Contoh: SW-Core-Ruang-Server, R-CORE-CCR2004, NVR-IGD"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="input input-sm w-full"
@@ -911,10 +1038,10 @@ export default function SwitchesPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="form-control">
-                  <label className="label text-xs font-semibold text-slate-300">IP Address Switch</label>
+                  <label className="label text-xs font-semibold text-base-content/80">IP Address Perangkat</label>
                   <input
                     type="text"
-                    placeholder="192.168.1.254"
+                    placeholder="192.168.1.1 atau 10.1.8.2"
                     value={formData.ip}
                     onChange={(e) => setFormData({ ...formData, ip: e.target.value })}
                     className="input input-sm w-full font-mono"
@@ -922,7 +1049,7 @@ export default function SwitchesPage() {
                   />
                 </div>
                 <div className="form-control">
-                  <label className="label text-xs font-semibold text-slate-300">SNMP Port</label>
+                  <label className="label text-xs font-semibold text-base-content/80">Port Koneksi</label>
                   <input
                     type="number"
                     value={formData.port}
@@ -934,31 +1061,56 @@ export default function SwitchesPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="form-control">
-                  <label className="label text-xs font-semibold text-slate-300">SNMP Community</label>
+                  <label className="label text-xs font-semibold text-base-content/80">Brand / Vendor</label>
                   <input
                     type="text"
-                    placeholder="public"
-                    value={formData.community}
-                    onChange={(e) => setFormData({ ...formData, community: e.target.value })}
-                    className="input input-sm w-full font-mono"
-                    required
+                    placeholder={formData.connMethod === "snmp" ? "Otomatis via SNMP / manual" : "MikroTik, Dell, Ruijie, dll"}
+                    value={formData.brand}
+                    onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                    className="input input-sm w-full"
                   />
                 </div>
                 <div className="form-control">
-                  <label className="label text-xs font-semibold text-slate-300">SNMP Version</label>
-                  <select
-                    value={formData.snmpVersion}
-                    onChange={(e) => setFormData({ ...formData, snmpVersion: e.target.value })}
-                    className="select select-sm w-full font-mono"
-                  >
-                    <option value="2c">v2c (Rekomendasi)</option>
-                    <option value="1">v1 (Legacy)</option>
-                  </select>
+                  <label className="label text-xs font-semibold text-base-content/80">Hardware Model</label>
+                  <input
+                    type="text"
+                    placeholder={formData.connMethod === "snmp" ? "Otomatis via SNMP / manual" : "Model perangkat"}
+                    value={formData.model}
+                    onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                    className="input input-sm w-full"
+                  />
                 </div>
               </div>
 
+              {formData.connMethod === "snmp" && (
+                <div className="grid grid-cols-2 gap-3 bg-base-200/50 p-3 rounded-xl border border-base-300">
+                  <div className="form-control">
+                    <label className="label text-xs font-semibold text-base-content/80">SNMP Community</label>
+                    <input
+                      type="text"
+                      placeholder="public"
+                      value={formData.community}
+                      onChange={(e) => setFormData({ ...formData, community: e.target.value })}
+                      className="input input-sm w-full font-mono"
+                      required
+                    />
+                  </div>
+                  <div className="form-control">
+                    <label className="label text-xs font-semibold text-base-content/80">SNMP Version</label>
+                    <select
+                      value={formData.snmpVersion}
+                      onChange={(e) => setFormData({ ...formData, snmpVersion: e.target.value })}
+                      className="select select-sm w-full font-mono"
+                    >
+                      <option value="2c">v2c (Rekomendasi)</option>
+                      <option value="1">v1 (Legacy)</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+
               <div className="form-control">
-                <label className="label text-xs font-semibold text-slate-300">Lokasi / Gedung</label>
+                <label className="label text-xs font-semibold text-base-content/80">Lokasi / Gedung</label>
                 <input
                   type="text"
                   placeholder="Gedung Utama Lt. 2, Ruang Server RSUD NTB"
@@ -988,25 +1140,26 @@ export default function SwitchesPage() {
               </div>
             </form>
           </div>
+          <div className="modal-backdrop" onClick={() => !savingSwitch && setIsAddModalOpen(false)}></div>
         </div>
       )}
 
       {/* MODAL 3: Uji Cepat Probe SNMP */}
       {isProbeModalOpen && (
-        <div className="modal modal-open">
+        <div className="modal modal-open z-50">
           <div className="modal-box max-w-xl border border-primary/20">
-            <h3 className="font-bold text-lg text-slate-100 flex items-center gap-2">
+            <h3 className="font-bold text-lg text-base-content flex items-center gap-2">
               <FaBolt className="text-amber-400" />
               Uji Cepat Probe SNMP
             </h3>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-base-content/70 mt-1">
               Kirim paket SNMP get/walk langsung ke switch target tanpa menyimpan ke database.
             </p>
 
             <form onSubmit={handleProbeTest} className="space-y-3 mt-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="form-control">
-                  <label className="label text-xs font-semibold text-slate-300">IP Switch Target</label>
+                  <label className="label text-xs font-semibold text-base-content/80">IP Switch Target</label>
                   <input
                     type="text"
                     placeholder="192.168.1.1"
@@ -1017,7 +1170,7 @@ export default function SwitchesPage() {
                   />
                 </div>
                 <div className="form-control">
-                  <label className="label text-xs font-semibold text-slate-300">Community String</label>
+                  <label className="label text-xs font-semibold text-base-content/80">Community String</label>
                   <input
                     type="text"
                     placeholder="public"
@@ -1045,25 +1198,25 @@ export default function SwitchesPage() {
             {probeResult && (
               <div className="mt-4 p-4 rounded-lg bg-base-300/40 border border-primary/10 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold font-mono uppercase tracking-wider text-slate-300">
+                  <span className="text-xs font-bold font-mono uppercase tracking-wider text-base-content/80">
                     Hasil Deteksi SNMP
                   </span>
                   {probeResult.status === "online" ? (
-                    <span className="badge badge-sm badge-success font-mono">Terkoneksi</span>
+                    <span className="badge badge-sm badge-success font-mono text-white">Terkoneksi</span>
                   ) : (
-                    <span className="badge badge-sm badge-error font-mono">Gagal / Timeout</span>
+                    <span className="badge badge-sm badge-error font-mono text-white">Gagal / Timeout</span>
                   )}
                 </div>
 
                 {probeResult.status === "online" ? (
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Brand Terdeteksi:</span>
+                      <span className="text-base-content/70">Brand Terdeteksi:</span>
                       <span className="font-bold text-primary font-mono">{probeResult.brand}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Model:</span>
-                      <span className="font-mono text-slate-200">{probeResult.model}</span>
+                      <span className="text-base-content/70">Model:</span>
+                      <span className="font-mono text-base-content font-medium">{probeResult.model}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">Uptime:</span>
@@ -1096,6 +1249,7 @@ export default function SwitchesPage() {
               </button>
             </div>
           </div>
+          <div className="modal-backdrop" onClick={() => !probing && setIsProbeModalOpen(false)}></div>
         </div>
       )}
     </div>

@@ -169,21 +169,21 @@ export default function OnlineUserTable() {
 
   return (
     <div className="card bg-base-100 shadow-xl border border-base-200 overflow-hidden">
-      {/* HEADER */}
-      <div className="bg-primary/5 px-6 py-4 border-b border-base-200 flex flex-col lg:flex-row justify-between items-center gap-4">
+      {/* 1. HEADER UTAMA: Title & Main Action Buttons */}
+      <div className="bg-primary/5 px-6 py-4 border-b border-base-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
-          <div className="bg-primary p-2.5 rounded-lg text-primary-content">
+          <div className="bg-primary p-2.5 rounded-lg text-primary-content shadow-xs">
             <FaWifi size={20} />
           </div>
           <div>
             <h2 className="text-lg font-bold flex items-center gap-2">
               User Online {typeLabel}
-              <div className="badge badge-primary">{totalRecords}</div>
+              <span className="badge badge-primary font-mono">{totalRecords}</span>
               {totalStaleCount > 0 && (
-                <div className="badge badge-warning badge-sm gap-1">
+                <span className="badge badge-warning badge-sm gap-1 font-mono">
                   <FaUserClock size={10} />
                   {totalStaleCount} Gantung
-                </div>
+                </span>
               )}
             </h2>
             <p className="text-xs opacity-60 uppercase tracking-widest font-bold">
@@ -192,32 +192,77 @@ export default function OnlineUserTable() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 justify-center lg:justify-end">
-          {/* STATUS FILTER */}
-          <div className="flex gap-1 bg-base-200 p-1 rounded-lg">
+        <div className="flex items-center gap-2 self-end sm:self-auto">
+          {/* REFRESH */}
+          <button
+            onClick={() => fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter)}
+            className="btn btn-sm btn-ghost border border-base-300 gap-1.5"
+            title="Refresh data"
+          >
+            <FaSync className={isLoading ? "animate-spin text-primary" : ""} />
+            <span className="hidden md:inline text-xs">Refresh</span>
+          </button>
+
+          {/* CLEAR STALE */}
+          {totalStaleCount > 0 && (
+            <button
+              onClick={clearStaleSessions}
+              disabled={isClearing}
+              className={`btn btn-sm btn-error gap-1.5 ${isClearing ? "loading" : ""}`}
+              title="Bersihkan semua sesi gantung"
+            >
+              {!isClearing && <FaTrashAlt />}
+              <span>Clear {totalStaleCount} Stale</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 2. UNIFIED FILTER & SEARCH TOOLBAR */}
+      <div className="bg-base-200/50 px-6 py-3 border-b border-base-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
+        {/* Left: Status Filter Segmented & Page Size */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex gap-1 bg-base-100 p-1 rounded-lg border border-base-300">
             <button
               onClick={() => handleStatusFilterChange("all")}
-              className={`btn btn-xs ${statusFilter === "all" ? "btn-primary" : "btn-ghost"}`}
+              className={`btn btn-xs ${statusFilter === "all" ? "btn-primary font-semibold" : "btn-ghost text-slate-400"}`}
             >
               Semua
             </button>
             <button
               onClick={() => handleStatusFilterChange("active")}
-              className={`btn btn-xs ${statusFilter === "active" ? "btn-success" : "btn-ghost"}`}
+              className={`btn btn-xs ${statusFilter === "active" ? "btn-success font-semibold" : "btn-ghost text-slate-400"}`}
             >
               Aktif
             </button>
             <button
               onClick={() => handleStatusFilterChange("stale")}
-              className={`btn btn-xs ${statusFilter === "stale" ? "btn-warning" : "btn-ghost"}`}
+              className={`btn btn-xs ${statusFilter === "stale" ? "btn-warning font-semibold" : "btn-ghost text-slate-400"}`}
             >
               Gantung
             </button>
           </div>
 
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 font-mono">
+            <span className="hidden sm:inline">Ukuran:</span>
+            <select
+              className="select select-sm bg-base-100 border border-base-300 text-xs rounded-lg"
+              value={pageSize}
+              onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+            >
+              <option value="10">10 / hal</option>
+              <option value="20">20 / hal</option>
+              <option value="50">50 / hal</option>
+              <option value="100">100 / hal</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Right: Search Input Form + Active Filter Tag */}
+        <div className="flex flex-wrap items-center gap-2">
           {/* SEARCH FORM WITH CARI BUTTON */}
-          <form onSubmit={handleSearchSubmit} className="flex items-center gap-1.5">
-            <div className="relative w-full sm:w-48">
+          <form onSubmit={handleSearchSubmit} className="flex items-center gap-1.5 w-full sm:w-auto">
+            <div className="relative w-full sm:w-56">
               <span className="absolute inset-y-0 left-2.5 flex items-center text-base-content/40 pointer-events-none">
                 <FaSearch size={11} />
               </span>
@@ -264,40 +309,6 @@ export default function OnlineUserTable() {
                 ×
               </button>
             </span>
-          )}
-
-          {/* PAGE SIZE */}
-          <select
-            className="select select-sm bg-base-100 border border-base-300 text-xs rounded-lg"
-            value={pageSize}
-            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-          >
-            <option value="10">10 / hal</option>
-            <option value="20">20 / hal</option>
-            <option value="50">50 / hal</option>
-            <option value="100">100 / hal</option>
-          </select>
-
-          {/* REFRESH */}
-          <button
-            onClick={() => fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter)}
-            className="btn btn-sm btn-ghost border border-base-300 gap-1"
-            title="Refresh data"
-          >
-            <FaSync className={isLoading ? "animate-spin" : ""} />
-          </button>
-
-          {/* CLEAR STALE */}
-          {totalStaleCount > 0 && (
-            <button
-              onClick={clearStaleSessions}
-              disabled={isClearing}
-              className={`btn btn-sm btn-error gap-1 ${isClearing ? "loading" : ""}`}
-              title="Bersihkan semua sesi gantung"
-            >
-              {!isClearing && <FaTrashAlt />}
-              Clear {totalStaleCount} Stale
-            </button>
           )}
         </div>
       </div>

@@ -90,13 +90,21 @@ export default function AdminSettingsPage() {
     }
 
     return (
-        <div className="prose lg:prose-xl">
-            <h1>Pengaturan Admin</h1>
-            <div className="not-prose space-y-8">
+        <div className="space-y-6">
+            <div>
+                <h1 className="text-2xl font-bold tracking-tight text-base-content flex items-center gap-2">
+                    Pengaturan <span className="text-primary">Admin</span>
+                </h1>
+                <p className="text-xs text-base-content/70 mt-1">
+                    Kelola username dan perbarui kata sandi akun administrator BeeRadius.
+                </p>
+            </div>
+
+            <div className="space-y-6">
                 {/* --- KARTU EDIT PROFIL --- */}
-                <div className="card bg-base-100 shadow-xl">
+                <div className="card bg-base-100 shadow-xl border border-primary/10">
                     <div className="card-body">
-                        <h2 className="card-title">Edit Profil</h2>
+                        <h2 className="card-title text-base font-bold">Edit Profil</h2>
                         <form onSubmit={handleSubmitProfile(onProfileSubmit)} className="space-y-4">
                             <div className="form-control">
                                 <fieldset className="fieldset">

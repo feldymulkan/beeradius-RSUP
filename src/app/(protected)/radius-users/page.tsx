@@ -40,10 +40,10 @@ export default async function UsersPage({
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-base-content">
             Manajemen Pengguna RADIUS
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-base-content/70 mt-1">
             Kelola seluruh akun autentikasi Hotspot dan VPN (PPP) jaringan RSUD NTB.
           </p>
         </div>

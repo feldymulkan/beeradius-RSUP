@@ -40,10 +40,10 @@ export default async function TypedUsersPage({
       {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+          <h1 className="text-2xl font-bold tracking-tight text-base-content flex items-center gap-2">
             Manajemen User <span className="text-primary">{type.toUpperCase()}</span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-base-content/70 mt-1">
             Kelola akun autentikasi {type.toUpperCase()}, hak akses bandwidth, dan masa aktif jaringan RSUD NTB.
           </p>
         </div>

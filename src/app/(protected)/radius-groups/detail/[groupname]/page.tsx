@@ -43,28 +43,26 @@ export default async function GroupDetailPage({
   const simultaneousUseValue = checkAttributes[0] ? checkAttributes[0].value : "";
 
   return (
-    <div className="prose lg:prose-xl mb-6">
-      <div className="flex justify-between items-center">
-        {/* Judul lebih jelas untuk halaman edit */}
-        <h1>Edit Grup: {groupname}</h1>
-        <div className="flex gap-2">
-            <Link href="/radius-groups" className="btn btn-ghost">
-                ← Kembali
-            </Link>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-base-content flex items-center gap-2">
+            Detail &amp; Edit Grup: <span className="text-primary">{groupname}</span>
+          </h1>
+          <p className="text-xs text-base-content/70 mt-1">
+            Konfigurasi atribut RADIUS, rate limit MikroTik, dan simultaneous-use.
+          </p>
         </div>
+        <Link href="/radius-groups" className="btn btn-ghost btn-sm border border-base-300 self-start sm:self-auto">
+          ← Kembali ke Grup
+        </Link>
       </div>
 
-      <div className="not-prose mt-6">
-        {/* [PERBAIKAN] Kirim data yang sudah dipisah ke Client Component
-          (yang kemungkinan adalah Form Edit Anda).
-          Ganti nama prop jika perlu.
-        */}
-        <GroupDetailClientWrapper
-          initialReplyAttributes={replyAttributes}
-          initialSimultaneousUse={simultaneousUseValue}
-          groupname={groupname}
-        />
-      </div>
+      <GroupDetailClientWrapper
+        initialReplyAttributes={replyAttributes}
+        initialSimultaneousUse={simultaneousUseValue}
+        groupname={groupname}
+      />
     </div>
   );
 }

@@ -321,6 +321,20 @@ exports.Prisma.SwitchDeviceScalarFieldEnum = {
   vlans: 'vlans',
   ports: 'ports',
   lastPolled: 'lastPolled',
+  deviceType: 'deviceType',
+  connMethod: 'connMethod',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.NetworkTopologyScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  isDefault: 'isDefault',
+  nodes: 'nodes',
+  edges: 'edges',
+  viewport: 'viewport',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -494,7 +508,17 @@ exports.Prisma.SwitchDeviceOrderByRelevanceFieldEnum = {
   status: 'status',
   uptime: 'uptime',
   vlans: 'vlans',
-  ports: 'ports'
+  ports: 'ports',
+  deviceType: 'deviceType',
+  connMethod: 'connMethod'
+};
+
+exports.Prisma.NetworkTopologyOrderByRelevanceFieldEnum = {
+  name: 'name',
+  description: 'description',
+  nodes: 'nodes',
+  edges: 'edges',
+  viewport: 'viewport'
 };
 
 
@@ -517,7 +541,8 @@ exports.Prisma.ModelName = {
   WireguardPeer: 'WireguardPeer',
   Wifi: 'Wifi',
   AuditLog: 'AuditLog',
-  SwitchDevice: 'SwitchDevice'
+  SwitchDevice: 'SwitchDevice',
+  NetworkTopology: 'NetworkTopology'
 };
 
 /**

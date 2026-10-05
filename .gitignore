@@ -12,6 +12,11 @@
 
 # testing
 /coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/screenshots/
 
 # next.js
 /.next/
@@ -42,3 +47,4 @@ yarn-error.log*
 next-env.d.ts
 .vscode
 /src/generated/prisma
+*.tmp*

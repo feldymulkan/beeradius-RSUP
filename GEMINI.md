@@ -61,18 +61,33 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - **KPI Metric Cards**: 4 kartu berjejer horizontal (Total Download, Total Upload, User Aktif Harian, Auth Rejects) dengan angka metrik tebal berfont monospace (`font-mono`) serta border aksen warna fungsional (*cyan, emerald, amber, rose*).
   - **Interactive Telemetry Charts**: Menggunakan Recharts dengan tema gelap, *dual-gradient glowing fill*, tooltip *dark glass* kustom, serta pemilih rentang waktu mikro (*24j | 7h | 30h | 1t*) yang diletakkan secara *inline* pada header kartu.
   - **Telemetry Mini-Insights**: Visualisasi terpadu untuk proporsi tipe pengguna (Hotspot vs VPN), kesehatan gateway & NAS, serta kalkulasi rasio throughput (Rx/Tx).
-- **Sistem Tema Dark & Light Mode**:
+- **Sistem Tema Dark & Light Mode (Release v1.0.0 Standard)**:
   - Menggunakan DaisyUI v5 dengan tema `beeradius` (*Telemetry Dark Glass*) dan `beeradius-light` (*Clinical NOC Precision*).
+  - **Aturan Kontras Ketat**: DILARANG menggunakan `text-white`, `text-slate-100`, `text-slate-200`, atau `text-slate-300` secara telanjang pada judul halaman, tabel, atau kartu umum, karena teks tersebut menjadi tidak terlihat (*invisible*) pada tema terang (`beeradius-light`).
+  - Selalu gunakan token semantik DaisyUI: `text-base-content` (teks utama), `text-base-content/80` (teks sekunder), `text-base-content/70` (keterangan), dan `text-base-content/60` (teks redup/label).
+  - Gunakan `bg-base-100`, `bg-base-200`, atau CSS variables untuk kontainer; hindari hardcoded dark background (`bg-[#0f172a]`, `bg-[#070b15]`) kecuali pada elemen yang memiliki tema gelap independen (seperti SVG kabel khusus atau Recharts tooltip gelap dengan border jelas).
   - Preferensi disimpan di `localStorage` melalui [ThemeProvider.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/ThemeProvider.tsx).
   - Komponen [ThemeToggle.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/ThemeToggle.tsx) diletakkan di Navbar kanan atas dan bagian bawah Sidebar.
   - Script inline `ThemeLoaderScript` di [layout.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/app/layout.tsx) mencegah *flash of unstyled content* (FOUC) saat halaman dimuat ulang.
-- **Halaman Manajemen Switch & VLAN Discovery (`/switches`)**:
+- **Halaman Manajemen Switch & Perangkat Jaringan (`/switches`)**:
+  - Mendukung **Multi-Perangkat**: `switch`, `router`, `nvr`, `cctv`, `ap`, `server`, dan `firewall`.
+  - Mendukung **Multi-Metode Koneksi**: `snmp` (v1/v2c/v3), `ping` (ICMP Keepalive), `api` (REST / MikroTik API), dan `manual`.
   - Deteksi otomatis brand & model perangkat (Ruijie Networks, ZTE, TP-Link, Cisco Systems, Huawei, MikroTik) berdasarkan `sysObjectID` (Enterprise PEN) dan regex `sysDescr`.
   - Pemindaian VLAN dan keanggotaan port (*Access / Untagged* vs *Trunk / Tagged*) mendukung:
     - **Standar RFC 2674 (Q-BRIDGE-MIB)** via algoritma dekode bitmask port (`decodePortBitmap` di [snmp.ts](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/lib/snmp.ts)).
     - **TP-Link JetStream Private MIB (`TPLINK-DOT1Q-VLAN-MIB` OID `1.3.6.1.4.1.11863.6.14.1.2.1.1`)** dengan normalisasi nomor port fisik dan parsing range port (`1/0/1-12`).
     - **Cisco Catalyst VTP & VMPS MIB (`CISCO-VTP-MIB` & `CISCO-VLAN-MEMBERSHIP-MIB`)**.
   - Menyediakan modal interaktif: *Detail VLAN & Port Matrix* (visual grid port 1..24/48 dengan status OperStatus Up/Down dan PVID), *Uji Cepat Probe SNMP*, serta aksi *Scan Ulang SNMP* real-time.
+- **Halaman Pemetaan Topologi Jaringan & Sinkronisasi Switch (`/topology`)**:
+  - **Tata Letak Anti-Tumpang Tindih (Zero Overlap Canvas)**:
+    - Toolbar kanvas menggunakan tata letak adaptif `min-h-14 py-2 px-4 flex flex-wrap xl:flex-nowrap items-center justify-between gap-3`.
+    - Title block perangkat diisolasi dengan `shrink-0 min-w-[200px]`, filter tipe perangkat berkemampuan horizontal scroll / wrap responsif, serta tombol aksi yang tertata rapi di kanan tanpa menimpa judul atau kanvas.
+    - Menggunakan CSS variables kanvas topologi (`--topo-canvas-bg`, `--topo-grid-color`, `--topo-cable-bg`, `--topo-cable-text`) yang otomatis beradaptasi dengan Dark (`#070b15`) dan Light Mode (`#f1f5f9`).
+  - **Sinkronisasi Langsung dengan Switch & VLAN**: Dilengkapi tombol toolbar reaktif `🔄 Sinkron Switch` dengan badge notifikasi jumlah switch baru/berubah.
+  - **Modal Diffing Interaktif (`SwitchSyncModal.tsx`)**: Menampilkan perbandingan status switch (Baru, Perlu Update, Tersinkron) berdasarkan data SNMP di tabel `SwitchDevice`, lengkap dengan opsi proteksi kabel koneksi (*Preserve Existing Edges*).
+  - **API Engine (`/api/network/topology/sync-switches`)**: Melakukan mapping port fisik riil (`SwitchPortInfo`), status OperStatus `up`/`down`, PVID, serta konfigurasi tagged/untagged VLAN ke node topologi tanpa memutuskan kabel yang sudah ada.
+  - **Node Switch & Telemetry SNMP**: Menampilkan chip badge `SNMP SYNC`, status port riil (e.g. `18 UP / 24 Port`), counter VLAN aktif, serta drawer detail multi-tab (*Ringkasan & Kabel*, *Port Matrix SNMP*, dan *VLAN Discovered*) dengan tautan langsung ke halaman `/switches`.
+  - **Kabel Interaktif & Legend**: Menampilkan 4 tipe kabel berstandar rumah sakit (Fiber Optic 10G, UTP Cat6 Gigabit 1G, PoE NVR CCTV/AP, VLAN Trunk 802.1Q) lengkap dengan tooltip port dan penghapusan kabel interaktif.
 
 ### 5. Keamanan, Validasi & Best Practices
 - **Middleware**: Middleware di `src/middleware.ts` melindungi semua rute kecuali `/login`, `/api` (beberapa API endpoint melakukan pengecekan session secara internal), dan file statis.

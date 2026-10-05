@@ -73,7 +73,7 @@ export default function NasStatusWidget() {
                       }`} 
                     />
                     <div className="truncate">
-                      <p className="font-medium text-slate-200 truncate">{nas.shortname || nas.nasname}</p>
+                      <p className="font-medium text-base-content truncate">{nas.shortname || nas.nasname}</p>
                       <p className="font-mono text-[10px] text-slate-500">{nas.nasname}</p>
                     </div>
                   </div>

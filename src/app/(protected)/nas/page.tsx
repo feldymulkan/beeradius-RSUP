@@ -40,19 +40,24 @@ export default async function NasPage({
   const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
-    <div className="prose lg:prose-xl mb-6 max-w-none">
-      <div className="flex justify-between items-center">
-        <h1>Manajemen Perangkat (NAS)</h1>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-base-content flex items-center gap-2">
+            Manajemen Perangkat <span className="text-primary">(NAS)</span>
+          </h1>
+          <p className="text-xs text-base-content/70 mt-1">
+            Kelola router gateway, access point, dan autentikasi FreeRADIUS RSUD NTB.
+          </p>
+        </div>
       </div>
 
-      <div className="not-prose mt-6">
-        <NasClientWrapper 
-          nasList={nasList} 
-          page={page}
-          pageSize={pageSize}
-          totalPages={totalPages}
-        />
-      </div>
+      <NasClientWrapper 
+        nasList={nasList} 
+        page={page}
+        pageSize={pageSize}
+        totalPages={totalPages}
+      />
     </div>
   );
 }
