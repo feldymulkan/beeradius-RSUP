@@ -461,14 +461,14 @@ export default function DeviceDetailsDrawer({
         </button>
 
         <div className="flex items-center gap-1.5">
-          {device.ip && isSwitch && (
+          {device.ip && (
             <Link
               href={`/switches?q=${encodeURIComponent(device.ip)}`}
               target="_blank"
               className="btn btn-xs btn-outline text-base-content/80 hover:text-base-content gap-1"
-              title="Buka halaman Switch & VLAN Discovery"
+              title="Buka halaman Perangkat Jaringan"
             >
-              <FaExternalLinkAlt className="h-2.5 w-2.5" /> Switch VLAN
+              <FaExternalLinkAlt className="h-2.5 w-2.5" /> Perangkat
             </Link>
           )}
 

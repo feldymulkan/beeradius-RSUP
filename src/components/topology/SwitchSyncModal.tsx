@@ -165,11 +165,11 @@ export default function SwitchSyncModal({
             </div>
             <div>
               <h2 className="text-base font-bold text-base-content flex items-center gap-2">
-                Sinkronisasi Switch & VLAN Discovery
-                <span className="badge badge-xs badge-primary font-mono text-[9px]">SNMP INTEGRATION</span>
+                Sinkronisasi Perangkat Jaringan
+                <span className="badge badge-xs badge-primary font-mono text-[9px]">SNMP / PING</span>
               </h2>
               <p className="text-xs text-base-content/70 mt-0.5">
-                Sinkronkan perangkat fisik dari modul Switch VLAN ke dalam kanvas topologi jaringan RSUD NTB.
+                Sinkronkan perangkat fisik dari modul Perangkat Jaringan ke dalam kanvas topologi RSUD NTB.
               </p>
             </div>
           </div>

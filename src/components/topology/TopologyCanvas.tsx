@@ -456,10 +456,10 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
                 ? 'btn-warning shadow-[0_0_12px_rgba(245,158,11,0.3)] animate-pulse'
                 : 'btn-outline border-primary/40 text-primary hover:bg-primary/10'
             }`}
-            title="Sinkronkan perangkat fisik dari modul Switch & VLAN Discovery"
+            title="Sinkronkan perangkat fisik dari modul Perangkat Jaringan"
           >
             <FaSyncAlt className="h-2.5 w-2.5" />
-            <span className="hidden md:inline">Sinkron Switch</span>
+            <span className="hidden md:inline">Sinkron Perangkat</span>
             {syncBadgeCount > 0 && (
               <span className="badge badge-xs badge-neutral font-bold text-[9px] px-1">
                 {syncBadgeCount}
@@ -999,7 +999,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
         onSyncComplete={(newTopology) => {
           setTopology(newTopology);
           setSyncBadgeCount(0);
-          toast.success('Kanvas topologi berhasil disinkronkan dengan Switch & VLAN!');
+          toast.success('Kanvas topologi berhasil disinkronkan dengan Perangkat Jaringan!');
         }}
       />
     </div>

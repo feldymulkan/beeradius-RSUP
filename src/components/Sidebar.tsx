@@ -69,10 +69,10 @@ export default function Sidebar() {
           <li><ActiveLink href="/radius-groups/hotspot"><FaLayerGroup className={icon} />Grup Hotspot</ActiveLink></li>
           <li><ActiveLink href="/radius-groups/vpn"><FaLayerGroup className={icon} />Grup VPN</ActiveLink></li>
           <li><ActiveLink href="/radius-pools"><FaNetworkWired className={icon} />IP Pools</ActiveLink></li>
-          <li><ActiveLink href="/switches"><FaNetworkWired className={icon} />Switch &amp; VLAN</ActiveLink></li>
+          <li><ActiveLink href="/switches"><FaNetworkWired className={icon} />Perangkat Jaringan</ActiveLink></li>
           <li><ActiveLink href="/topology"><FaProjectDiagram className={icon} />Topologi Jaringan</ActiveLink></li>
           {isSuperAdmin && (
-            <li><ActiveLink href="/nas"><FaServer className={icon} />Perangkat</ActiveLink></li>
+            <li><ActiveLink href="/nas"><FaServer className={icon} />NAS (RADIUS Client)</ActiveLink></li>
           )}
           <li><ActiveLink href="/wifi"><FaWifi className={icon} />WiFi RSUD NTB</ActiveLink></li>
         </Section>

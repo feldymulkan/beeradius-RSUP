@@ -152,7 +152,7 @@ export default function ImportDeviceModal({
               </h3>
               {switches.length === 0 ? (
                 <p className="text-xs text-base-content/50 italic p-3 bg-base-200/50 rounded-xl">
-                  Belum ada switch yang terdaftar di menu Switch & VLAN Discovery.
+                  Belum ada perangkat yang terdaftar di menu Perangkat Jaringan.
                 </p>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

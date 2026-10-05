@@ -74,7 +74,7 @@ Masuk ke Web GUI TP-Link:
 
 ### Langkah 2.2: Input Switch ke BeeRadius
 
-1. Buka dashboard BeeRadius, pilih menu **Switch & VLAN** pada sidebar (`/switches`).
+1. Buka dashboard BeeRadius, pilih menu **Perangkat Jaringan** pada sidebar (`/switches`).
 2. Klik tombol **"+ Tambah Perangkat"** di pojok kanan atas.
 3. Isi formulir pendaftaran:
    - **Tipe Perangkat**: Pilih `Switch Managed`.
@@ -106,7 +106,7 @@ set enabled=yes contact="NOC RSUD NTB" location="Data Center" trap-version=2
 ```
 
 ### Langkah 3.2: Daftarkan di BeeRadius
-1. Buka menu **Switch & VLAN** > **"+ Tambah Perangkat"**.
+1. Buka menu **Perangkat Jaringan** > **"+ Tambah Perangkat"**.
 2. Pilih Tipe Perangkat: **Router Gateway**.
 3. Pilih Metode Koneksi: **SNMP** atau **API**.
 4. Masukkan IP Router (contoh: `10.1.8.1`), Port `161`, dan Community `rsudntb`.
@@ -118,7 +118,7 @@ set enabled=yes contact="NOC RSUD NTB" location="Data Center" trap-version=2
 
 Sistem BeeRadius v1.0.0 mendukung pemantauan NVR (Network Video Recorder) dan IP CCTV untuk monitoring keamanan RSUD NTB.
 
-1. Buka menu **Switch & VLAN** > **"+ Tambah Perangkat"**.
+1. Buka menu **Perangkat Jaringan** > **"+ Tambah Perangkat"**.
 2. Pilih Tipe Perangkat: **NVR (CCTV)** atau **IP Camera CCTV**.
 3. Pilih Metode Koneksi:
    - Pilih **PING (ICMP Keepalive)** jika NVR tidak mengaktifkan SNMP.
@@ -131,7 +131,7 @@ Sistem BeeRadius v1.0.0 mendukung pemantauan NVR (Network Video Recorder) dan IP
 
 ## 5. Menghubungkan Server SIMRS & Database
 
-1. Buka menu **Switch & VLAN** > **"+ Tambah Perangkat"**.
+1. Buka menu **Perangkat Jaringan** > **"+ Tambah Perangkat"**.
 2. Pilih Tipe Perangkat: **Server Aplikasi / Database**.
 3. Pilih Metode Koneksi: **SNMP** atau **PING (ICMP)**.
 4. Masukkan IP Server SIMRS (contoh: `10.1.10.5`).
@@ -142,7 +142,7 @@ Sistem BeeRadius v1.0.0 mendukung pemantauan NVR (Network Video Recorder) dan IP
 
 ## 6. Menghubungkan Access Point (AP) & Wireless Controller
 
-1. Buka menu **Switch & VLAN** > **"+ Tambah Perangkat"**.
+1. Buka menu **Perangkat Jaringan** > **"+ Tambah Perangkat"**.
 2. Pilih Tipe Perangkat: **Access Point (AP)**.
 3. Masukkan IP AP atau IP Wireless Controller (contoh: `10.1.30.2`).
 4. Pilih Metode Koneksi: **SNMP** atau **PING**.
@@ -153,18 +153,18 @@ Sistem BeeRadius v1.0.0 mendukung pemantauan NVR (Network Video Recorder) dan IP
 
 ## 7. Melakukan Sinkronisasi ke Kanvas Topologi Jaringan
 
-Setelah semua perangkat terdaftar pada menu Switch & VLAN, langkah selanjutnya adalah memunculkannya ke diagram interaktif Topologi Jaringan:
+Setelah semua perangkat terdaftar pada menu Perangkat Jaringan, langkah selanjutnya adalah memunculkannya ke diagram interaktif Topologi Jaringan:
 
 1. Buka menu **Topologi Jaringan** pada sidebar (`/topology`).
-2. Perhatikan tombol **"🔄 Sinkron Switch"** di toolbar kanan atas:
+2. Perhatikan tombol **"🔄 Sinkron Perangkat"** di toolbar kanan atas:
    - Jika terdapat switch atau perangkat baru, tombol akan menampilkan badge angka (misal: `[+2 Baru]`).
-3. Klik tombol **"🔄 Sinkron Switch"**.
-4. Modal **Sinkronisasi Switch & VLAN** akan terbuka:
+3. Klik tombol **"🔄 Sinkron Perangkat"**.
+4. Modal **Sinkronisasi Perangkat Jaringan** akan terbuka:
    - Anda dapat melihat tab filter: **Semua**, **Perlu Ditambahkan (Baru)**, **Perlu Update**, dan **Tersinkron**.
    - Setiap switch menampilkan detail: Nama, IP, Brand/Model, jumlah port fisik riil, dan status koneksi saat ini.
    - Pastikan opsi **"Pertahankan kabel koneksi yang sudah digambar (Preserve Existing Edges)"** tercentang.
 5. Klik **"Pilih Semua"** atau centang perangkat yang diinginkan.
-6. Klik tombol **"Sinkronkan (N) Switch Terpilih"**.
+6. Klik tombol **"Sinkronkan (N) Perangkat Terpilih"**.
 7. Kanvas topologi akan otomatis memuat perangkat baru dengan posisi kartu rapi di kanvas!
 
 ---

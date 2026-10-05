@@ -317,10 +317,10 @@ export default function SwitchesPage() {
             <span className="p-2 rounded-lg bg-primary/10 text-primary border border-primary/20">
               <FaNetworkWired className="h-5 w-5" />
             </span>
-            <h1 className="text-2xl font-bold tracking-tight">Manajemen Switch, VLAN &amp; Perangkat Jaringan</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Manajemen Perangkat Jaringan</h1>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            Deteksi otomatis &amp; inventaris perangkat fisik RSUD NTB (Switch, Router, NVR CCTV, Server, Access Point, Firewall) via SNMP, Ping, dan API
+          <p className="text-xs text-base-content/70 mt-1">
+            Inventaris &amp; pemantauan perangkat infrastruktur RSUD NTB (Switch, Router, NVR CCTV, Server, Access Point, Firewall) via SNMP, Ping, dan API
           </p>
         </div>
 

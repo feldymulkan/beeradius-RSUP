@@ -29,14 +29,14 @@ test.describe('Fitur Pemetaan Topologi Jaringan (/topology)', () => {
     await expect(page.getByText('R-CORE-CCR2004')).toBeHidden();
     await expect(page.getByText('SW-CORE-24G')).toBeHidden();
 
-    // Verifikasi tombol Sinkron Switch
-    const syncBtn = page.getByRole('button', { name: /Sinkron Switch/i });
+    // Verifikasi tombol Sinkron Perangkat
+    const syncBtn = page.getByRole('button', { name: /Sinkron Perangkat/i });
     await expect(syncBtn).toBeVisible();
 
     // Buka modal sinkronisasi switch
     await syncBtn.click();
-    await expect(page.getByText('Sinkronisasi Switch & VLAN Discovery')).toBeVisible({ timeout: 5000 });
-    await expect(page.getByText('SNMP INTEGRATION')).toBeVisible();
+    await expect(page.getByText('Sinkronisasi Perangkat Jaringan')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText('SNMP / PING')).toBeVisible();
 
     // Tunggu hasil diff selesai dimuat
     await page.waitForResponse(
@@ -51,7 +51,7 @@ test.describe('Fitur Pemetaan Topologi Jaringan (/topology)', () => {
 
     // Tutup modal
     await page.getByRole('button', { name: 'Batalkan', exact: true }).click();
-    await expect(page.getByText('Sinkronisasi Switch & VLAN Discovery')).toBeHidden();
+    await expect(page.getByText('Sinkronisasi Perangkat Jaringan')).toBeHidden();
 
     // 4. Ambil screenshot topologi kanvas dalam Dark Mode
     const darkPath = path.join(process.cwd(), 'screenshots', 'dark', '18-topologi-jaringan-rsud-ntb.png');
@@ -85,7 +85,7 @@ test.describe('Fitur Pemetaan Topologi Jaringan (/topology)', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // 3. Verifikasi judul dan filter kategori perangkat
-    await expect(page.getByText('Manajemen Switch, VLAN & Perangkat Jaringan')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('Manajemen Perangkat Jaringan')).toBeVisible({ timeout: 10000 });
     await expect(page.getByText('Semua Perangkat')).toBeVisible();
     await expect(page.getByRole('button', { name: /Router/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /NVR & CCTV/i })).toBeVisible();

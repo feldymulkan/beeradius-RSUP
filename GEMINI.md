@@ -83,7 +83,7 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
     - Toolbar kanvas menggunakan tata letak adaptif `min-h-14 py-2 px-4 flex flex-wrap xl:flex-nowrap items-center justify-between gap-3`.
     - Title block perangkat diisolasi dengan `shrink-0 min-w-[200px]`, filter tipe perangkat berkemampuan horizontal scroll / wrap responsif, serta tombol aksi yang tertata rapi di kanan tanpa menimpa judul atau kanvas.
     - Menggunakan CSS variables kanvas topologi (`--topo-canvas-bg`, `--topo-grid-color`, `--topo-cable-bg`, `--topo-cable-text`) yang otomatis beradaptasi dengan Dark (`#070b15`) dan Light Mode (`#f1f5f9`).
-  - **Sinkronisasi Langsung dengan Switch & VLAN**: Dilengkapi tombol toolbar reaktif `🔄 Sinkron Switch` dengan badge notifikasi jumlah switch baru/berubah.
+  - **Sinkronisasi Langsung dengan Perangkat Jaringan**: Dilengkapi tombol toolbar reaktif `🔄 Sinkron Perangkat` dengan badge notifikasi jumlah perangkat baru/berubah.
   - **Modal Diffing Interaktif (`SwitchSyncModal.tsx`)**: Menampilkan perbandingan status switch (Baru, Perlu Update, Tersinkron) berdasarkan data SNMP di tabel `SwitchDevice`, lengkap dengan opsi proteksi kabel koneksi (*Preserve Existing Edges*).
   - **API Engine (`/api/network/topology/sync-switches`)**: Melakukan mapping port fisik riil (`SwitchPortInfo`), status OperStatus `up`/`down`, PVID, serta konfigurasi tagged/untagged VLAN ke node topologi tanpa memutuskan kabel yang sudah ada.
   - **Node Switch & Telemetry SNMP**: Menampilkan chip badge `SNMP SYNC`, status port riil (e.g. `18 UP / 24 Port`), counter VLAN aktif, serta drawer detail multi-tab (*Ringkasan & Kabel*, *Port Matrix SNMP*, dan *VLAN Discovered*) dengan tautan langsung ke halaman `/switches`.
