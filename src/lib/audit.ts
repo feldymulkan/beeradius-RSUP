@@ -39,7 +39,7 @@ export async function logAudit(
 
     await prisma.auditLog.create({
       data: {
-        adminUser: (session?.user as any)?.username || "system",
+        adminUser: (session?.user as any)?.username || (session?.user as any)?.name || "system",
         action,
         targetType,
         targetName: targetName || null,
