@@ -52,7 +52,7 @@ interface SwitchDevice {
   model: string;
   sysDescr?: string;
   location?: string;
-  status: "online" | "offline";
+  status: "online" | "offline" | "snmp_offline";
   deviceType?: string;
   connMethod?: string;
   uptime?: string;

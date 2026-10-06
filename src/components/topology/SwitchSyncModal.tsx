@@ -24,7 +24,7 @@ interface SwitchDiffItem {
   brand: string;
   model: string;
   location: string;
-  status: 'online' | 'offline';
+  status: 'online' | 'offline' | 'snmp_offline';
   deviceType?: string;
   connMethod?: string;
   lastPolled?: string;
