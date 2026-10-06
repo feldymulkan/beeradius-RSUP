@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   TopologyNode,
   TopologyEdge,
@@ -31,6 +32,8 @@ import {
   FaTrash,
   FaCamera,
   FaSyncAlt,
+  FaCheck,
+  FaExclamationTriangle,
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -39,10 +42,16 @@ interface TopologyCanvasProps {
 }
 
 export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps) {
+  const router = useRouter();
   const [topology, setTopology] = useState<TopologyData>(initialTopology);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string>('all');
   const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved' | 'error'>('saved');
+  const [lastSavedTime, setLastSavedTime] = useState<Date | null>(
+    initialTopology.updatedAt ? new Date(initialTopology.updatedAt) : null
+  );
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Modals state
   const [isDeviceModalOpen, setIsDeviceModalOpen] = useState(false);
@@ -91,6 +100,174 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
   const [draggingNodeId, setDraggingNodeId] = useState<string | null>(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
+  // Refs for debounced auto-save & fresh state
+  const isSavingRef = useRef(false);
+  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const isDragModifiedRef = useRef(false);
+  const latestTopologyRef = useRef<TopologyData>(topology);
+  const latestViewportRef = useRef({ zoom, panX: pan.x, panY: pan.y });
+
+  useEffect(() => {
+    latestTopologyRef.current = topology;
+  }, [topology]);
+
+  useEffect(() => {
+    latestViewportRef.current = { zoom, panX: pan.x, panY: pan.y };
+  }, [zoom, pan]);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  // -------------------------------------------------------------
+  // Save Engine & Debounced Auto-Save
+  // -------------------------------------------------------------
+  const saveTopology = useCallback(
+    async (manual = false) => {
+      if (isSavingRef.current) return;
+      isSavingRef.current = true;
+      setSaveStatus('saving');
+      setIsSaving(true);
+
+      const currentTopo = latestTopologyRef.current;
+      const currentVp = latestViewportRef.current;
+
+      const payload = {
+        id: currentTopo.id,
+        name: currentTopo.name,
+        description: currentTopo.description,
+        isDefault: true,
+        nodes: currentTopo.nodes,
+        edges: currentTopo.edges,
+        viewport: currentVp,
+      };
+
+      try {
+        const res = await fetch('/api/network/topology', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal menyimpan');
+
+        if (data.id && currentTopo.id !== data.id) {
+          setTopology((prev) => ({ ...prev, id: data.id }));
+        }
+
+        const now = new Date();
+        setSaveStatus('saved');
+        setLastSavedTime(now);
+        setHasUnsavedChanges(false);
+
+        // Simpan backup aman ke localStorage
+        try {
+          localStorage.setItem(
+            'beeradius_topology_draft',
+            JSON.stringify({
+              ...payload,
+              id: data.id || currentTopo.id,
+              savedAt: now.toISOString(),
+              isSynced: true,
+            })
+          );
+        } catch {}
+
+        if (manual) {
+          toast.success('Peta topologi jaringan berhasil disimpan ke database!');
+        }
+        router.refresh();
+      } catch (err: any) {
+        console.error('Error saving topology:', err);
+        setSaveStatus('error');
+        if (manual) {
+          toast.error(err.message || 'Gagal menyimpan topologi');
+        }
+      } finally {
+        isSavingRef.current = false;
+        setIsSaving(false);
+      }
+    },
+    [router]
+  );
+
+  const scheduleAutoSave = useCallback(() => {
+    setHasUnsavedChanges(true);
+    setSaveStatus('unsaved');
+
+    // Simpan draft lokal instan ke localStorage sebagai pelindung saat refresh mendadak
+    try {
+      localStorage.setItem(
+        'beeradius_topology_draft',
+        JSON.stringify({
+          ...latestTopologyRef.current,
+          viewport: latestViewportRef.current,
+          savedAt: new Date().toISOString(),
+          isSynced: false,
+        })
+      );
+    } catch {}
+
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    autoSaveTimerRef.current = setTimeout(() => {
+      saveTopology(false);
+    }, 1200);
+  }, [saveTopology]);
+
+  // 1. Pemulihan draft lokal jika browser me-reload atau ada sesi kemarin yang belum tersinkron
+  useEffect(() => {
+    try {
+      const savedDraftRaw = localStorage.getItem('beeradius_topology_draft');
+      if (savedDraftRaw) {
+        const draft = JSON.parse(savedDraftRaw);
+        const draftTime = draft.savedAt ? new Date(draft.savedAt).getTime() : 0;
+        const initialTime = initialTopology.updatedAt ? new Date(initialTopology.updatedAt).getTime() : 0;
+
+        // Pulihkan jika draft lebih baru daripada database dan belum tersinkron
+        if (draftTime > initialTime && Array.isArray(draft.nodes) && draft.nodes.length > 0 && !draft.isSynced) {
+          setTopology((prev) => ({
+            ...prev,
+            nodes: draft.nodes,
+            edges: draft.edges || prev.edges,
+            viewport: draft.viewport || prev.viewport,
+          }));
+          if (draft.viewport) {
+            if (draft.viewport.zoom) setZoom(draft.viewport.zoom);
+            if (draft.viewport.panX !== undefined && draft.viewport.panY !== undefined) {
+              setPan({ x: draft.viewport.panX, y: draft.viewport.panY });
+            }
+          }
+          toast('Memulihkan draft layout terakhir dari penyimpanan browser', { icon: '💾' });
+          setTimeout(() => {
+            saveTopology(false);
+          }, 600);
+        }
+      }
+    } catch (err) {
+      console.error('Error recovering draft:', err);
+    }
+  }, [initialTopology, saveTopology]);
+
+  // 2. Proteksi konfirmasi saat pengguna me-refresh atau menutup browser dengan perubahan belum tersimpan
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges || isSavingRef.current) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [hasUnsavedChanges]);
+
   // -------------------------------------------------------------
   // Pan & Zoom Event Handlers
   // -------------------------------------------------------------
@@ -117,6 +294,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
         y: e.clientY - panStart.y,
       });
     } else if (draggingNodeId) {
+      isDragModifiedRef.current = true;
       const nodeX = (e.clientX - pan.x) / zoom - dragOffset.x;
       const nodeY = (e.clientY - pan.y) / zoom - dragOffset.y;
 
@@ -131,7 +309,13 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
 
   const handleMouseUp = () => {
     setIsPanning(false);
-    setDraggingNodeId(null);
+    if (draggingNodeId) {
+      setDraggingNodeId(null);
+      if (isDragModifiedRef.current) {
+        isDragModifiedRef.current = false;
+        scheduleAutoSave();
+      }
+    }
   };
 
   const startDragNode = (e: React.MouseEvent, node: TopologyNode) => {
@@ -167,6 +351,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
             : n
         ),
       }));
+      scheduleAutoSave();
       toast.success(`Perangkat "${deviceData.name}" berhasil diperbarui`);
     } else {
       // Add new node in center of current viewport
@@ -183,6 +368,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
         nodes: [...prev.nodes, newNode],
       }));
       setSelectedNodeId(newNode.id);
+      scheduleAutoSave();
       toast.success(`Perangkat "${deviceData.name}" berhasil ditambahkan ke topologi`);
     }
   };
@@ -196,6 +382,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
       edges: prev.edges.filter((e) => e.sourceNodeId !== nodeId && e.targetNodeId !== nodeId),
     }));
     if (selectedNodeId === nodeId) setSelectedNodeId(null);
+    scheduleAutoSave();
     toast.success(`Perangkat "${node?.name || nodeId}" telah dihapus`);
   };
 
@@ -226,6 +413,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
       edges: [...prev.edges, newEdge],
     }));
 
+    scheduleAutoSave();
     toast.success(`Kabel ${newEdge.linkType.toUpperCase()} berhasil disambungkan`);
   };
 
@@ -235,6 +423,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
       edges: prev.edges.filter((e) => e.id !== edgeId),
     }));
     if (selectedEdgeId === edgeId) setSelectedEdgeId(null);
+    scheduleAutoSave();
     toast.success('Koneksi kabel telah diputus');
   };
 
@@ -281,40 +470,15 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
     });
 
     setTopology((prev) => ({ ...prev, nodes: updatedNodes }));
+    scheduleAutoSave();
     toast.success('Topologi telah dirapikan secara hierarkis');
   };
 
   // -------------------------------------------------------------
-  // Save to Database
+  // Manual Save to Database
   // -------------------------------------------------------------
-  const handleSaveToDatabase = async () => {
-    setIsSaving(true);
-    try {
-      const res = await fetch('/api/network/topology', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: topology.id,
-          name: topology.name,
-          description: topology.description,
-          isDefault: true,
-          nodes: topology.nodes,
-          edges: topology.edges,
-          viewport: { zoom, panX: pan.x, panY: pan.y },
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Gagal menyimpan');
-
-      setTopology((prev) => ({ ...prev, id: data.id }));
-      toast.success('Peta topologi jaringan berhasil disimpan ke database!');
-    } catch (err: any) {
-      console.error(err);
-      toast.error(err.message || 'Gagal menyimpan topologi');
-    } finally {
-      setIsSaving(false);
-    }
+  const handleSaveToDatabase = () => {
+    saveTopology(true);
   };
 
   // -------------------------------------------------------------
@@ -381,6 +545,27 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
             <h1 className="text-sm font-bold text-base-content tracking-tight flex items-center gap-2">
               <span>{topology.name}</span>
               <span className="badge badge-xs badge-primary font-mono text-[9px]">LIVE MAP</span>
+              {/* Dynamic Auto-Save Telemetry Badge */}
+              {saveStatus === 'saving' && (
+                <span className="badge badge-xs badge-warning text-warning-content font-mono text-[9px] gap-1 animate-pulse">
+                  <FaSyncAlt className="animate-spin text-[8px]" /> Menyimpan otomatis...
+                </span>
+              )}
+              {saveStatus === 'saved' && (
+                <span className="badge badge-xs badge-success text-success-content font-mono text-[9px] gap-1">
+                  <FaCheck className="text-[8px]" /> Tersimpan {lastSavedTime ? formatTime(lastSavedTime) : ''}
+                </span>
+              )}
+              {saveStatus === 'unsaved' && (
+                <span className="badge badge-xs badge-warning text-warning-content font-mono text-[9px] gap-1 animate-pulse">
+                  ● Perubahan belum tersimpan
+                </span>
+              )}
+              {saveStatus === 'error' && (
+                <span className="badge badge-xs badge-error text-error-content font-mono text-[9px] gap-1">
+                  <FaExclamationTriangle className="text-[8px]" /> Gagal simpan
+                </span>
+              )}
             </h1>
             <p className="text-[10px] text-base-content/70 font-mono">
               {topology.nodes.length} Perangkat Terdaftar · {topology.edges.length} Koneksi Port
@@ -450,7 +635,12 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
 
           {/* Sync Switch Devices from DB */}
           <button
-            onClick={() => setIsSyncModalOpen(true)}
+            onClick={() => {
+              if (hasUnsavedChanges) {
+                saveTopology(false);
+              }
+              setIsSyncModalOpen(true);
+            }}
             className={`btn btn-xs gap-1.5 transition-all ${
               syncBadgeCount > 0
                 ? 'btn-warning shadow-[0_0_12px_rgba(245,158,11,0.3)] animate-pulse'
@@ -505,10 +695,21 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
           <button
             onClick={handleSaveToDatabase}
             disabled={isSaving}
-            className="btn btn-xs btn-secondary gap-1 font-bold shadow-[0_0_12px_rgba(37,99,235,0.3)]"
+            className={`btn btn-xs gap-1 font-bold transition-all ${
+              hasUnsavedChanges
+                ? 'btn-secondary shadow-[0_0_14px_rgba(37,99,235,0.4)] animate-pulse'
+                : 'btn-outline border-base-300 text-base-content/80 hover:bg-base-200'
+            }`}
+            title={hasUnsavedChanges ? 'Klik untuk menyimpan perubahan ke database' : 'Semua perubahan sudah tersimpan'}
           >
-            <FaSave />
-            <span>{isSaving ? 'Menyimpan...' : 'Simpan'}</span>
+            {isSaving ? (
+              <FaSyncAlt className="animate-spin text-[10px]" />
+            ) : hasUnsavedChanges ? (
+              <FaSave />
+            ) : (
+              <FaCheck className="text-success text-[10px]" />
+            )}
+            <span>{isSaving ? 'Menyimpan...' : hasUnsavedChanges ? 'Simpan' : 'Tersimpan'}</span>
           </button>
 
           {/* Export JSON / Backup */}
@@ -988,6 +1189,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
             nodes: [...prev.nodes, node],
           }));
           setSelectedNodeId(node.id);
+          scheduleAutoSave();
           toast.success(`Perangkat "${node.name}" berhasil diimport ke diagram topologi`);
         }}
         existingNodeNames={topology.nodes.map((n) => n.name)}
@@ -999,6 +1201,16 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
         onSyncComplete={(newTopology) => {
           setTopology(newTopology);
           setSyncBadgeCount(0);
+          setSaveStatus('saved');
+          setHasUnsavedChanges(false);
+          setLastSavedTime(new Date());
+          try {
+            localStorage.setItem(
+              'beeradius_topology_draft',
+              JSON.stringify({ ...newTopology, savedAt: new Date().toISOString(), isSynced: true })
+            );
+          } catch {}
+          router.refresh();
           toast.success('Kanvas topologi berhasil disinkronkan dengan Perangkat Jaringan!');
         }}
       />

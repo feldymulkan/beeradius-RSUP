@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -436,6 +437,8 @@ export async function POST(req: NextRequest) {
       });
       savedTopologyId = created.id;
     }
+
+    revalidatePath('/topology');
 
     return NextResponse.json({
       success: true,

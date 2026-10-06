@@ -11,7 +11,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:codegen": "playwright codegen http://localhost:3000",
-    "screenshots": "playwright test e2e/screenshots.spec.ts"
+    "screenshots": "playwright test e2e/screenshots.spec.ts",
+    "poll:devices": "node scripts/poll-devices.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

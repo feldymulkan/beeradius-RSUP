@@ -13,6 +13,11 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
     return NextResponse.next();
   }
 
+  // [1b] /api/network/switches/poll → autentikasi (session / cron-secret / localhost) ditangani langsung di route handler
+  if (pathname === "/api/network/switches/poll") {
+    return NextResponse.next();
+  }
+
   // [2] Semua /api/* lainnya → wajib terautentikasi, kembalikan 401 JSON jika tidak
   if (pathname.startsWith("/api/")) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });

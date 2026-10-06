@@ -254,10 +254,27 @@ model SwitchDevice {
   vlans       String?   @db.LongText
   ports       String?   @db.LongText
   lastPolled  DateTime?
+  deviceType  String?   @default("switch") @db.VarChar(32)
+  connMethod  String?   @default("snmp") @db.VarChar(32)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([ip])
   @@index([brand])
   @@index([status])
+  @@index([deviceType])
+}
+
+model NetworkTopology {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(128)
+  description String?  @db.VarChar(255)
+  isDefault   Boolean  @default(false)
+  nodes       String   @db.LongText
+  edges       String   @db.LongText
+  viewport    String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([name])
 }

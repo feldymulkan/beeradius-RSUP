@@ -25,9 +25,29 @@ export async function POST(req: NextRequest) {
       retries: 1,
     });
 
+    let pingOk = false;
+    let diagnosis = "";
+    if (result.status === "online") {
+      pingOk = true;
+      diagnosis = "Perangkat merespon SNMP & Ping dengan baik.";
+    } else {
+      const { pingHost } = await import("@/lib/devicePolling");
+      pingOk = await pingHost(ip, 1500);
+      if (pingOk) {
+        diagnosis = "Perangkat merespon Ping (Host HIDUP), namun SNMP tidak merespon (periksa Community String, Port 161, atau firewall).";
+      } else {
+        diagnosis = "Host tidak dapat dijangkau (Ping & SNMP keduanya timeout / mati).";
+      }
+    }
+
     return NextResponse.json({
       success: result.status === "online",
-      data: result,
+      data: {
+        ...result,
+        pingOk,
+        diagnosis,
+        detailedStatus: result.status === "online" ? "online" : pingOk ? "snmp_offline" : "offline",
+      },
     });
   } catch (error: any) {
     return NextResponse.json(

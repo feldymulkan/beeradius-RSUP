@@ -72,6 +72,7 @@ export default function SwitchesPage() {
 
   // State polling/scanning per ID
   const [scanningId, setScanningId] = useState<number | null>(null);
+  const [isScanningAll, setIsScanningAll] = useState(false);
 
   // Modal Detail
   const [detailSwitch, setDetailSwitch] = useState<SwitchDevice | null>(null);
@@ -122,6 +123,10 @@ export default function SwitchesPage() {
 
   useEffect(() => {
     fetchSwitches();
+    const interval = setInterval(() => {
+      fetchSwitches();
+    }, 5 * 60 * 1000); // 5 menit
+    return () => clearInterval(interval);
   }, []);
 
   // Filtered Switches
@@ -150,7 +155,9 @@ export default function SwitchesPage() {
   const metrics = useMemo(() => {
     const total = switches.length;
     const online = switches.filter((s) => s.status === "online").length;
-    const offline = total - online;
+    const snmpOffline = switches.filter((s) => s.status === "snmp_offline").length;
+    const hostOffline = switches.filter((s) => s.status === "offline").length;
+    const offline = snmpOffline + hostOffline;
     const totalVlans = switches.reduce((acc, s) => acc + (s.vlans?.length || 0), 0);
     const totalPorts = switches.reduce((acc, s) => acc + (s.ports?.length || 0), 0);
     const upPorts = switches.reduce(
@@ -166,6 +173,8 @@ export default function SwitchesPage() {
     return {
       total,
       online,
+      snmpOffline,
+      hostOffline,
       offline,
       totalVlans,
       totalPorts,
@@ -198,6 +207,25 @@ export default function SwitchesPage() {
       toast.error(err.message || "Gagal memindai switch via SNMP");
     } finally {
       setScanningId(null);
+    }
+  };
+
+  // Trigger full scan & update all network devices (SNMP & Ping)
+  const handleScanAllDevices = async () => {
+    try {
+      setIsScanningAll(true);
+      const res = await fetch("/api/network/switches/poll", { method: "POST" });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message || "Gagal memindai perangkat");
+
+      toast.success(
+        `Pemindaian selesai: ${json.data.online} Online, ${json.data.offline} Offline (${json.data.changed} status berubah)`
+      );
+      fetchSwitches();
+    } catch (err: any) {
+      toast.error(err.message || "Gagal memindai semua perangkat");
+    } finally {
+      setIsScanningAll(false);
     }
   };
 
@@ -274,8 +302,10 @@ export default function SwitchesPage() {
       setProbeResult(json.data);
       if (json.data?.status === "online") {
         toast.success(`SNMP Terkoneksi: ${json.data.brand} ${json.data.model}`);
+      } else if (json.data?.detailedStatus === "snmp_offline") {
+        toast("Host UP (Ping OK), namun SNMP timeout", { icon: "⚠️" });
       } else {
-        toast.error(json.data?.error || "Switch tidak merespon SNMP");
+        toast.error(json.data?.error || "Switch tidak merespon SNMP & Ping (Host Down)");
       }
     } catch (err: any) {
       toast.error(err.message || "Gagal menghubungi probe endpoint");
@@ -325,6 +355,21 @@ export default function SwitchesPage() {
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
+          <div className="badge badge-outline border-emerald-500/30 text-emerald-400 gap-1.5 py-3 px-3 text-xs hidden lg:flex items-center">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Auto-Check 5m Aktif
+          </div>
+
+          <button
+            onClick={handleScanAllDevices}
+            disabled={isScanningAll}
+            className="btn btn-sm btn-outline border-base-300 hover:border-primary gap-2"
+            title="Scan status online/offline semua perangkat jaringan sekarang"
+          >
+            <FaSyncAlt className={`text-sky-400 ${isScanningAll ? "animate-spin" : ""}`} />
+            {isScanningAll ? "Memindai..." : "Scan Status Semua"}
+          </button>
+
           <button
             onClick={() => {
               setProbeResult(null);
@@ -385,7 +430,7 @@ export default function SwitchesPage() {
 
         <div className="card p-4 flex flex-col justify-between border-emerald-500/20">
           <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-mono uppercase tracking-wider">Status Online</span>
+            <span className="text-xs text-slate-400 font-mono uppercase tracking-wider">Status Perangkat</span>
             <span className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
               <FaCheckCircle className="h-4 w-4" />
             </span>
@@ -393,15 +438,19 @@ export default function SwitchesPage() {
           <div className="mt-2">
             <div className="flex items-baseline gap-2">
               <p className="text-2xl font-bold font-mono text-emerald-400">{metrics.online}</p>
-              <span className="text-xs text-slate-500 font-mono">/ {metrics.total} perangkat</span>
+              <span className="text-xs text-slate-500 font-mono">Online / {metrics.total} Total</span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              {metrics.offline > 0 ? (
-                <span className="text-rose-400">{metrics.offline} offline / timeout</span>
-              ) : (
-                "Semua switch merespon SNMP"
+            <div className="text-[11px] text-slate-500 mt-1 flex flex-wrap gap-2">
+              {metrics.snmpOffline > 0 && (
+                <span className="text-amber-400 font-medium">⚠️ {metrics.snmpOffline} Offline SNMP</span>
               )}
-            </p>
+              {metrics.hostOffline > 0 && (
+                <span className="text-rose-400 font-medium">⛔ {metrics.hostOffline} Offline Ping</span>
+              )}
+              {metrics.offline === 0 && (
+                <span className="text-emerald-400">Semua perangkat normal</span>
+              )}
+            </div>
           </div>
         </div>
 
@@ -491,8 +540,9 @@ export default function SwitchesPage() {
             className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg"
           >
             <option value="all">Semua Status</option>
-            <option value="online">Online</option>
-            <option value="offline">Offline</option>
+            <option value="online">🟢 Online (SNMP &amp; Ping)</option>
+            <option value="snmp_offline">🟡 Offline SNMP (Ping OK)</option>
+            <option value="offline">🔴 Offline Ping (Host Down)</option>
           </select>
 
           {(searchQuery || selectedBrand !== "all" || selectedStatus !== "all" || selectedType !== "all") && (
@@ -616,14 +666,19 @@ export default function SwitchesPage() {
                       </td>
                       <td>
                         {sw.status === "online" ? (
-                          <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-mono">
+                          <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-mono" title="SNMP & Ping Berfungsi Normal">
                             <span className="status-dot" />
                             <span>Online</span>
                           </div>
+                        ) : sw.status === "snmp_offline" ? (
+                          <div className="flex items-center gap-1.5 text-xs text-amber-400 font-mono" title="Ping OK, namun SNMP Timeout / Port 161 Tertutup">
+                            <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse shadow-[0_0_6px_#f59e0b]" />
+                            <span className="font-semibold">Offline SNMP</span>
+                          </div>
                         ) : (
-                          <div className="flex items-center gap-1.5 text-xs text-rose-400 font-mono">
-                            <span className="h-2 w-2 rounded-full bg-rose-500" />
-                            <span>Offline</span>
+                          <div className="flex items-center gap-1.5 text-xs text-rose-400 font-mono" title="Ping & SNMP Timeout (Host Down / Unreachable)">
+                            <span className="h-2 w-2 rounded-full bg-rose-500 shadow-[0_0_6px_#ef4444]" />
+                            <span className="font-semibold">Offline Ping</span>
                           </div>
                         )}
                         {sw.lastPolled && (
@@ -758,6 +813,19 @@ export default function SwitchesPage() {
                     <span className={`badge badge-sm border ${getBrandBadge(detailSwitch.brand)}`}>
                       {detailSwitch.brand}
                     </span>
+                    {detailSwitch.status === "online" ? (
+                      <span className="badge badge-sm badge-success text-success-content font-mono font-bold">
+                        ONLINE (SNMP &amp; PING)
+                      </span>
+                    ) : detailSwitch.status === "snmp_offline" ? (
+                      <span className="badge badge-sm badge-warning text-warning-content font-mono font-bold" title="Ping Berhasil, SNMP Tidak Merespon">
+                        OFFLINE SNMP (PING OK)
+                      </span>
+                    ) : (
+                      <span className="badge badge-sm badge-error text-error-content font-mono font-bold" title="Host Unreachable">
+                        OFFLINE PING (HOST DOWN)
+                      </span>
+                    )}
                   </div>
                   <p className="text-xs font-mono text-primary mt-0.5">
                     {detailSwitch.ip} · {detailSwitch.model || "Managed Switch"} · Uptime: {detailSwitch.uptime || "-"}
@@ -1201,12 +1269,32 @@ export default function SwitchesPage() {
                   <span className="text-xs font-bold font-mono uppercase tracking-wider text-base-content/80">
                     Hasil Deteksi SNMP
                   </span>
-                  {probeResult.status === "online" ? (
-                    <span className="badge badge-sm badge-success font-mono text-white">Terkoneksi</span>
+                  {probeResult.detailedStatus === "online" || probeResult.status === "online" ? (
+                    <span className="badge badge-sm badge-success font-mono text-success-content font-bold">
+                      Online (SNMP &amp; Ping)
+                    </span>
+                  ) : probeResult.detailedStatus === "snmp_offline" ? (
+                    <span className="badge badge-sm badge-warning font-mono text-warning-content font-bold">
+                      Offline SNMP (Ping OK)
+                    </span>
                   ) : (
-                    <span className="badge badge-sm badge-error font-mono text-white">Gagal / Timeout</span>
+                    <span className="badge badge-sm badge-error font-mono text-error-content font-bold">
+                      Offline Ping (Host Down)
+                    </span>
                   )}
                 </div>
+
+                {probeResult.diagnosis && (
+                  <div className={`p-2.5 rounded text-xs font-mono border ${
+                    probeResult.status === "online"
+                      ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+                      : probeResult.detailedStatus === "snmp_offline"
+                      ? "bg-amber-500/10 border-amber-500/20 text-amber-400"
+                      : "bg-rose-500/10 border-rose-500/20 text-rose-400"
+                  }`}>
+                    {probeResult.diagnosis}
+                  </div>
+                )}
 
                 {probeResult.status === "online" ? (
                   <div className="space-y-2 text-xs">

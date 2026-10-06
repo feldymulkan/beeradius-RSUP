@@ -330,11 +330,13 @@ export default function SwitchSyncModal({
                           <span
                             className={`badge badge-xs font-mono text-[9px] ${
                               sw.status === 'online'
-                                ? 'badge-success text-white font-bold'
-                                : 'badge-error text-white'
+                                ? 'badge-success text-success-content font-bold'
+                                : sw.status === 'snmp_offline'
+                                ? 'badge-warning text-warning-content font-bold'
+                                : 'badge-error text-error-content font-bold'
                             }`}
                           >
-                            {sw.status.toUpperCase()}
+                            {sw.status === 'snmp_offline' ? 'OFFLINE SNMP' : sw.status.toUpperCase()}
                           </span>
 
                           {/* Sync Diff Status */}

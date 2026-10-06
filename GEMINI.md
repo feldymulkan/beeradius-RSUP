@@ -78,6 +78,17 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
     - **TP-Link JetStream Private MIB (`TPLINK-DOT1Q-VLAN-MIB` OID `1.3.6.1.4.1.11863.6.14.1.2.1.1`)** dengan normalisasi nomor port fisik dan parsing range port (`1/0/1-12`).
     - **Cisco Catalyst VTP & VMPS MIB (`CISCO-VTP-MIB` & `CISCO-VLAN-MEMBERSHIP-MIB`)**.
   - Menyediakan modal interaktif: *Detail VLAN & Port Matrix* (visual grid port 1..24/48 dengan status OperStatus Up/Down dan PVID), *Uji Cepat Probe SNMP*, serta aksi *Scan Ulang SNMP* real-time.
+  - **Sistem Pemantauan Status Otomatis 5 Menit (Device Status Poller)**:
+    - **Engine Core (`src/lib/devicePolling.ts`)**: Memeriksa status setiap perangkat terdaftar di tabel `SwitchDevice` secara konkuren (SNMP probe dengan fallback ICMP ping aman cross-platform).
+    - **Diferensiasi Status Jaringan (3 Status Presisi)**:
+      - 🟢 **`online`**: SNMP & ICMP Ping berfungsi normal (perangkat UP, telemetri port & VLAN dapat ditarik).
+      - 🟡 **`snmp_offline`**: ICMP Ping hidup (Host UP / kabel & power normal), TETAPI agen SNMP tidak merespon / timeout / community string salah / port 161 terblokir. Pada peta topologi ditandai amber (`warning`).
+      - 🔴 **`offline`**: Host Unreachable (ICMP Ping & SNMP keduanya mati total / perangkat mati atau link putus). Pada peta topologi ditandai merah (`offline`).
+    - **Next.js Background Worker (`src/instrumentation.ts`)**: Terintegrasi via Next.js 15 `register()` hook untuk menjalankan background daemon timer setiap 5 menit (300.000 ms) begitu runtime Node.js aktif tanpa dependensi cron eksternal.
+    - **Sinkronisasi Topologi Otomatis**: Setiap perubahan status online / snmp_offline / offline pada switch langsung disinkronkan ke node peta topologi aktif (`NetworkTopology`) serta melakukan invalidasi cache Next.js (`/switches` & `/topology`).
+    - **API Endpoint (`/api/network/switches/poll`)**: Mendukung pemanggilan manual dari tombol UI, script sistem lokal (`localhost`), atau cron eksternal dengan header `x-cron-secret`.
+    - **CLI / Linux Crontab Runner (`scripts/poll-devices.js` & `npm run poll:devices`)**: Script mandiri untuk dieksekusi berkala via Linux system crontab (`*/5 * * * * curl -s -X POST http://localhost:3000/api/network/switches/poll > /dev/null 2>&1` atau `npm run poll:devices`).
+    - **UI Toolbar & Filter (`/switches`)**: Dilengkapi KPI breakdown (Online, Offline SNMP, Offline Ping), badge indikator `Auto-Check 5m Aktif`, filter dropdown status spesifik, tombol `Scan Status Semua` reaktif, dan auto-fetch interval 5 menit.
 - **Halaman Pemetaan Topologi Jaringan & Sinkronisasi Switch (`/topology`)**:
   - **Tata Letak Anti-Tumpang Tindih (Zero Overlap Canvas)**:
     - Toolbar kanvas menggunakan tata letak adaptif `min-h-14 py-2 px-4 flex flex-wrap xl:flex-nowrap items-center justify-between gap-3`.
@@ -94,6 +105,12 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
 - **Password**: Gunakan `bcrypt` untuk password admin di tabel `admin`. Untuk password RADIUS di `radcheck`, dukung format `Cleartext-Password`, `MD5-Password`, atau `SHA1-Password` sesuai kebutuhan server RADIUS.
 - **CSV Sanitization (CWE-1236)**: Pada fitur ekspor CSV (`/api/radius/users/export-csv`), pastikan sel yang berawalan formula (`=`, `+`, `-`, `@`) disanitasi guna mencegah *CSV Formula Injection*.
 - **Paginasi & Sorting**: Waspadai *in-memory sorting* pada data hasil paginasi database (`take`/`skip`) untuk field yang tidak berada di satu tabel yang sama agar urutan data tetap konsisten antar halaman.
+
+### 6. Panduan Penggunaan Context7 MCP (Mode Hemat / Free-Tier Frugal)
+- **Local-First Search Hierarchy**: Prioritaskan selalu mengecek tipe lokal (`.d.ts` di `node_modules/@types`, `@prisma/client`, `net-snmp`) dan implementasi yang sudah ada di codebase BeeRadius sebelum memanggil API eksternal.
+- **Kondisi Panggilan Context7**: HANYA panggil Context7 jika terdapat *breaking change* atau API baru versi mutakhir (Next.js 15, React 19, Tailwind v4, DaisyUI v5, Prisma 6) yang tidak terpecahkan lewat tipe lokal, atau saat user meminta secara eksplisit.
+- **Bypass `resolve-library-id` (Hemat Kuota 50%)**: Jangan panggil `resolve-library-id` jika library ID sudah diketahui umum. Langsung gunakan format: `/vercel/next.js`, `/tailwindlabs/tailwindcss`, `/saadeghi/daisyui`, `/prisma/prisma`, `/recharts/recharts`.
+- **Dilarang untuk**: Sintaks standar JS/TS, business logic FreeRADIUS RSUD NTB, atau pola yang sudah ada contohnya di modul lain.
 
 ## 🔄 Alur Kerja (Workflow)
 

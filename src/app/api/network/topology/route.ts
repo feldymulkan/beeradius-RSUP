@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/prisma';
 import { defaultHospitalTopology } from '@/lib/defaultTopology';
 
@@ -81,13 +82,21 @@ export async function POST(req: NextRequest) {
     }
 
     let saved;
-    if (id) {
+    const targetId = id ? Number(id) : null;
+    let existing = null;
+    if (targetId && !isNaN(targetId)) {
+      existing = await prisma.networkTopology.findUnique({
+        where: { id: targetId },
+      });
+    }
+
+    if (existing) {
       saved = await prisma.networkTopology.update({
-        where: { id: Number(id) },
+        where: { id: existing.id },
         data: {
           name,
           description: description || null,
-          isDefault: isDefault ?? false,
+          isDefault: isDefault ?? existing.isDefault,
           nodes: JSON.stringify(nodes || []),
           edges: JSON.stringify(edges || []),
           viewport: viewport ? JSON.stringify(viewport) : null,
@@ -106,9 +115,13 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    // Pastikan server component /topology dan cache router Next.js diperbarui
+    revalidatePath('/topology');
+
     return NextResponse.json({
       success: true,
       id: saved.id,
+      updatedAt: saved.updatedAt,
       message: 'Topologi jaringan berhasil disimpan',
     });
   } catch (error: any) {

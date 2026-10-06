@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { logAudit } from "@/lib/audit";
-import { probeSwitch } from "@/lib/snmp";
+import { pollSingleDevice } from "@/lib/devicePolling";
 
 export async function GET(
   req: NextRequest,
@@ -161,27 +161,15 @@ export async function POST(
       return NextResponse.json({ message: "Switch tidak ditemukan" }, { status: 404 });
     }
 
-    // Trigger probe
-    const probeRes = await probeSwitch({
-      ip: sw.ip,
-      community: sw.community,
-      port: sw.port,
-      version: sw.snmpVersion === "1" ? "1" : "2c",
+    // Trigger polling dengan deteksi diferensial Online / SNMP Offline / Ping Offline
+    const pollRes = await pollSingleDevice(sw);
+    const updated = await prisma.switchDevice.findUnique({
+      where: { id: switchId },
     });
 
-    const updated = await prisma.switchDevice.update({
-      where: { id: switchId },
-      data: {
-        brand: probeRes.brand !== "Unknown" ? probeRes.brand : sw.brand,
-        model: probeRes.model !== "Unknown" ? probeRes.model : sw.model,
-        sysDescr: probeRes.sysDescr || sw.sysDescr,
-        status: probeRes.status,
-        uptime: probeRes.status === "online" ? probeRes.uptime : sw.uptime,
-        vlans: probeRes.vlans.length > 0 ? JSON.stringify(probeRes.vlans) : sw.vlans,
-        ports: probeRes.ports.length > 0 ? JSON.stringify(probeRes.ports) : sw.ports,
-        lastPolled: new Date(),
-      },
-    });
+    if (!updated) {
+      return NextResponse.json({ message: "Switch tidak ditemukan setelah polling" }, { status: 404 });
+    }
 
     let vlans = [];
     let ports = [];
@@ -192,12 +180,21 @@ export async function POST(
       if (updated.ports) ports = JSON.parse(updated.ports);
     } catch {}
 
+    const statusMsg =
+      pollRes.newStatus === "online"
+        ? "Pemindaian berhasil: Perangkat Online (SNMP & Ping OK)"
+        : pollRes.newStatus === "snmp_offline"
+        ? "Offline SNMP: Host terhubung (Ping OK), namun agen SNMP tidak merespon"
+        : "Offline Ping: Host tidak dapat dijangkau (Ping & SNMP timeout)";
+
     return NextResponse.json({
-      message: probeRes.status === "online" ? "Pemindaian SNMP berhasil" : "Switch tidak merespon SNMP",
+      message: statusMsg,
       data: {
         ...updated,
         vlans,
         ports,
+        snmpStatus: pollRes.snmpStatus,
+        pingStatus: pollRes.pingStatus,
       },
     });
   } catch (error: any) {

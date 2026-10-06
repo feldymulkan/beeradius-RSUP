@@ -158,17 +158,23 @@ export default function DeviceDetailsDrawer({
                 <span className="text-[10px] text-base-content/60 block uppercase">Status</span>
                 <span
                   className={`inline-flex items-center gap-1 font-semibold ${
-                    device.status === 'online' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'
+                    device.status === 'online'
+                      ? 'text-emerald-600 dark:text-emerald-400'
+                      : device.status === 'warning'
+                      ? 'text-amber-500'
+                      : 'text-rose-500'
                   }`}
                 >
                   <span
                     className={`h-1.5 w-1.5 rounded-full ${
                       device.status === 'online'
                         ? 'bg-emerald-500 animate-pulse'
+                        : device.status === 'warning'
+                        ? 'bg-amber-500 animate-pulse'
                         : 'bg-rose-500'
                     }`}
                   ></span>
-                  {device.status.toUpperCase()}
+                  {device.status === 'warning' ? 'OFFLINE SNMP (PING OK)' : device.status.toUpperCase()}
                 </span>
               </div>
               <div>

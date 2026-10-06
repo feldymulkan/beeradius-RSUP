@@ -93,14 +93,14 @@ export default function AuditLogPage() {
   };
 
   const getActionBadgeClass = (action: string) => {
-    if (action.startsWith('CREATE_')) return 'badge-success text-white font-semibold';
+    if (action.startsWith('CREATE_')) return 'badge-success text-success-content font-semibold';
     if (action.startsWith('DELETE_') || action.startsWith('DISCONNECT_') || action.startsWith('CLEAR_') || action.startsWith('BATCH_DELETE_')) {
-      return 'badge-error text-white font-semibold';
+      return 'badge-error text-error-content font-semibold';
     }
     if (action.startsWith('UPDATE_') || action.startsWith('BATCH_STATUS_')) {
-      return 'badge-warning text-slate-900 font-semibold';
+      return 'badge-warning text-warning-content font-semibold';
     }
-    return 'badge-info text-white font-semibold';
+    return 'badge-info text-info-content font-semibold';
   };
 
   const renderDetails = (detailsRaw: any) => {
