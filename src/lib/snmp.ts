@@ -1,12 +1,25 @@
 import snmp from "net-snmp";
+import { DeviceType } from "@/types/topology";
+
+export interface SnmpV3Config {
+  user: string;
+  level?: "noAuthNoPriv" | "authNoPriv" | "authPriv";
+  authProtocol?: "md5" | "sha" | "sha224" | "sha256" | "sha384" | "sha512";
+  authKey?: string;
+  privProtocol?: "des" | "aes" | "aes256b" | "aes256r";
+  privKey?: string;
+  context?: string;
+}
 
 export interface SnmpConfig {
   ip: string;
   community?: string;
   port?: number;
-  version?: "1" | "2c";
+  version?: "1" | "2c" | "3";
   timeout?: number;
   retries?: number;
+  v3?: SnmpV3Config;
+  context?: string;
 }
 
 export interface SwitchPortInfo {
@@ -29,6 +42,7 @@ export interface SwitchVlanInfo {
 export interface SwitchProbeResult {
   brand: string;
   model: string;
+  deviceType: DeviceType;
   name: string;
   location: string;
   sysDescr: string;
@@ -129,70 +143,147 @@ export function parsePortRangeString(str: string): number[] {
 }
 
 /**
- * Mendeteksi brand dan model dari sysDescr dan sysObjectID
+ * Mendeteksi brand, model, dan jenis perangkat dari sysDescr dan sysObjectID
  */
-export function detectBrandAndModel(sysDescr: string, sysObjectID: string): { brand: string; model: string } {
+export function detectBrandAndModel(
+  sysDescr: string,
+  sysObjectID: string
+): { brand: string; model: string; deviceType: DeviceType } {
   const desc = sysDescr || "";
   const oid = sysObjectID || "";
 
   // 1. Ruijie / Reyee
   if (oid.includes(".1.3.6.1.4.1.4881.") || /ruijie|reyee|rg-s/i.test(desc)) {
+    const isAP = /RG-AP|Reyee\s*AP|Access\s*Point/i.test(desc);
+    const isRouter = /RG-EG|Reyee\s*EG|Gateway|Router/i.test(desc);
     const modelMatch = desc.match(/(RG-[A-Z0-9_-]+|NBS[A-Z0-9_-]+|Reyee\s+[A-Z0-9_-]+)/i);
     return {
       brand: "Ruijie Networks",
-      model: modelMatch ? modelMatch[0] : "Ruijie Switch",
+      model: modelMatch ? modelMatch[0] : isAP ? "Reyee Access Point" : isRouter ? "Ruijie Enterprise Gateway" : "Ruijie Switch",
+      deviceType: isAP ? "ap" : isRouter ? "router" : "switch",
     };
   }
 
   // 2. ZTE
   if (oid.includes(".1.3.6.1.4.1.3902.") || /zte|zxr10/i.test(desc)) {
+    const isRouter = /router|gateway/i.test(desc);
     const modelMatch = desc.match(/(ZXR10\s+[A-Z0-9_-]+|ZTE\s+[A-Z0-9_-]+)/i);
     return {
       brand: "ZTE",
       model: modelMatch ? modelMatch[0] : "ZXR10 Series",
+      deviceType: isRouter ? "router" : "switch",
     };
   }
 
   // 3. TP-Link
   if (oid.includes(".1.3.6.1.4.1.11863.") || /tp-link|jetstream|tl-sg|sg[0-9]/i.test(desc)) {
-    const modelMatch = desc.match(/(TL-[A-Z0-9_-]+|SG[0-9]+[A-Z0-9_-]*|JetStream[A-Za-z0-9\s-]+)/i);
+    const isAP = /EAP[0-9]|Omada\s*AP/i.test(desc);
+    const isRouter = /ER[0-9]|Omada\s*Router|SafeStream/i.test(desc);
+    const modelMatch = desc.match(/(TL-[A-Z0-9_-]+|SG[0-9]+[A-Z0-9_-]*|JetStream[A-Za-z0-9\s-]+|ER[0-9]{3,4}[A-Za-z0-9_-]*|EAP[0-9]{3,4}[A-Za-z0-9_-]*)/i);
     return {
       brand: "TP-Link",
-      model: modelMatch ? modelMatch[0].trim() : "JetStream Switch",
+      model: modelMatch ? modelMatch[0].trim() : isAP ? "Omada Access Point" : isRouter ? "SafeStream / Omada Router" : "JetStream Switch",
+      deviceType: isAP ? "ap" : isRouter ? "router" : "switch",
     };
   }
 
   // 4. Cisco
   if (oid.includes(".1.3.6.1.4.1.9.") || /cisco|catalyst|ios/i.test(desc)) {
-    const modelMatch = desc.match(/(WS-C[A-Z0-9_-]+|C9[0-9]{3}[A-Z0-9_-]*|Catalyst\s+[A-Z0-9_-]+)/i);
+    const isRouter = /ISR|ASR|CSR|C8[0-9]{3}|C1[0-9]{3}|C2[0-9]{3}|C3[0-9]{3}|C4[0-9]{3}|Router/i.test(desc);
+    const isAP = /Aironet|Meraki\s*MR|AP[0-9]/i.test(desc);
+    const modelMatch = desc.match(/(WS-C[A-Z0-9_-]+|C9[0-9]{3}[A-Z0-9_-]*|Catalyst\s+[A-Z0-9_-]+|ISR[0-9]{4}[A-Z0-9_-]*|ASR[0-9]{4}[A-Z0-9_-]*)/i);
     return {
       brand: "Cisco Systems",
-      model: modelMatch ? modelMatch[0] : "Catalyst Switch",
+      model: modelMatch ? modelMatch[0] : isRouter ? "Cisco Integrated Router" : isAP ? "Cisco Access Point" : "Catalyst Switch",
+      deviceType: isAP ? "ap" : isRouter ? "router" : "switch",
     };
   }
 
   // 5. Huawei
   if (oid.includes(".1.3.6.1.4.1.2011.") || /huawei|vrp|quidway|s5700/i.test(desc)) {
-    const modelMatch = desc.match(/(S[0-9]{4}[A-Z0-9_-]+|Quidway\s+[A-Z0-9_-]+)/i);
+    const isRouter = /AR[0-9]{3,4}|NetEngine/i.test(desc);
+    const isAP = /AirEngine/i.test(desc);
+    const modelMatch = desc.match(/(S[0-9]{4}[A-Z0-9_-]+|Quidway\s+[A-Z0-9_-]+|AR[0-9]{3,4}[A-Z0-9_-]*)/i);
     return {
       brand: "Huawei",
-      model: modelMatch ? modelMatch[0] : "CloudEngine / VRP",
+      model: modelMatch ? modelMatch[0] : isRouter ? "AR Series Router" : isAP ? "AirEngine AP" : "CloudEngine / VRP",
+      deviceType: isAP ? "ap" : isRouter ? "router" : "switch",
     };
   }
 
-  // 6. MikroTik
-  if (oid.includes(".1.3.6.1.4.1.14988.") || /mikrotik|routeros|crs/i.test(desc)) {
-    const modelMatch = desc.match(/(CRS[0-9]{3}-[A-Z0-9_-]+|RouterBOARD\s+[A-Z0-9_-]+)/i);
+  // 6. MikroTik (RouterOS, CCR, CRS, CSS, RB, hEX, hAP, CHR)
+  if (oid.includes(".1.3.6.1.4.1.14988.") || /mikrotik|routeros|crs|ccr|css|routerboard/i.test(desc)) {
+    const modelMatch = desc.match(
+      /(CCR[0-9]{4}[A-Za-z0-9_+-]*|CRS[0-9]{3}[A-Za-z0-9_+-]*|CSS[0-9]{3}[A-Za-z0-9_+-]*|RB[0-9]{3,4}[A-Za-z0-9_+-]*|RouterBOARD\s+[A-Za-z0-9_+-]+|hEX[A-Za-z0-9_+-]*|hAP[A-Za-z0-9_+-]*|L009[A-Za-z0-9_+-]*|CHR|x86)/i
+    );
+
+    // Switch vs Router: CRS & CSS adalah Cloud Router Switch / Cloud Smart Switch
+    const isSwitch =
+      /CRS|CSS|Cloud\s*Router\s*Switch|Smart\s*Switch/i.test(modelMatch?.[0] || "") ||
+      (!/CCR|RouterBOARD|RB|hEX|hAP|L009/i.test(desc) && /switch/i.test(desc));
+
+    const deviceType: DeviceType = isSwitch ? "switch" : "router";
+
+    let modelName = "";
+    if (modelMatch) {
+      modelName = modelMatch[0].trim();
+    } else {
+      const onMatch = desc.match(/(?:on|RouterOS)\s+([A-Za-z0-9_+-]+)/i);
+      if (onMatch && !/v[0-9]|stable|beta/i.test(onMatch[1])) {
+        modelName = onMatch[1];
+      } else if (isSwitch) {
+        modelName = "Cloud Router Switch (CRS)";
+      } else if (/CCR/i.test(desc)) {
+        modelName = "Cloud Core Router (CCR)";
+      } else if (/RouterBOARD|RB/i.test(desc)) {
+        modelName = "RouterBOARD Gateway";
+      } else {
+        modelName = "RouterOS Core Gateway";
+      }
+    }
+
     return {
       brand: "MikroTik",
-      model: modelMatch ? modelMatch[0] : "Cloud Router Switch",
+      model: modelName,
+      deviceType,
+    };
+  }
+
+  // 7. Fortinet Firewall
+  if (oid.includes(".1.3.6.1.4.1.12356.") || /fortinet|fortigate/i.test(desc)) {
+    const modelMatch = desc.match(/(FortiGate-[A-Z0-9_-]+|FG-[A-Z0-9_-]+)/i);
+    return {
+      brand: "Fortinet",
+      model: modelMatch ? modelMatch[0] : "FortiGate NGFW",
+      deviceType: "firewall",
+    };
+  }
+
+  // 8. Hikvision / Dahua NVR & CCTV
+  if (/hikvision|dahua|nvr|dvr/i.test(desc)) {
+    const isNvr = /nvr|dvr/i.test(desc);
+    return {
+      brand: /hikvision/i.test(desc) ? "Hikvision" : /dahua/i.test(desc) ? "Dahua" : "CCTV / NVR",
+      model: isNvr ? "Network Video Recorder" : "IP Camera",
+      deviceType: isNvr ? "nvr" : "cctv",
     };
   }
 
   // Fallback
+  const fallbackType: DeviceType = /router|gateway/i.test(desc)
+    ? "router"
+    : /ap|access\s*point|wifi/i.test(desc)
+    ? "ap"
+    : /firewall/i.test(desc)
+    ? "firewall"
+    : /server|linux|windows/i.test(desc)
+    ? "server"
+    : "switch";
+
   return {
-    brand: "Generic Switch",
-    model: desc.slice(0, 40) || "Managed Switch",
+    brand: fallbackType === "router" ? "Generic Router" : "Generic Switch",
+    model: desc.slice(0, 40) || (fallbackType === "router" ? "Core Router" : "Managed Switch"),
+    deviceType: fallbackType,
   };
 }
 
@@ -233,11 +324,77 @@ export function decodePortBitmap(val: any): number[] {
  * Buat session SNMP
  */
 function createSession(config: SnmpConfig): any {
+  const isV3 = config.version === "3";
+  const port = config.port || 161;
+  const timeout = config.timeout ?? 2500;
+  const retries = config.retries ?? 1;
+
+  if (isV3) {
+    const v3Conf = config.v3 || {
+      user: "public",
+      level: "authPriv",
+    };
+
+    const secLevelMap: Record<string, number> = {
+      noAuthNoPriv: (snmp as any).SecurityLevel.noAuthNoPriv,
+      authNoPriv: (snmp as any).SecurityLevel.authNoPriv,
+      authPriv: (snmp as any).SecurityLevel.authPriv,
+    };
+
+    const authProtoMap: Record<string, number> = {
+      none: (snmp as any).AuthProtocols.none,
+      md5: (snmp as any).AuthProtocols.md5,
+      sha: (snmp as any).AuthProtocols.sha,
+      sha224: (snmp as any).AuthProtocols.sha224,
+      sha256: (snmp as any).AuthProtocols.sha256,
+      sha384: (snmp as any).AuthProtocols.sha384,
+      sha512: (snmp as any).AuthProtocols.sha512,
+    };
+
+    const privProtoMap: Record<string, number> = {
+      none: (snmp as any).PrivProtocols.none,
+      des: (snmp as any).PrivProtocols.des,
+      aes: (snmp as any).PrivProtocols.aes,
+      aes256b: (snmp as any).PrivProtocols.aes256b,
+      aes256r: (snmp as any).PrivProtocols.aes256r,
+    };
+
+    const chosenLevel = v3Conf.level || "authPriv";
+    const level = secLevelMap[chosenLevel] ?? (snmp as any).SecurityLevel.authPriv;
+    const userObj: any = {
+      name: v3Conf.user || "public",
+      level,
+    };
+
+    if (level === (snmp as any).SecurityLevel.authNoPriv || level === (snmp as any).SecurityLevel.authPriv) {
+      const authKey = (v3Conf.authProtocol || "sha").toLowerCase();
+      userObj.authProtocol = authProtoMap[authKey] ?? (snmp as any).AuthProtocols.sha;
+      userObj.authKey = v3Conf.authKey || "";
+    }
+
+    if (level === (snmp as any).SecurityLevel.authPriv) {
+      const privKey = (v3Conf.privProtocol || "aes").toLowerCase();
+      userObj.privProtocol = privProtoMap[privKey] ?? (snmp as any).PrivProtocols.aes;
+      userObj.privKey = v3Conf.privKey || "";
+    }
+
+    const options: any = {
+      port,
+      retries,
+      timeout,
+      transport: "udp4",
+      version: (snmp as any).Version3,
+      context: v3Conf.context || config.context || "",
+    };
+
+    return (snmp as any).createV3Session(config.ip, userObj, options);
+  }
+
   const version = config.version === "1" ? snmp.Version1 : snmp.Version2c;
   const options = {
-    port: config.port || 161,
-    retries: config.retries ?? 1,
-    timeout: config.timeout ?? 2500,
+    port,
+    retries,
+    timeout,
     transport: "udp4" as const,
     version,
   };
@@ -315,6 +472,7 @@ export async function probeSwitch(config: SnmpConfig): Promise<SwitchProbeResult
       return {
         brand: "Unknown",
         model: "Unknown",
+        deviceType: "switch",
         name: config.ip,
         location: "",
         sysDescr: "",
@@ -327,7 +485,7 @@ export async function probeSwitch(config: SnmpConfig): Promise<SwitchProbeResult
       };
     }
 
-    const { brand, model } = detectBrandAndModel(sysDescr, sysObjectID);
+    const { brand, model, deviceType } = detectBrandAndModel(sysDescr, sysObjectID);
     const uptimeStr = formatUpTime(uptimeTicks);
 
     // 2. Walk IF-MIB untuk port
@@ -603,6 +761,7 @@ export async function probeSwitch(config: SnmpConfig): Promise<SwitchProbeResult
     return {
       brand,
       model,
+      deviceType,
       name: sysName || config.ip,
       location: sysLocation || "Ruang Server RSUD NTB",
       sysDescr,
@@ -617,6 +776,7 @@ export async function probeSwitch(config: SnmpConfig): Promise<SwitchProbeResult
     return {
       brand: "Unknown",
       model: "Unknown",
+      deviceType: "switch",
       name: config.ip,
       location: "",
       sysDescr: "",

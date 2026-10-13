@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useTransition, FormEvent } from "react";
 import { FaSearch, FaTimes } from "react-icons/fa";
 
 type Props = {
@@ -18,6 +18,7 @@ export default function SearchInput({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
   const urlQuery = searchParams.get(queryKey)?.toString() || "";
   const [term, setTerm] = useState(urlQuery);
@@ -37,7 +38,9 @@ export default function SearchInput({
       params.delete(queryKey);
     }
     const newQuery = params.toString();
-    router.replace(newQuery ? `${pathname}?${newQuery}` : pathname);
+    startTransition(() => {
+      router.replace(newQuery ? `${pathname}?${newQuery}` : pathname);
+    });
   };
 
   const handleSubmit = (e: FormEvent) => {
@@ -57,16 +60,23 @@ export default function SearchInput({
       <form onSubmit={handleSubmit} className="flex items-center gap-1.5 w-full sm:w-auto">
         <div className="relative group w-full sm:w-64">
           <span className="absolute inset-y-0 left-2.5 flex items-center text-base-content/40 group-focus-within:text-primary transition-colors pointer-events-none">
-            <FaSearch size={12} />
+            {isPending ? (
+              <span className="loading loading-spinner loading-xs text-primary" />
+            ) : (
+              <FaSearch size={12} />
+            )}
           </span>
           <input
             type="text"
-            className="input input-sm bg-base-100 border border-base-300 w-full pl-8 pr-7 text-xs rounded-lg focus:border-primary focus:outline-none transition-all placeholder:text-base-content/40"
+            className={`input input-sm bg-base-100 border w-full pl-8 pr-7 text-xs rounded-lg focus:border-primary focus:outline-none transition-all placeholder:text-base-content/40 ${
+              isPending ? "border-primary/50 ring-1 ring-primary/20 opacity-80" : "border-base-300"
+            }`}
             placeholder={placeholder}
             value={term}
             onChange={(e) => setTerm(e.target.value)}
+            disabled={isPending}
           />
-          {term && (
+          {term && !isPending && (
             <button
               type="button"
               onClick={handleClear}
@@ -80,11 +90,21 @@ export default function SearchInput({
 
         <button
           type="submit"
-          className="btn btn-sm btn-primary text-xs px-3 shadow-xs gap-1.5 font-medium flex items-center shrink-0 cursor-pointer"
+          disabled={isPending}
+          className="btn btn-sm btn-primary text-xs px-3 shadow-xs gap-1.5 font-medium flex items-center shrink-0 cursor-pointer disabled:opacity-70 transition-all"
           title="Terapkan pencarian (atau tekan Enter)"
         >
-          <FaSearch size={11} />
-          <span>Cari</span>
+          {isPending ? (
+            <>
+              <span className="loading loading-spinner loading-xs" />
+              <span>Mencari...</span>
+            </>
+          ) : (
+            <>
+              <FaSearch size={11} />
+              <span>Cari</span>
+            </>
+          )}
         </button>
       </form>
 
@@ -97,7 +117,8 @@ export default function SearchInput({
             <button
               type="button"
               onClick={handleClear}
-              className="hover:text-rose-400 ml-0.5 text-xs font-bold cursor-pointer"
+              disabled={isPending}
+              className="hover:text-rose-400 ml-0.5 text-xs font-bold cursor-pointer disabled:opacity-40"
               title="Batalkan filter pencarian ini"
             >
               ×

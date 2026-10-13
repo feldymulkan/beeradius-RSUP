@@ -120,15 +120,24 @@ export async function POST(req: NextRequest) {
     const {
       name,
       ip,
-      deviceType = "switch",
+      deviceType: initialDeviceType = "switch",
       connMethod = "snmp",
       community = "public",
       snmpVersion = "2c",
       port = 161,
+      snmpUser,
+      snmpSecurityLevel,
+      snmpAuthProtocol,
+      snmpAuthPassword,
+      snmpPrivProtocol,
+      snmpPrivPassword,
+      snmpContext,
       brand,
       model,
       location = "Ruang Server RSUD NTB",
     } = body;
+
+    let deviceType = initialDeviceType;
 
     if (!name || !ip) {
       return NextResponse.json(
@@ -159,11 +168,28 @@ export async function POST(req: NextRequest) {
     // Jika metode koneksi SNMP, lakukan probe
     if (connMethod === "snmp") {
       try {
+        const isV3 = snmpVersion === "3";
+        const version: "1" | "2c" | "3" = snmpVersion === "1" ? "1" : isV3 ? "3" : "2c";
+
         const probeRes = await probeSwitch({
           ip,
           community,
           port: Number(port) || 161,
-          version: snmpVersion === "1" ? "1" : "2c",
+          version,
+          ...(isV3
+            ? {
+                v3: {
+                  user: snmpUser || "public",
+                  level: snmpSecurityLevel || "authPriv",
+                  authProtocol: snmpAuthProtocol || "sha",
+                  authKey: snmpAuthPassword || "",
+                  privProtocol: snmpPrivProtocol || "aes",
+                  privKey: snmpPrivPassword || "",
+                  context: snmpContext || "",
+                },
+                context: snmpContext || "",
+              }
+            : {}),
         });
 
         finalBrand = brand || probeRes.brand || "Managed Switch";
@@ -173,8 +199,26 @@ export async function POST(req: NextRequest) {
         finalUptime = probeRes.uptime || "0m";
         finalVlans = probeRes.vlans || [];
         finalPorts = probeRes.ports || [];
+
+        // Auto-infer deviceType jika user membiarkan default 'switch'
+        if ((!body.deviceType || body.deviceType === "switch") && probeRes.deviceType) {
+          deviceType = probeRes.deviceType;
+        }
       } catch {
         finalStatus = "offline";
+      }
+    }
+
+    // Heuristik nama/model jika deviceType masih 'switch'
+    if (deviceType === "switch") {
+      if (/router|gateway|ccr|rb[0-9]/i.test(name) || /router|gateway|ccr/i.test(finalModel)) {
+        deviceType = "router";
+      } else if (/ap|access\s*point|wifi/i.test(name) || /access\s*point|ap/i.test(finalModel)) {
+        deviceType = "ap";
+      } else if (/nvr|cctv/i.test(name) || /nvr|recorder/i.test(finalModel)) {
+        deviceType = "nvr";
+      } else if (/firewall|fortigate/i.test(name) || /firewall|fortigate/i.test(finalModel)) {
+        deviceType = "firewall";
       }
     }
 
@@ -212,6 +256,13 @@ export async function POST(req: NextRequest) {
         community,
         snmpVersion,
         port: Number(port) || 161,
+        snmpUser: snmpUser || null,
+        snmpSecurityLevel: snmpSecurityLevel || "authPriv",
+        snmpAuthProtocol: snmpAuthProtocol || "sha",
+        snmpAuthPassword: snmpAuthPassword || null,
+        snmpPrivProtocol: snmpPrivProtocol || "aes",
+        snmpPrivPassword: snmpPrivPassword || null,
+        snmpContext: snmpContext || null,
         location,
         brand: finalBrand,
         model: finalModel,

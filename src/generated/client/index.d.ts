@@ -19685,6 +19685,13 @@ export namespace Prisma {
     community: string | null
     snmpVersion: string | null
     port: number | null
+    snmpUser: string | null
+    snmpSecurityLevel: string | null
+    snmpAuthProtocol: string | null
+    snmpAuthPassword: string | null
+    snmpPrivProtocol: string | null
+    snmpPrivPassword: string | null
+    snmpContext: string | null
     brand: string | null
     model: string | null
     sysDescr: string | null
@@ -19707,6 +19714,13 @@ export namespace Prisma {
     community: string | null
     snmpVersion: string | null
     port: number | null
+    snmpUser: string | null
+    snmpSecurityLevel: string | null
+    snmpAuthProtocol: string | null
+    snmpAuthPassword: string | null
+    snmpPrivProtocol: string | null
+    snmpPrivPassword: string | null
+    snmpContext: string | null
     brand: string | null
     model: string | null
     sysDescr: string | null
@@ -19729,6 +19743,13 @@ export namespace Prisma {
     community: number
     snmpVersion: number
     port: number
+    snmpUser: number
+    snmpSecurityLevel: number
+    snmpAuthProtocol: number
+    snmpAuthPassword: number
+    snmpPrivProtocol: number
+    snmpPrivPassword: number
+    snmpContext: number
     brand: number
     model: number
     sysDescr: number
@@ -19763,6 +19784,13 @@ export namespace Prisma {
     community?: true
     snmpVersion?: true
     port?: true
+    snmpUser?: true
+    snmpSecurityLevel?: true
+    snmpAuthProtocol?: true
+    snmpAuthPassword?: true
+    snmpPrivProtocol?: true
+    snmpPrivPassword?: true
+    snmpContext?: true
     brand?: true
     model?: true
     sysDescr?: true
@@ -19785,6 +19813,13 @@ export namespace Prisma {
     community?: true
     snmpVersion?: true
     port?: true
+    snmpUser?: true
+    snmpSecurityLevel?: true
+    snmpAuthProtocol?: true
+    snmpAuthPassword?: true
+    snmpPrivProtocol?: true
+    snmpPrivPassword?: true
+    snmpContext?: true
     brand?: true
     model?: true
     sysDescr?: true
@@ -19807,6 +19842,13 @@ export namespace Prisma {
     community?: true
     snmpVersion?: true
     port?: true
+    snmpUser?: true
+    snmpSecurityLevel?: true
+    snmpAuthProtocol?: true
+    snmpAuthPassword?: true
+    snmpPrivProtocol?: true
+    snmpPrivPassword?: true
+    snmpContext?: true
     brand?: true
     model?: true
     sysDescr?: true
@@ -19916,6 +19958,13 @@ export namespace Prisma {
     community: string
     snmpVersion: string
     port: number
+    snmpUser: string | null
+    snmpSecurityLevel: string | null
+    snmpAuthProtocol: string | null
+    snmpAuthPassword: string | null
+    snmpPrivProtocol: string | null
+    snmpPrivPassword: string | null
+    snmpContext: string | null
     brand: string | null
     model: string | null
     sysDescr: string | null
@@ -19957,6 +20006,13 @@ export namespace Prisma {
     community?: boolean
     snmpVersion?: boolean
     port?: boolean
+    snmpUser?: boolean
+    snmpSecurityLevel?: boolean
+    snmpAuthProtocol?: boolean
+    snmpAuthPassword?: boolean
+    snmpPrivProtocol?: boolean
+    snmpPrivPassword?: boolean
+    snmpContext?: boolean
     brand?: boolean
     model?: boolean
     sysDescr?: boolean
@@ -19981,6 +20037,13 @@ export namespace Prisma {
     community?: boolean
     snmpVersion?: boolean
     port?: boolean
+    snmpUser?: boolean
+    snmpSecurityLevel?: boolean
+    snmpAuthProtocol?: boolean
+    snmpAuthPassword?: boolean
+    snmpPrivProtocol?: boolean
+    snmpPrivPassword?: boolean
+    snmpContext?: boolean
     brand?: boolean
     model?: boolean
     sysDescr?: boolean
@@ -19996,7 +20059,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type SwitchDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ip" | "community" | "snmpVersion" | "port" | "brand" | "model" | "sysDescr" | "location" | "status" | "uptime" | "vlans" | "ports" | "lastPolled" | "deviceType" | "connMethod" | "createdAt" | "updatedAt", ExtArgs["result"]["switchDevice"]>
+  export type SwitchDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "ip" | "community" | "snmpVersion" | "port" | "snmpUser" | "snmpSecurityLevel" | "snmpAuthProtocol" | "snmpAuthPassword" | "snmpPrivProtocol" | "snmpPrivPassword" | "snmpContext" | "brand" | "model" | "sysDescr" | "location" | "status" | "uptime" | "vlans" | "ports" | "lastPolled" | "deviceType" | "connMethod" | "createdAt" | "updatedAt", ExtArgs["result"]["switchDevice"]>
 
   export type $SwitchDevicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SwitchDevice"
@@ -20008,6 +20071,13 @@ export namespace Prisma {
       community: string
       snmpVersion: string
       port: number
+      snmpUser: string | null
+      snmpSecurityLevel: string | null
+      snmpAuthProtocol: string | null
+      snmpAuthPassword: string | null
+      snmpPrivProtocol: string | null
+      snmpPrivPassword: string | null
+      snmpContext: string | null
       brand: string | null
       model: string | null
       sysDescr: string | null
@@ -20396,6 +20466,13 @@ export namespace Prisma {
     readonly community: FieldRef<"SwitchDevice", 'String'>
     readonly snmpVersion: FieldRef<"SwitchDevice", 'String'>
     readonly port: FieldRef<"SwitchDevice", 'Int'>
+    readonly snmpUser: FieldRef<"SwitchDevice", 'String'>
+    readonly snmpSecurityLevel: FieldRef<"SwitchDevice", 'String'>
+    readonly snmpAuthProtocol: FieldRef<"SwitchDevice", 'String'>
+    readonly snmpAuthPassword: FieldRef<"SwitchDevice", 'String'>
+    readonly snmpPrivProtocol: FieldRef<"SwitchDevice", 'String'>
+    readonly snmpPrivPassword: FieldRef<"SwitchDevice", 'String'>
+    readonly snmpContext: FieldRef<"SwitchDevice", 'String'>
     readonly brand: FieldRef<"SwitchDevice", 'String'>
     readonly model: FieldRef<"SwitchDevice", 'String'>
     readonly sysDescr: FieldRef<"SwitchDevice", 'String'>
@@ -21950,6 +22027,13 @@ export namespace Prisma {
     community: 'community',
     snmpVersion: 'snmpVersion',
     port: 'port',
+    snmpUser: 'snmpUser',
+    snmpSecurityLevel: 'snmpSecurityLevel',
+    snmpAuthProtocol: 'snmpAuthProtocol',
+    snmpAuthPassword: 'snmpAuthPassword',
+    snmpPrivProtocol: 'snmpPrivProtocol',
+    snmpPrivPassword: 'snmpPrivPassword',
+    snmpContext: 'snmpContext',
     brand: 'brand',
     model: 'model',
     sysDescr: 'sysDescr',
@@ -22205,6 +22289,13 @@ export namespace Prisma {
     ip: 'ip',
     community: 'community',
     snmpVersion: 'snmpVersion',
+    snmpUser: 'snmpUser',
+    snmpSecurityLevel: 'snmpSecurityLevel',
+    snmpAuthProtocol: 'snmpAuthProtocol',
+    snmpAuthPassword: 'snmpAuthPassword',
+    snmpPrivProtocol: 'snmpPrivProtocol',
+    snmpPrivPassword: 'snmpPrivPassword',
+    snmpContext: 'snmpContext',
     brand: 'brand',
     model: 'model',
     sysDescr: 'sysDescr',
@@ -23495,6 +23586,13 @@ export namespace Prisma {
     community?: StringFilter<"SwitchDevice"> | string
     snmpVersion?: StringFilter<"SwitchDevice"> | string
     port?: IntFilter<"SwitchDevice"> | number
+    snmpUser?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpSecurityLevel?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpAuthProtocol?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpAuthPassword?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpPrivProtocol?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpPrivPassword?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpContext?: StringNullableFilter<"SwitchDevice"> | string | null
     brand?: StringNullableFilter<"SwitchDevice"> | string | null
     model?: StringNullableFilter<"SwitchDevice"> | string | null
     sysDescr?: StringNullableFilter<"SwitchDevice"> | string | null
@@ -23517,6 +23615,13 @@ export namespace Prisma {
     community?: SortOrder
     snmpVersion?: SortOrder
     port?: SortOrder
+    snmpUser?: SortOrderInput | SortOrder
+    snmpSecurityLevel?: SortOrderInput | SortOrder
+    snmpAuthProtocol?: SortOrderInput | SortOrder
+    snmpAuthPassword?: SortOrderInput | SortOrder
+    snmpPrivProtocol?: SortOrderInput | SortOrder
+    snmpPrivPassword?: SortOrderInput | SortOrder
+    snmpContext?: SortOrderInput | SortOrder
     brand?: SortOrderInput | SortOrder
     model?: SortOrderInput | SortOrder
     sysDescr?: SortOrderInput | SortOrder
@@ -23543,6 +23648,13 @@ export namespace Prisma {
     community?: StringFilter<"SwitchDevice"> | string
     snmpVersion?: StringFilter<"SwitchDevice"> | string
     port?: IntFilter<"SwitchDevice"> | number
+    snmpUser?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpSecurityLevel?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpAuthProtocol?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpAuthPassword?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpPrivProtocol?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpPrivPassword?: StringNullableFilter<"SwitchDevice"> | string | null
+    snmpContext?: StringNullableFilter<"SwitchDevice"> | string | null
     brand?: StringNullableFilter<"SwitchDevice"> | string | null
     model?: StringNullableFilter<"SwitchDevice"> | string | null
     sysDescr?: StringNullableFilter<"SwitchDevice"> | string | null
@@ -23565,6 +23677,13 @@ export namespace Prisma {
     community?: SortOrder
     snmpVersion?: SortOrder
     port?: SortOrder
+    snmpUser?: SortOrderInput | SortOrder
+    snmpSecurityLevel?: SortOrderInput | SortOrder
+    snmpAuthProtocol?: SortOrderInput | SortOrder
+    snmpAuthPassword?: SortOrderInput | SortOrder
+    snmpPrivProtocol?: SortOrderInput | SortOrder
+    snmpPrivPassword?: SortOrderInput | SortOrder
+    snmpContext?: SortOrderInput | SortOrder
     brand?: SortOrderInput | SortOrder
     model?: SortOrderInput | SortOrder
     sysDescr?: SortOrderInput | SortOrder
@@ -23595,6 +23714,13 @@ export namespace Prisma {
     community?: StringWithAggregatesFilter<"SwitchDevice"> | string
     snmpVersion?: StringWithAggregatesFilter<"SwitchDevice"> | string
     port?: IntWithAggregatesFilter<"SwitchDevice"> | number
+    snmpUser?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    snmpSecurityLevel?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    snmpAuthProtocol?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    snmpAuthPassword?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    snmpPrivProtocol?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    snmpPrivPassword?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
+    snmpContext?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
     brand?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
     model?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
     sysDescr?: StringNullableWithAggregatesFilter<"SwitchDevice"> | string | null
@@ -24947,6 +25073,13 @@ export namespace Prisma {
     community?: string
     snmpVersion?: string
     port?: number
+    snmpUser?: string | null
+    snmpSecurityLevel?: string | null
+    snmpAuthProtocol?: string | null
+    snmpAuthPassword?: string | null
+    snmpPrivProtocol?: string | null
+    snmpPrivPassword?: string | null
+    snmpContext?: string | null
     brand?: string | null
     model?: string | null
     sysDescr?: string | null
@@ -24969,6 +25102,13 @@ export namespace Prisma {
     community?: string
     snmpVersion?: string
     port?: number
+    snmpUser?: string | null
+    snmpSecurityLevel?: string | null
+    snmpAuthProtocol?: string | null
+    snmpAuthPassword?: string | null
+    snmpPrivProtocol?: string | null
+    snmpPrivPassword?: string | null
+    snmpContext?: string | null
     brand?: string | null
     model?: string | null
     sysDescr?: string | null
@@ -24990,6 +25130,13 @@ export namespace Prisma {
     community?: StringFieldUpdateOperationsInput | string
     snmpVersion?: StringFieldUpdateOperationsInput | string
     port?: IntFieldUpdateOperationsInput | number
+    snmpUser?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpSecurityLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpAuthProtocol?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpAuthPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpPrivProtocol?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpPrivPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpContext?: NullableStringFieldUpdateOperationsInput | string | null
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     model?: NullableStringFieldUpdateOperationsInput | string | null
     sysDescr?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25012,6 +25159,13 @@ export namespace Prisma {
     community?: StringFieldUpdateOperationsInput | string
     snmpVersion?: StringFieldUpdateOperationsInput | string
     port?: IntFieldUpdateOperationsInput | number
+    snmpUser?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpSecurityLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpAuthProtocol?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpAuthPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpPrivProtocol?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpPrivPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpContext?: NullableStringFieldUpdateOperationsInput | string | null
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     model?: NullableStringFieldUpdateOperationsInput | string | null
     sysDescr?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25034,6 +25188,13 @@ export namespace Prisma {
     community?: string
     snmpVersion?: string
     port?: number
+    snmpUser?: string | null
+    snmpSecurityLevel?: string | null
+    snmpAuthProtocol?: string | null
+    snmpAuthPassword?: string | null
+    snmpPrivProtocol?: string | null
+    snmpPrivPassword?: string | null
+    snmpContext?: string | null
     brand?: string | null
     model?: string | null
     sysDescr?: string | null
@@ -25055,6 +25216,13 @@ export namespace Prisma {
     community?: StringFieldUpdateOperationsInput | string
     snmpVersion?: StringFieldUpdateOperationsInput | string
     port?: IntFieldUpdateOperationsInput | number
+    snmpUser?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpSecurityLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpAuthProtocol?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpAuthPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpPrivProtocol?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpPrivPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpContext?: NullableStringFieldUpdateOperationsInput | string | null
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     model?: NullableStringFieldUpdateOperationsInput | string | null
     sysDescr?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25077,6 +25245,13 @@ export namespace Prisma {
     community?: StringFieldUpdateOperationsInput | string
     snmpVersion?: StringFieldUpdateOperationsInput | string
     port?: IntFieldUpdateOperationsInput | number
+    snmpUser?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpSecurityLevel?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpAuthProtocol?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpAuthPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpPrivProtocol?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpPrivPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    snmpContext?: NullableStringFieldUpdateOperationsInput | string | null
     brand?: NullableStringFieldUpdateOperationsInput | string | null
     model?: NullableStringFieldUpdateOperationsInput | string | null
     sysDescr?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26272,6 +26447,13 @@ export namespace Prisma {
     community?: SortOrder
     snmpVersion?: SortOrder
     port?: SortOrder
+    snmpUser?: SortOrder
+    snmpSecurityLevel?: SortOrder
+    snmpAuthProtocol?: SortOrder
+    snmpAuthPassword?: SortOrder
+    snmpPrivProtocol?: SortOrder
+    snmpPrivPassword?: SortOrder
+    snmpContext?: SortOrder
     brand?: SortOrder
     model?: SortOrder
     sysDescr?: SortOrder
@@ -26299,6 +26481,13 @@ export namespace Prisma {
     community?: SortOrder
     snmpVersion?: SortOrder
     port?: SortOrder
+    snmpUser?: SortOrder
+    snmpSecurityLevel?: SortOrder
+    snmpAuthProtocol?: SortOrder
+    snmpAuthPassword?: SortOrder
+    snmpPrivProtocol?: SortOrder
+    snmpPrivPassword?: SortOrder
+    snmpContext?: SortOrder
     brand?: SortOrder
     model?: SortOrder
     sysDescr?: SortOrder
@@ -26321,6 +26510,13 @@ export namespace Prisma {
     community?: SortOrder
     snmpVersion?: SortOrder
     port?: SortOrder
+    snmpUser?: SortOrder
+    snmpSecurityLevel?: SortOrder
+    snmpAuthProtocol?: SortOrder
+    snmpAuthPassword?: SortOrder
+    snmpPrivProtocol?: SortOrder
+    snmpPrivPassword?: SortOrder
+    snmpContext?: SortOrder
     brand?: SortOrder
     model?: SortOrder
     sysDescr?: SortOrder

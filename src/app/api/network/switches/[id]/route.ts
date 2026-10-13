@@ -68,6 +68,13 @@ export async function PUT(
       community,
       snmpVersion,
       port,
+      snmpUser,
+      snmpSecurityLevel,
+      snmpAuthProtocol,
+      snmpAuthPassword,
+      snmpPrivProtocol,
+      snmpPrivPassword,
+      snmpContext,
       location,
       deviceType,
       connMethod,
@@ -75,20 +82,36 @@ export async function PUT(
       model,
     } = body;
 
+    const updateData: any = {
+      name,
+      ip,
+      community,
+      snmpVersion,
+      port: port ? Number(port) : undefined,
+      location,
+      deviceType: deviceType || undefined,
+      connMethod: connMethod || undefined,
+      brand: brand || undefined,
+      model: model || undefined,
+    };
+
+    if (snmpVersion === "3") {
+      updateData.snmpUser = snmpUser ?? undefined;
+      updateData.snmpSecurityLevel = snmpSecurityLevel ?? undefined;
+      updateData.snmpAuthProtocol = snmpAuthProtocol ?? undefined;
+      if (snmpAuthPassword !== undefined && snmpAuthPassword !== "") {
+        updateData.snmpAuthPassword = snmpAuthPassword;
+      }
+      updateData.snmpPrivProtocol = snmpPrivProtocol ?? undefined;
+      if (snmpPrivPassword !== undefined && snmpPrivPassword !== "") {
+        updateData.snmpPrivPassword = snmpPrivPassword;
+      }
+      updateData.snmpContext = snmpContext ?? undefined;
+    }
+
     const updated = await prisma.switchDevice.update({
       where: { id: switchId },
-      data: {
-        name,
-        ip,
-        community,
-        snmpVersion,
-        port: port ? Number(port) : undefined,
-        location,
-        deviceType: deviceType || undefined,
-        connMethod: connMethod || undefined,
-        brand: brand || undefined,
-        model: model || undefined,
-      },
+      data: updateData,
     });
 
     await logAudit("UPDATE_SWITCH", deviceType || "switch", ip, { id: switchId, name });

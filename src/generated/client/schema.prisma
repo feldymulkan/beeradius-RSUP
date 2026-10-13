@@ -239,25 +239,33 @@ model AuditLog {
 }
 
 model SwitchDevice {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(128)
-  ip          String    @unique @db.VarChar(45)
-  community   String    @default("public") @db.VarChar(100)
-  snmpVersion String    @default("2c") @db.VarChar(10)
-  port        Int       @default(161)
-  brand       String?   @default("Unknown") @db.VarChar(64)
-  model       String?   @db.VarChar(128)
-  sysDescr    String?   @db.Text
-  location    String?   @db.VarChar(128)
-  status      String    @default("online") @db.VarChar(20)
-  uptime      String?   @db.VarChar(64)
-  vlans       String?   @db.LongText
-  ports       String?   @db.LongText
-  lastPolled  DateTime?
-  deviceType  String?   @default("switch") @db.VarChar(32)
-  connMethod  String?   @default("snmp") @db.VarChar(32)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id                Int       @id @default(autoincrement())
+  name              String    @db.VarChar(128)
+  ip                String    @unique @db.VarChar(45)
+  community         String    @default("public") @db.VarChar(100)
+  snmpVersion       String    @default("2c") @db.VarChar(10)
+  port              Int       @default(161)
+  // SNMP v3 USM (User-based Security Model)
+  snmpUser          String?   @db.VarChar(64)
+  snmpSecurityLevel String?   @default("authPriv") @db.VarChar(32)
+  snmpAuthProtocol  String?   @default("sha") @db.VarChar(16)
+  snmpAuthPassword  String?   @db.VarChar(128)
+  snmpPrivProtocol  String?   @default("aes") @db.VarChar(16)
+  snmpPrivPassword  String?   @db.VarChar(128)
+  snmpContext       String?   @db.VarChar(64)
+  brand             String?   @default("Unknown") @db.VarChar(64)
+  model             String?   @db.VarChar(128)
+  sysDescr          String?   @db.Text
+  location          String?   @db.VarChar(128)
+  status            String    @default("online") @db.VarChar(20)
+  uptime            String?   @db.VarChar(64)
+  vlans             String?   @db.LongText
+  ports             String?   @db.LongText
+  lastPolled        DateTime?
+  deviceType        String?   @default("switch") @db.VarChar(32)
+  connMethod        String?   @default("snmp") @db.VarChar(32)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   @@index([ip])
   @@index([brand])

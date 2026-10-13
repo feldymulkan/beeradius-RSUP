@@ -34,6 +34,8 @@ import {
   FaSyncAlt,
   FaCheck,
   FaExclamationTriangle,
+  FaEllipsisH,
+  FaBolt,
 } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
@@ -63,6 +65,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false);
   const [syncBadgeCount, setSyncBadgeCount] = useState<number>(0);
+  const [isAutoDetecting, setIsAutoDetecting] = useState(false);
 
   // Cek perbedaan switch pada database saat canvas pertama kali dimuat
   useEffect(() => {
@@ -475,6 +478,52 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
   };
 
   // -------------------------------------------------------------
+  // Auto-Detect Topology Shape & Links from Database
+  // -------------------------------------------------------------
+  const handleAutoDetectTopology = async () => {
+    if (
+      !confirm(
+        '⚡ Deteksi Otomatis Bentuk Topologi:\n\nSistem akan mengambil semua perangkat dari database (Router MikroTik, Switch Core, Switch Panel), menyusun arsitektur pohon 3-Tier secara presisi, dan menyambungkan jalur kabel Trunk & Fiber Optic secara otomatis.\n\nLanjutkan proses?'
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setIsAutoDetecting(true);
+      const res = await fetch('/api/network/topology/auto-detect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ preserveCustomEdges: true, topologyId: topology.id }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.message || 'Gagal melakukan deteksi otomatis topologi');
+      }
+
+      setTopology(json.data.topology);
+      setZoom(json.data.topology.viewport?.zoom || 0.85);
+      setPan({
+        x: json.data.topology.viewport?.panX || 40,
+        y: json.data.topology.viewport?.panY || 30,
+      });
+      setHasUnsavedChanges(false);
+      setSaveStatus('saved');
+      setLastSavedTime(new Date());
+      setSyncBadgeCount(0);
+
+      toast.success(
+        `Topologi Otomatis Berhasil: ${json.data.summary.totalDevices} Perangkat & ${json.data.summary.totalEdges} Kabel Terhubung!`,
+        { duration: 5000 }
+      );
+    } catch (err: any) {
+      toast.error(err.message || 'Gagal mendeteksi topologi otomatis');
+    } finally {
+      setIsAutoDetecting(false);
+    }
+  };
+
+  // -------------------------------------------------------------
   // Manual Save to Database
   // -------------------------------------------------------------
   const handleSaveToDatabase = () => {
@@ -534,52 +583,52 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
 
   return (
     <div className="flex flex-col h-[calc(100vh-13rem)] min-h-[620px] w-full relative overflow-hidden bg-base-100 rounded-2xl border border-primary/10 shadow-2xl">
-      {/* 1. TOP UNIFIED TOOLBAR */}
-      <div className="min-h-14 py-2 px-4 border-b border-primary/10 bg-base-100/90 backdrop-blur-xl flex flex-wrap xl:flex-nowrap items-center justify-between gap-3 z-30 select-none">
+      {/* 1. TOP UNIFIED TOOLBAR (RESPONSIVE & ANTI-OVERLAP) */}
+      <div className="py-2 px-3 sm:px-4 border-b border-primary/10 bg-base-100/90 backdrop-blur-xl flex flex-wrap items-center justify-between gap-2.5 z-30 select-none">
         {/* Left: Info Title & Topology Name */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0">
           <div className="h-8 w-8 rounded-lg bg-linear-to-br from-primary to-secondary flex items-center justify-center text-white shadow-sm shrink-0">
             <FaNetworkWired className="h-4 w-4" />
           </div>
           <div className="min-w-0">
             <h1 className="text-sm font-bold text-base-content tracking-tight flex items-center gap-2">
-              <span>{topology.name}</span>
-              <span className="badge badge-xs badge-primary font-mono text-[9px]">LIVE MAP</span>
+              <span className="truncate max-w-[150px] sm:max-w-[200px] xl:max-w-none">{topology.name}</span>
+              <span className="badge badge-xs badge-primary font-mono text-[9px] shrink-0">LIVE MAP</span>
               {/* Dynamic Auto-Save Telemetry Badge */}
               {saveStatus === 'saving' && (
-                <span className="badge badge-xs badge-warning text-warning-content font-mono text-[9px] gap-1 animate-pulse">
-                  <FaSyncAlt className="animate-spin text-[8px]" /> Menyimpan otomatis...
+                <span className="badge badge-xs badge-warning text-warning-content font-mono text-[9px] gap-1 animate-pulse shrink-0">
+                  <FaSyncAlt className="animate-spin text-[8px]" /> Menyimpan...
                 </span>
               )}
               {saveStatus === 'saved' && (
-                <span className="badge badge-xs badge-success text-success-content font-mono text-[9px] gap-1">
+                <span className="badge badge-xs badge-success text-success-content font-mono text-[9px] gap-1 shrink-0">
                   <FaCheck className="text-[8px]" /> Tersimpan {lastSavedTime ? formatTime(lastSavedTime) : ''}
                 </span>
               )}
               {saveStatus === 'unsaved' && (
-                <span className="badge badge-xs badge-warning text-warning-content font-mono text-[9px] gap-1 animate-pulse">
-                  ● Perubahan belum tersimpan
+                <span className="badge badge-xs badge-warning text-warning-content font-mono text-[9px] gap-1 animate-pulse shrink-0">
+                  ● Belum disimpan
                 </span>
               )}
               {saveStatus === 'error' && (
-                <span className="badge badge-xs badge-error text-error-content font-mono text-[9px] gap-1">
-                  <FaExclamationTriangle className="text-[8px]" /> Gagal simpan
+                <span className="badge badge-xs badge-error text-error-content font-mono text-[9px] gap-1 shrink-0">
+                  <FaExclamationTriangle className="text-[8px]" /> Gagal
                 </span>
               )}
             </h1>
             <p className="text-[10px] text-base-content/70 font-mono">
-              {topology.nodes.length} Perangkat Terdaftar · {topology.edges.length} Koneksi Port
+              {topology.nodes.length} Perangkat · {topology.edges.length} Port
             </p>
           </div>
         </div>
 
-        {/* Center: Device Type Filter Badges */}
-        <div className="hidden lg:flex items-center gap-1 bg-base-200/70 p-1 rounded-xl border border-base-300 text-xs shrink-0">
+        {/* Center: Device Type Filter Badges (Compact & Scrollable) */}
+        <div className="hidden md:flex items-center gap-0.5 bg-base-200/70 p-1 rounded-xl border border-base-300 text-xs shrink-0 max-w-full overflow-x-auto no-scrollbar">
           {['all', 'router', 'switch', 'nvr', 'ap', 'server', 'cctv'].map((ft) => (
             <button
               key={ft}
               onClick={() => setFilterType(ft)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+              className={`px-2 py-0.5 xl:px-2.5 xl:py-1 rounded-lg text-[10px] xl:text-[11px] font-semibold transition-all cursor-pointer ${
                 filterType === ft
                   ? 'bg-primary text-primary-content font-bold shadow-xs'
                   : 'text-base-content/70 hover:text-base-content hover:bg-base-300/50'
@@ -590,47 +639,62 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
           ))}
         </div>
 
-        {/* Right: Action Buttons */}
+        {/* Right: Action Buttons (Streamlined & Adaptable) */}
         <div className="flex items-center gap-1.5 flex-wrap shrink-0">
           {/* Zoom Controls */}
           <div className="join bg-base-200/70 border border-base-300 rounded-xl overflow-hidden hidden sm:flex">
             <button
               onClick={() => setZoom((z) => Math.max(z - 0.15, 0.3))}
-              className="btn btn-xs join-item btn-ghost text-base-content/70 hover:text-base-content"
+              className="btn btn-xs join-item btn-ghost text-base-content/70 hover:text-base-content px-1.5"
               title="Perkecil Tampilan"
             >
-              <FaSearchMinus />
+              <FaSearchMinus size={11} />
             </button>
-            <span className="px-2 text-[11px] font-mono flex items-center text-base-content/80 font-semibold">
+            <span className="px-1.5 text-[10px] font-mono flex items-center text-base-content/80 font-semibold">
               {Math.round(zoom * 100)}%
             </span>
             <button
               onClick={() => setZoom((z) => Math.min(z + 0.15, 2.5))}
-              className="btn btn-xs join-item btn-ghost text-base-content/70 hover:text-base-content"
+              className="btn btn-xs join-item btn-ghost text-base-content/70 hover:text-base-content px-1.5"
               title="Perbesar Tampilan"
             >
-              <FaSearchPlus />
+              <FaSearchPlus size={11} />
             </button>
             <button
               onClick={() => {
                 setZoom(0.9);
                 setPan({ x: 40, y: 30 });
               }}
-              className="btn btn-xs join-item btn-ghost text-base-content/70 hover:text-base-content"
+              className="btn btn-xs join-item btn-ghost text-base-content/70 hover:text-base-content px-1.5"
               title="Kembalikan Tampilan (Fit View)"
             >
-              <FaCompress />
+              <FaCompress size={10} />
             </button>
           </div>
+
+          {/* Auto Detect Topology Shape & Links */}
+          <button
+            onClick={handleAutoDetectTopology}
+            disabled={isAutoDetecting}
+            className="btn btn-xs btn-outline border-sky-500/60 text-sky-600 dark:text-sky-400 hover:bg-sky-500/10 hover:border-sky-400 gap-1 px-2.5 shadow-[0_0_10px_rgba(56,189,248,0.2)]"
+            title="Deteksi otomatis bentuk topologi dan sambungkan kabel antar perangkat"
+          >
+            {isAutoDetecting ? (
+              <FaSyncAlt className="animate-spin text-sky-400" size={10} />
+            ) : (
+              <FaBolt className="text-amber-400" size={10} />
+            )}
+            <span className="font-semibold">Deteksi Bentuk</span>
+          </button>
 
           {/* Auto Align */}
           <button
             onClick={handleAutoAlign}
-            className="btn btn-xs btn-outline border-base-300 text-base-content/80 hover:text-base-content hover:bg-base-200 gap-1"
+            className="btn btn-xs btn-outline border-base-300 text-base-content/80 hover:text-base-content hover:bg-base-200 gap-1 px-2"
             title="Rapikan posisi perangkat secara hierarkis"
           >
-            <FaMagic className="text-amber-400" />
-            <span className="hidden md:inline">Rapikan</span>
+            <FaMagic className="text-amber-400" size={11} />
+            <span className="hidden xl:inline">Rapikan</span>
           </button>
 
           {/* Sync Switch Devices from DB */}
@@ -641,7 +705,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
               }
               setIsSyncModalOpen(true);
             }}
-            className={`btn btn-xs gap-1.5 transition-all ${
+            className={`btn btn-xs gap-1 transition-all px-2 ${
               syncBadgeCount > 0
                 ? 'btn-warning shadow-[0_0_12px_rgba(245,158,11,0.3)] animate-pulse'
                 : 'btn-outline border-primary/40 text-primary hover:bg-primary/10'
@@ -649,22 +713,13 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
             title="Sinkronkan perangkat fisik dari modul Perangkat Jaringan"
           >
             <FaSyncAlt className="h-2.5 w-2.5" />
-            <span className="hidden md:inline">Sinkron Perangkat</span>
+            <span className="hidden lg:inline">Sinkron</span>
+            <span className="hidden 2xl:inline">Perangkat</span>
             {syncBadgeCount > 0 && (
               <span className="badge badge-xs badge-neutral font-bold text-[9px] px-1">
                 {syncBadgeCount}
               </span>
             )}
-          </button>
-
-          {/* Import Registered Devices */}
-          <button
-            onClick={() => setIsImportModalOpen(true)}
-            className="btn btn-xs btn-outline border-primary/30 text-primary hover:bg-primary/10 gap-1"
-            title="Import switch atau router dari database"
-          >
-            <FaDownload />
-            <span className="hidden md:inline">Import Switch</span>
           </button>
 
           {/* Connect Cable */}
@@ -673,10 +728,12 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
               setPreselectedSource(null);
               setIsConnectModalOpen(true);
             }}
-            className="btn btn-xs btn-outline border-emerald-500/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 gap-1"
+            className="btn btn-xs btn-outline border-emerald-500/40 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 gap-1 px-2"
+            title="Hubungkan port antar perangkat dengan kabel"
           >
-            <FaLink />
-            <span className="hidden md:inline">Hubungkan Port</span>
+            <FaLink size={10} />
+            <span className="hidden lg:inline">Hubungkan</span>
+            <span className="hidden 2xl:inline">Port</span>
           </button>
 
           {/* Add Device */}
@@ -685,17 +742,19 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
               setEditingDevice(null);
               setIsDeviceModalOpen(true);
             }}
-            className="btn btn-xs btn-primary gap-1 shadow-[0_0_10px_rgba(56,189,248,0.25)]"
+            className="btn btn-xs btn-primary gap-1 shadow-[0_0_10px_rgba(56,189,248,0.25)] px-2.5"
+            title="Tambah perangkat manual ke peta topologi"
           >
-            <FaPlus />
-            <span>Tambah Perangkat</span>
+            <FaPlus size={10} />
+            <span className="hidden sm:inline">Tambah</span>
+            <span className="hidden xl:inline">Perangkat</span>
           </button>
 
           {/* Save Button */}
           <button
             onClick={handleSaveToDatabase}
             disabled={isSaving}
-            className={`btn btn-xs gap-1 font-bold transition-all ${
+            className={`btn btn-xs gap-1 font-bold transition-all px-2.5 ${
               hasUnsavedChanges
                 ? 'btn-secondary shadow-[0_0_14px_rgba(37,99,235,0.4)] animate-pulse'
                 : 'btn-outline border-base-300 text-base-content/80 hover:bg-base-200'
@@ -705,21 +764,58 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
             {isSaving ? (
               <FaSyncAlt className="animate-spin text-[10px]" />
             ) : hasUnsavedChanges ? (
-              <FaSave />
+              <FaSave size={10} />
             ) : (
               <FaCheck className="text-success text-[10px]" />
             )}
             <span>{isSaving ? 'Menyimpan...' : hasUnsavedChanges ? 'Simpan' : 'Tersimpan'}</span>
           </button>
 
-          {/* Export JSON / Backup */}
-          <button
-            onClick={handleExportJson}
-            className="btn btn-xs btn-ghost text-base-content/70 hover:text-base-content"
-            title="Unduh file konfigurasi JSON"
-          >
-            <FaCamera />
-          </button>
+          {/* More Actions Dropdown (Import Switch, Export JSON, Reset View) */}
+          <div className="dropdown dropdown-end">
+            <label
+              tabIndex={0}
+              className="btn btn-xs btn-ghost border border-base-300 text-base-content/70 hover:text-base-content px-2 cursor-pointer"
+              title="Menu Opsi & Alat Tambahan"
+            >
+              <FaEllipsisH size={12} />
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-40 menu p-2 shadow-2xl bg-base-100 border border-primary/20 rounded-xl w-52 mt-1 text-xs"
+            >
+              <li>
+                <button
+                  onClick={() => setIsImportModalOpen(true)}
+                  className="flex items-center gap-2 py-2"
+                >
+                  <FaDownload className="text-primary text-xs" />
+                  <span>Import Switch dari DB</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={handleExportJson}
+                  className="flex items-center gap-2 py-2"
+                >
+                  <FaCamera className="text-secondary text-xs" />
+                  <span>Export JSON Topologi</span>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    setZoom(0.9);
+                    setPan({ x: 40, y: 30 });
+                  }}
+                  className="flex items-center gap-2 py-2"
+                >
+                  <FaCompress className="text-emerald-400 text-xs" />
+                  <span>Reset Posisi Kanvas (Fit)</span>
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
 

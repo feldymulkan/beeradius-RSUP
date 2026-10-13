@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { pollAllDevices } from "@/lib/devicePolling";
@@ -18,6 +19,8 @@ export async function POST(req: NextRequest) {
 
   try {
     const summary = await pollAllDevices();
+    revalidatePath("/switches");
+    revalidatePath("/topology");
     return NextResponse.json({
       success: true,
       message: `Polling selesai: ${summary.online} Online, ${summary.snmpOffline} Offline SNMP, ${summary.offline} Offline Ping (${summary.changed} status berubah)`,

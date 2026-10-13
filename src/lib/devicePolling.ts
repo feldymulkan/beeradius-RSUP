@@ -95,13 +95,30 @@ export async function pollSingleDevice(sw: any): Promise<PollResult> {
   if (connMethod === 'snmp') {
     // [Langkah 1] Probe SNMP
     try {
+      const isV3 = sw.snmpVersion === '3';
+      const version: '1' | '2c' | '3' = sw.snmpVersion === '1' ? '1' : isV3 ? '3' : '2c';
+
       const probeRes = await probeSwitch({
         ip: sw.ip,
         community: sw.community || 'public',
         port: sw.port || 161,
-        version: sw.snmpVersion === '1' ? '1' : '2c',
+        version,
         timeout: 2500,
         retries: 1,
+        ...(isV3
+          ? {
+              v3: {
+                user: sw.snmpUser || 'public',
+                level: (sw.snmpSecurityLevel as any) || 'authPriv',
+                authProtocol: (sw.snmpAuthProtocol as any) || 'sha',
+                authKey: sw.snmpAuthPassword || '',
+                privProtocol: (sw.snmpPrivProtocol as any) || 'aes',
+                privKey: sw.snmpPrivPassword || '',
+                context: sw.snmpContext || '',
+              },
+              context: sw.snmpContext || '',
+            }
+          : {}),
       });
 
       if (probeRes.status === 'online') {
@@ -160,6 +177,16 @@ export async function pollSingleDevice(sw: any): Promise<PollResult> {
 
   const now = new Date();
 
+  // Auto-koreksi deviceType jika di DB masih default 'switch' tetapi terdeteksi perangkat lain (misal router MikroTik)
+  let updatedDeviceType = sw.deviceType || 'switch';
+  if ((!sw.deviceType || sw.deviceType === 'switch') && snmpStatus === 'up') {
+    const { detectBrandAndModel } = await import('@/lib/snmp');
+    const detected = detectBrandAndModel(sysDescr, '');
+    if (detected.deviceType && detected.deviceType !== 'switch') {
+      updatedDeviceType = detected.deviceType;
+    }
+  }
+
   // Simpan status baru ke tabel SwitchDevice
   await prisma.switchDevice.update({
     where: { id: sw.id },
@@ -169,6 +196,7 @@ export async function pollSingleDevice(sw: any): Promise<PollResult> {
       sysDescr,
       brand,
       model,
+      deviceType: updatedDeviceType,
       ports: portsJson,
       vlans: vlansJson,
       lastPolled: now,
@@ -179,7 +207,7 @@ export async function pollSingleDevice(sw: any): Promise<PollResult> {
     id: sw.id,
     name: sw.name,
     ip: sw.ip,
-    deviceType: sw.deviceType || 'switch',
+    deviceType: updatedDeviceType,
     previousStatus: sw.status,
     newStatus: finalStatus,
     snmpStatus,
@@ -262,14 +290,22 @@ export async function pollAllDevices(): Promise<PollSummary> {
           where: { id: activeTopo.id },
           data: { nodes: JSON.stringify(nodes) },
         });
-        revalidatePath('/topology');
+        try {
+          revalidatePath('/topology');
+        } catch {
+          // Abaikan jika dipanggil di luar konteks HTTP request Next.js (misal background poller timer)
+        }
       }
     }
   } catch (err) {
     console.error('[DevicePoller] Gagal menyinkronkan status ke peta topologi:', err);
   }
 
-  revalidatePath('/switches');
+  try {
+    revalidatePath('/switches');
+  } catch {
+    // Abaikan jika dipanggil di luar konteks HTTP request Next.js (misal background poller timer)
+  }
 
   console.log(
     `[DevicePoller] Selesai: ${onlineCount} online, ${snmpOfflineCount} SNMP offline, ${offlineCount} offline, ${changedCount} status berubah.`

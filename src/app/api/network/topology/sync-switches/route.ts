@@ -124,8 +124,8 @@ export async function GET() {
       const matchedNode = nodes.find(
         (n) =>
           n.switchDeviceId === sw.id ||
-          (n.type === 'switch' && n.ip && sw.ip && n.ip === sw.ip) ||
-          (n.type === 'switch' && n.name.toLowerCase() === sw.name.toLowerCase())
+          (n.ip && sw.ip && n.ip === sw.ip) ||
+          (n.name.toLowerCase() === sw.name.toLowerCase())
       );
 
       const realStatus = sw.status === 'online' ? 'online' : 'offline';

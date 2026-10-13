@@ -21,6 +21,8 @@ import {
   FaVideo,
   FaWifi,
   FaShieldAlt,
+  FaEyeSlash,
+  FaLock,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 
@@ -48,6 +50,13 @@ interface SwitchDevice {
   community: string;
   snmpVersion: string;
   port: number;
+  snmpUser?: string;
+  snmpSecurityLevel?: "noAuthNoPriv" | "authNoPriv" | "authPriv";
+  snmpAuthProtocol?: string;
+  snmpAuthPassword?: string;
+  snmpPrivProtocol?: string;
+  snmpPrivPassword?: string;
+  snmpContext?: string;
   brand: string;
   model: string;
   sysDescr?: string;
@@ -89,11 +98,20 @@ export default function SwitchesPage() {
     community: "public",
     snmpVersion: "2c",
     port: 161,
+    snmpUser: "",
+    snmpSecurityLevel: "authPriv" as "noAuthNoPriv" | "authNoPriv" | "authPriv",
+    snmpAuthProtocol: "sha",
+    snmpAuthPassword: "",
+    snmpPrivProtocol: "aes",
+    snmpPrivPassword: "",
+    snmpContext: "",
     brand: "",
     model: "",
     location: "Ruang Server RSUD NTB",
   });
   const [savingSwitch, setSavingSwitch] = useState(false);
+  const [showFormAuthPass, setShowFormAuthPass] = useState(false);
+  const [showFormPrivPass, setShowFormPrivPass] = useState(false);
 
   // Modal Probe Test
   const [isProbeModalOpen, setIsProbeModalOpen] = useState(false);
@@ -102,7 +120,16 @@ export default function SwitchesPage() {
     community: "public",
     snmpVersion: "2c",
     port: 161,
+    snmpUser: "",
+    snmpSecurityLevel: "authPriv" as "noAuthNoPriv" | "authNoPriv" | "authPriv",
+    snmpAuthProtocol: "sha",
+    snmpAuthPassword: "",
+    snmpPrivProtocol: "aes",
+    snmpPrivPassword: "",
+    snmpContext: "",
   });
+  const [showProbeAuthPass, setShowProbeAuthPass] = useState(false);
+  const [showProbePrivPass, setShowProbePrivPass] = useState(false);
   const [probing, setProbing] = useState(false);
   const [probeResult, setProbeResult] = useState<any>(null);
 
@@ -383,6 +410,8 @@ export default function SwitchesPage() {
           <button
             onClick={() => {
               setEditingSwitch(null);
+              setShowFormAuthPass(false);
+              setShowFormPrivPass(false);
               setFormData({
                 name: "",
                 ip: "",
@@ -391,6 +420,13 @@ export default function SwitchesPage() {
                 community: "public",
                 snmpVersion: "2c",
                 port: 161,
+                snmpUser: "",
+                snmpSecurityLevel: "authPriv",
+                snmpAuthProtocol: "sha",
+                snmpAuthPassword: "",
+                snmpPrivProtocol: "aes",
+                snmpPrivPassword: "",
+                snmpContext: "",
                 brand: "",
                 model: "",
                 location: "Ruang Server RSUD NTB",
@@ -643,13 +679,22 @@ export default function SwitchesPage() {
                                 {sw.connMethod || "SNMP"}
                               </span>
                             </div>
-                            <div className="text-xs font-mono text-primary flex items-center gap-1.5 mt-0.5">
+                            <div className="text-xs font-mono text-primary flex items-center gap-1.5 mt-0.5 flex-wrap">
                               <span>{sw.ip}</span>
                               {sw.connMethod === "snmp" && (
-                                <span className="text-[10px] text-slate-500">
-                                  :{sw.port} (v{sw.snmpVersion})
+                                <span className="text-[10px] text-base-content/50">
+                                  :{sw.port}
                                 </span>
                               )}
+                              {sw.connMethod === "snmp" && sw.snmpVersion === "3" ? (
+                                <span className="badge badge-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono text-[9px] gap-1 px-1.5 py-1">
+                                  <FaShieldAlt className="h-2 w-2" /> v3 ({sw.snmpSecurityLevel || "authPriv"})
+                                </span>
+                              ) : sw.connMethod === "snmp" ? (
+                                <span className="text-[10px] text-base-content/60 font-mono">
+                                  (v{sw.snmpVersion})
+                                </span>
+                              ) : null}
                             </div>
                           </div>
                         </div>
@@ -760,14 +805,23 @@ export default function SwitchesPage() {
                           <button
                             onClick={() => {
                               setEditingSwitch(sw);
+                              setShowFormAuthPass(false);
+                              setShowFormPrivPass(false);
                               setFormData({
                                 name: sw.name,
                                 ip: sw.ip,
                                 deviceType: sw.deviceType || "switch",
                                 connMethod: sw.connMethod || "snmp",
-                                community: sw.community,
-                                snmpVersion: sw.snmpVersion,
-                                port: sw.port,
+                                community: sw.community || "public",
+                                snmpVersion: sw.snmpVersion || "2c",
+                                port: sw.port || 161,
+                                snmpUser: sw.snmpUser || "",
+                                snmpSecurityLevel: (sw.snmpSecurityLevel as any) || "authPriv",
+                                snmpAuthProtocol: sw.snmpAuthProtocol || "sha",
+                                snmpAuthPassword: sw.snmpAuthPassword || "",
+                                snmpPrivProtocol: sw.snmpPrivProtocol || "aes",
+                                snmpPrivPassword: sw.snmpPrivPassword || "",
+                                snmpContext: sw.snmpContext || "",
                                 brand: sw.brand || "",
                                 model: sw.model || "",
                                 location: sw.location || "",
@@ -1011,17 +1065,49 @@ export default function SwitchesPage() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3 rounded-lg bg-base-300/20 border border-base-300 text-xs space-y-1">
-                      <p className="text-base-content/70">SNMP Community</p>
-                      <p className="font-mono text-primary font-bold">{detailSwitch.community}</p>
-                    </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <div className="p-3 rounded-lg bg-base-300/20 border border-base-300 text-xs space-y-1">
                       <p className="text-base-content/70">SNMP Version &amp; Port</p>
-                      <p className="font-mono text-base-content font-medium">
-                        Version {detailSwitch.snmpVersion} · Port {detailSwitch.port}
-                      </p>
+                      <div className="flex items-center gap-1.5 font-mono">
+                        {detailSwitch.snmpVersion === "3" ? (
+                          <span className="badge badge-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 gap-1 font-bold">
+                            <FaShieldAlt className="h-3 w-3" /> v3
+                          </span>
+                        ) : (
+                          <span className="badge badge-sm badge-ghost font-mono">
+                            v{detailSwitch.snmpVersion}
+                          </span>
+                        )}
+                        <span className="text-base-content font-medium">:{detailSwitch.port}</span>
+                      </div>
                     </div>
+                    {detailSwitch.snmpVersion === "3" ? (
+                      <>
+                        <div className="p-3 rounded-lg bg-base-300/20 border border-base-300 text-xs space-y-1">
+                          <p className="text-base-content/70">USM User &amp; Level</p>
+                          <p className="font-mono text-primary font-bold truncate">
+                            {detailSwitch.snmpUser || "public"}{" "}
+                            <span className="badge badge-xs badge-outline text-[9px] uppercase font-mono ml-1">
+                              {detailSwitch.snmpSecurityLevel || "authPriv"}
+                            </span>
+                          </p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-base-300/20 border border-base-300 text-xs space-y-1">
+                          <p className="text-base-content/70">Protokol Keamanan</p>
+                          <p className="font-mono text-base-content font-medium text-[11px] truncate">
+                            Auth: <span className="text-sky-400 font-bold uppercase">{detailSwitch.snmpAuthProtocol || "SHA"}</span>
+                            {detailSwitch.snmpSecurityLevel === "authPriv" && (
+                              <> · Priv: <span className="text-amber-400 font-bold uppercase">{detailSwitch.snmpPrivProtocol || "AES"}</span></>
+                            )}
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="p-3 rounded-lg bg-base-300/20 border border-base-300 text-xs space-y-1 col-span-1 md:col-span-2">
+                        <p className="text-base-content/70">SNMP Community</p>
+                        <p className="font-mono text-primary font-bold">{detailSwitch.community}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -1098,7 +1184,14 @@ export default function SwitchesPage() {
                   type="text"
                   placeholder="Contoh: SW-Core-Ruang-Server, R-CORE-CCR2004, NVR-IGD"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    let newType = formData.deviceType;
+                    if (newType === "switch" && (/router|gateway|ccr|rb[0-9]|^r-/i.test(newName))) {
+                      newType = "router";
+                    }
+                    setFormData({ ...formData, name: newName, deviceType: newType });
+                  }}
                   className="input input-sm w-full"
                   required
                 />
@@ -1151,29 +1244,178 @@ export default function SwitchesPage() {
               </div>
 
               {formData.connMethod === "snmp" && (
-                <div className="grid grid-cols-2 gap-3 bg-base-200/50 p-3 rounded-xl border border-base-300">
-                  <div className="form-control">
-                    <label className="label text-xs font-semibold text-base-content/80">SNMP Community</label>
-                    <input
-                      type="text"
-                      placeholder="public"
-                      value={formData.community}
-                      onChange={(e) => setFormData({ ...formData, community: e.target.value })}
-                      className="input input-sm w-full font-mono"
-                      required
-                    />
+                <div className="space-y-3 bg-base-200/50 p-3.5 rounded-xl border border-base-300">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="form-control">
+                      <label className="label text-xs font-semibold text-base-content/80">SNMP Version</label>
+                      <select
+                        value={formData.snmpVersion}
+                        onChange={(e) => setFormData({ ...formData, snmpVersion: e.target.value })}
+                        className="select select-sm w-full font-mono"
+                      >
+                        <option value="2c">v2c (Community String)</option>
+                        <option value="3">v3 (USM Secure Enkripsi)</option>
+                        <option value="1">v1 (Legacy)</option>
+                      </select>
+                    </div>
+
+                    {formData.snmpVersion !== "3" ? (
+                      <div className="form-control">
+                        <label className="label text-xs font-semibold text-base-content/80">SNMP Community</label>
+                        <input
+                          type="text"
+                          placeholder="public"
+                          value={formData.community}
+                          onChange={(e) => setFormData({ ...formData, community: e.target.value })}
+                          className="input input-sm w-full font-mono"
+                          required
+                        />
+                      </div>
+                    ) : (
+                      <div className="form-control">
+                        <label className="label text-xs font-semibold text-base-content/80 flex items-center gap-1">
+                          <FaShieldAlt className="text-emerald-400" /> Security Level
+                        </label>
+                        <select
+                          value={formData.snmpSecurityLevel}
+                          onChange={(e) => setFormData({ ...formData, snmpSecurityLevel: e.target.value as any })}
+                          className="select select-sm w-full font-mono text-xs"
+                        >
+                          <option value="authPriv">authPriv (Auth &amp; Enkripsi)</option>
+                          <option value="authNoPriv">authNoPriv (Auth Saja)</option>
+                          <option value="noAuthNoPriv">noAuthNoPriv (Tanpa Auth/Priv)</option>
+                        </select>
+                      </div>
+                    )}
                   </div>
-                  <div className="form-control">
-                    <label className="label text-xs font-semibold text-base-content/80">SNMP Version</label>
-                    <select
-                      value={formData.snmpVersion}
-                      onChange={(e) => setFormData({ ...formData, snmpVersion: e.target.value })}
-                      className="select select-sm w-full font-mono"
-                    >
-                      <option value="2c">v2c (Rekomendasi)</option>
-                      <option value="1">v1 (Legacy)</option>
-                    </select>
-                  </div>
+
+                  {formData.snmpVersion === "3" && (
+                    <div className="space-y-3 pt-2 border-t border-base-300/60">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="form-control">
+                          <label className="label text-xs font-semibold text-base-content/80 flex items-center gap-1">
+                            <FaLock className="text-sky-400 text-[10px]" /> USM Username / SecName
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="Contoh: snmpuser, noc-admin"
+                            value={formData.snmpUser}
+                            onChange={(e) => setFormData({ ...formData, snmpUser: e.target.value })}
+                            className="input input-sm w-full font-mono text-xs"
+                            required
+                          />
+                        </div>
+                        <div className="form-control">
+                          <label className="label text-xs font-semibold text-base-content/80">
+                            Context Name (Opsional)
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="default / kosong"
+                            value={formData.snmpContext}
+                            onChange={(e) => setFormData({ ...formData, snmpContext: e.target.value })}
+                            className="input input-sm w-full font-mono text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      {formData.snmpSecurityLevel !== "noAuthNoPriv" && (
+                        <div className="grid grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
+                          <div className="form-control">
+                            <label className="label text-[11px] font-semibold text-base-content/80">
+                              Auth Protocol
+                            </label>
+                            <select
+                              value={formData.snmpAuthProtocol}
+                              onChange={(e) => setFormData({ ...formData, snmpAuthProtocol: e.target.value })}
+                              className="select select-xs w-full font-mono"
+                            >
+                              <option value="sha">SHA (SHA-1)</option>
+                              <option value="sha256">SHA-256</option>
+                              <option value="sha512">SHA-512</option>
+                              <option value="md5">MD5</option>
+                            </select>
+                          </div>
+                          <div className="form-control">
+                            <label className="label text-[11px] font-semibold text-base-content/80 flex items-center justify-between">
+                              <span>Auth Password</span>
+                              <button
+                                type="button"
+                                onClick={() => setShowFormAuthPass(!showFormAuthPass)}
+                                className="text-primary hover:underline text-[10px] cursor-pointer"
+                              >
+                                {showFormAuthPass ? "Tutup" : "Lihat"}
+                              </button>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type={showFormAuthPass ? "text" : "password"}
+                                placeholder="Ketik auth password"
+                                value={formData.snmpAuthPassword}
+                                onChange={(e) => setFormData({ ...formData, snmpAuthPassword: e.target.value })}
+                                className="input input-xs w-full font-mono pr-7"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowFormAuthPass(!showFormAuthPass)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content"
+                              >
+                                {showFormAuthPass ? <FaEyeSlash size={10} /> : <FaEye size={10} />}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {formData.snmpSecurityLevel === "authPriv" && (
+                        <div className="grid grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
+                          <div className="form-control">
+                            <label className="label text-[11px] font-semibold text-base-content/80">
+                              Privacy Protocol
+                            </label>
+                            <select
+                              value={formData.snmpPrivProtocol}
+                              onChange={(e) => setFormData({ ...formData, snmpPrivProtocol: e.target.value })}
+                              className="select select-xs w-full font-mono"
+                            >
+                              <option value="aes">AES (AES-128)</option>
+                              <option value="aes256b">AES-256 (Blumenthal)</option>
+                              <option value="aes256r">AES-256 (Reeder)</option>
+                              <option value="des">DES (Legacy)</option>
+                            </select>
+                          </div>
+                          <div className="form-control">
+                            <label className="label text-[11px] font-semibold text-base-content/80 flex items-center justify-between">
+                              <span>Privacy Password</span>
+                              <button
+                                type="button"
+                                onClick={() => setShowFormPrivPass(!showFormPrivPass)}
+                                className="text-primary hover:underline text-[10px] cursor-pointer"
+                              >
+                                {showFormPrivPass ? "Tutup" : "Lihat"}
+                              </button>
+                            </label>
+                            <div className="relative">
+                              <input
+                                type={showFormPrivPass ? "text" : "password"}
+                                placeholder="Ketik privacy password"
+                                value={formData.snmpPrivPassword}
+                                onChange={(e) => setFormData({ ...formData, snmpPrivPassword: e.target.value })}
+                                className="input input-xs w-full font-mono pr-7"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowFormPrivPass(!showFormPrivPass)}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content"
+                              >
+                                {showFormPrivPass ? <FaEyeSlash size={10} /> : <FaEye size={10} />}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -1225,8 +1467,8 @@ export default function SwitchesPage() {
             </p>
 
             <form onSubmit={handleProbeTest} className="space-y-3 mt-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="form-control">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="form-control sm:col-span-2">
                   <label className="label text-xs font-semibold text-base-content/80">IP Switch Target</label>
                   <input
                     type="text"
@@ -1238,16 +1480,188 @@ export default function SwitchesPage() {
                   />
                 </div>
                 <div className="form-control">
-                  <label className="label text-xs font-semibold text-base-content/80">Community String</label>
+                  <label className="label text-xs font-semibold text-base-content/80">Port</label>
                   <input
-                    type="text"
-                    placeholder="public"
-                    value={probeForm.community}
-                    onChange={(e) => setProbeForm({ ...probeForm, community: e.target.value })}
+                    type="number"
+                    value={probeForm.port}
+                    onChange={(e) => setProbeForm({ ...probeForm, port: parseInt(e.target.value, 10) || 161 })}
                     className="input input-sm font-mono w-full"
-                    required
                   />
                 </div>
+              </div>
+
+              <div className="space-y-3 bg-base-200/50 p-3.5 rounded-xl border border-base-300">
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="form-control">
+                    <label className="label text-xs font-semibold text-base-content/80">SNMP Version</label>
+                    <select
+                      value={probeForm.snmpVersion}
+                      onChange={(e) => setProbeForm({ ...probeForm, snmpVersion: e.target.value })}
+                      className="select select-sm w-full font-mono"
+                    >
+                      <option value="2c">v2c (Community String)</option>
+                      <option value="3">v3 (USM Secure Enkripsi)</option>
+                      <option value="1">v1 (Legacy)</option>
+                    </select>
+                  </div>
+
+                  {probeForm.snmpVersion !== "3" ? (
+                    <div className="form-control">
+                      <label className="label text-xs font-semibold text-base-content/80">Community String</label>
+                      <input
+                        type="text"
+                        placeholder="public"
+                        value={probeForm.community}
+                        onChange={(e) => setProbeForm({ ...probeForm, community: e.target.value })}
+                        className="input input-sm font-mono w-full"
+                        required
+                      />
+                    </div>
+                  ) : (
+                    <div className="form-control">
+                      <label className="label text-xs font-semibold text-base-content/80 flex items-center gap-1">
+                        <FaShieldAlt className="text-emerald-400" /> Security Level
+                      </label>
+                      <select
+                        value={probeForm.snmpSecurityLevel}
+                        onChange={(e) => setProbeForm({ ...probeForm, snmpSecurityLevel: e.target.value as any })}
+                        className="select select-sm w-full font-mono text-xs"
+                      >
+                        <option value="authPriv">authPriv (Auth &amp; Enkripsi)</option>
+                        <option value="authNoPriv">authNoPriv (Auth Saja)</option>
+                        <option value="noAuthNoPriv">noAuthNoPriv (Tanpa Auth/Priv)</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+
+                {probeForm.snmpVersion === "3" && (
+                  <div className="space-y-3 pt-2 border-t border-base-300/60">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="form-control">
+                        <label className="label text-xs font-semibold text-base-content/80 flex items-center gap-1">
+                          <FaLock className="text-sky-400 text-[10px]" /> USM Username / SecName
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Contoh: snmpuser, noc-admin"
+                          value={probeForm.snmpUser}
+                          onChange={(e) => setProbeForm({ ...probeForm, snmpUser: e.target.value })}
+                          className="input input-sm w-full font-mono text-xs"
+                          required
+                        />
+                      </div>
+                      <div className="form-control">
+                        <label className="label text-xs font-semibold text-base-content/80">
+                          Context Name (Opsional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="default / kosong"
+                          value={probeForm.snmpContext}
+                          onChange={(e) => setProbeForm({ ...probeForm, snmpContext: e.target.value })}
+                          className="input input-sm w-full font-mono text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {probeForm.snmpSecurityLevel !== "noAuthNoPriv" && (
+                      <div className="grid grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
+                        <div className="form-control">
+                          <label className="label text-[11px] font-semibold text-base-content/80">
+                            Auth Protocol
+                          </label>
+                          <select
+                            value={probeForm.snmpAuthProtocol}
+                            onChange={(e) => setProbeForm({ ...probeForm, snmpAuthProtocol: e.target.value })}
+                            className="select select-xs w-full font-mono"
+                          >
+                            <option value="sha">SHA (SHA-1)</option>
+                            <option value="sha256">SHA-256</option>
+                            <option value="sha512">SHA-512</option>
+                            <option value="md5">MD5</option>
+                          </select>
+                        </div>
+                        <div className="form-control">
+                          <label className="label text-[11px] font-semibold text-base-content/80 flex items-center justify-between">
+                            <span>Auth Password</span>
+                            <button
+                              type="button"
+                              onClick={() => setShowProbeAuthPass(!showProbeAuthPass)}
+                              className="text-primary hover:underline text-[10px] cursor-pointer"
+                            >
+                              {showProbeAuthPass ? "Tutup" : "Lihat"}
+                            </button>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showProbeAuthPass ? "text" : "password"}
+                              placeholder="Ketik auth password"
+                              value={probeForm.snmpAuthPassword}
+                              onChange={(e) => setProbeForm({ ...probeForm, snmpAuthPassword: e.target.value })}
+                              className="input input-xs w-full font-mono pr-7"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowProbeAuthPass(!showProbeAuthPass)}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content"
+                            >
+                              {showProbeAuthPass ? <FaEyeSlash size={10} /> : <FaEye size={10} />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {probeForm.snmpSecurityLevel === "authPriv" && (
+                      <div className="grid grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
+                        <div className="form-control">
+                          <label className="label text-[11px] font-semibold text-base-content/80">
+                            Privacy Protocol
+                          </label>
+                          <select
+                            value={probeForm.snmpPrivProtocol}
+                            onChange={(e) => setProbeForm({ ...probeForm, snmpPrivProtocol: e.target.value })}
+                            className="select select-xs w-full font-mono"
+                          >
+                            <option value="aes">AES (AES-128)</option>
+                            <option value="aes256b">AES-256 (Blumenthal)</option>
+                            <option value="aes256r">AES-256 (Reeder)</option>
+                            <option value="des">DES (Legacy)</option>
+                          </select>
+                        </div>
+                        <div className="form-control">
+                          <label className="label text-[11px] font-semibold text-base-content/80 flex items-center justify-between">
+                            <span>Privacy Password</span>
+                            <button
+                              type="button"
+                              onClick={() => setShowProbePrivPass(!showProbePrivPass)}
+                              className="text-primary hover:underline text-[10px] cursor-pointer"
+                            >
+                              {showProbePrivPass ? "Tutup" : "Lihat"}
+                            </button>
+                          </label>
+                          <div className="relative">
+                            <input
+                              type={showProbePrivPass ? "text" : "password"}
+                              placeholder="Ketik privacy password"
+                              value={probeForm.snmpPrivPassword}
+                              onChange={(e) => setProbeForm({ ...probeForm, snmpPrivPassword: e.target.value })}
+                              className="input input-xs w-full font-mono pr-7"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowProbePrivPass(!showProbePrivPass)}
+                              className="absolute right-2 top-1/2 -translate-y-1/2 text-base-content/50 hover:text-base-content"
+                            >
+                              {showProbePrivPass ? <FaEyeSlash size={10} /> : <FaEye size={10} />}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end pt-2">
@@ -1315,8 +1729,62 @@ export default function SwitchesPage() {
                       <span className="font-mono">{probeResult.ports?.length || 0} port</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">VLAN Ditemukan:</span>
+                      <span className="text-base-content/70">VLAN Ditemukan:</span>
                       <span className="font-mono text-primary">{probeResult.vlans?.length || 0} VLAN</span>
+                    </div>
+                    <div className="flex justify-between pt-1 border-t border-base-300/40">
+                      <span className="text-base-content/70">Jenis Terdeteksi:</span>
+                      <span className="font-bold text-sky-400 font-mono capitalize">
+                        {probeResult.deviceType === "router"
+                          ? "Router Core / Gateway"
+                          : probeResult.deviceType === "firewall"
+                          ? "Firewall Gateway"
+                          : probeResult.deviceType === "ap"
+                          ? "Access Point Wi-Fi"
+                          : probeResult.deviceType === "nvr"
+                          ? "NVR CCTV Storage"
+                          : "Switch Managed"}
+                      </span>
+                    </div>
+
+                    <div className="pt-2 border-t border-base-300/60 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const suggestedName =
+                            probeResult.name && probeResult.name !== probeForm.ip
+                              ? probeResult.name
+                              : probeResult.deviceType === "router"
+                              ? `R-${probeResult.model?.split(" ")[0] || "CORE"}`
+                              : `SW-${probeResult.model?.split(" ")[0] || "NOC"}`;
+                          setFormData({
+                            name: suggestedName,
+                            ip: probeForm.ip,
+                            deviceType: probeResult.deviceType || "switch",
+                            connMethod: "snmp",
+                            community: probeForm.community,
+                            snmpVersion: probeForm.snmpVersion,
+                            port: probeForm.port,
+                            snmpUser: probeForm.snmpUser,
+                            snmpSecurityLevel: probeForm.snmpSecurityLevel,
+                            snmpAuthProtocol: probeForm.snmpAuthProtocol,
+                            snmpAuthPassword: probeForm.snmpAuthPassword,
+                            snmpPrivProtocol: probeForm.snmpPrivProtocol,
+                            snmpPrivPassword: probeForm.snmpPrivPassword,
+                            snmpContext: probeForm.snmpContext,
+                            brand: probeResult.brand,
+                            model: probeResult.model,
+                            location: probeResult.location || "Ruang Server RSUD NTB",
+                          });
+                          setIsProbeModalOpen(false);
+                          setEditingSwitch(null);
+                          setIsAddModalOpen(true);
+                        }}
+                        className="btn btn-xs btn-primary gap-1 shadow-sm"
+                      >
+                        <FaPlus size={10} />
+                        Gunakan Data Ini untuk Tambah Perangkat
+                      </button>
                     </div>
                   </div>
                 ) : (

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransition } from "react";
 import { FaTimes } from "react-icons/fa";
 
 export default function UserFilter({
@@ -11,6 +12,7 @@ export default function UserFilter({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
 
   const currentGroup = searchParams.get("group") || "";
   const currentStatus = searchParams.get("status") || "";
@@ -27,7 +29,9 @@ export default function UserFilter({
 
     params.set("page", "1"); // Reset ke halaman 1
     const newQuery = params.toString();
-    router.push(newQuery ? `${pathname}?${newQuery}` : pathname);
+    startTransition(() => {
+      router.push(newQuery ? `${pathname}?${newQuery}` : pathname);
+    });
   };
 
   const resetFilter = () => {
@@ -37,7 +41,9 @@ export default function UserFilter({
     params.delete("never_logged_in");
     params.set("page", "1");
     const newQuery = params.toString();
-    router.push(newQuery ? `${pathname}?${newQuery}` : pathname);
+    startTransition(() => {
+      router.push(newQuery ? `${pathname}?${newQuery}` : pathname);
+    });
   };
 
   const activeFilterCount =
@@ -51,9 +57,10 @@ export default function UserFilter({
       <select
         className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors ${
           currentGroup ? "border-primary text-primary font-medium" : "border-base-300"
-        }`}
+        } ${isPending ? "opacity-70 cursor-wait" : ""}`}
         value={currentGroup}
         onChange={(e) => updateParam("group", e.target.value)}
+        disabled={isPending}
         title="Filter berdasarkan profil bandwidth grup"
       >
         <option value="">Semua Group</option>
@@ -68,9 +75,10 @@ export default function UserFilter({
       <select
         className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors ${
           currentStatus ? "border-primary text-primary font-medium" : "border-base-300"
-        }`}
+        } ${isPending ? "opacity-70 cursor-wait" : ""}`}
         value={currentStatus}
         onChange={(e) => updateParam("status", e.target.value)}
+        disabled={isPending}
         title="Filter berdasarkan status koneksi realtime"
       >
         <option value="">Status Koneksi</option>
@@ -83,9 +91,10 @@ export default function UserFilter({
       <select
         className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors ${
           currentNeverLogged ? "border-primary text-primary font-medium" : "border-base-300"
-        }`}
+        } ${isPending ? "opacity-70 cursor-wait" : ""}`}
         value={currentNeverLogged}
         onChange={(e) => updateParam("never_logged_in", e.target.value)}
+        disabled={isPending}
         title="Filter akun tidak aktif"
       >
         <option value="">Filter Inaktivitas</option>
@@ -94,8 +103,16 @@ export default function UserFilter({
         <option value="90">Inaktif &gt; 90 Hari</option>
       </select>
 
+      {/* Indikator Memfilter */}
+      {isPending && (
+        <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-primary/10 border border-primary/20 text-primary text-xs font-medium animate-pulse">
+          <span className="loading loading-spinner loading-xs" />
+          <span>Memfilter...</span>
+        </span>
+      )}
+
       {/* Reset Filter Action */}
-      {activeFilterCount > 0 && (
+      {activeFilterCount > 0 && !isPending && (
         <button
           onClick={resetFilter}
           className="btn btn-ghost btn-sm text-xs text-base-content/70 hover:text-rose-400 gap-1.5 border border-base-300 hover:border-rose-400/40"

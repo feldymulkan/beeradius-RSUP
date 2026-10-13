@@ -48,6 +48,7 @@ export default function OnlineUserTable() {
   const [totalStaleCount, setTotalStaleCount] = useState(0);
 
   const fetchOnlineUsers = useCallback(async (pageNum: number, query: string, limitNum: number, status: string) => {
+    setIsLoading(true);
     try {
       const queryParams = new URLSearchParams({
         q: query,
@@ -264,16 +265,23 @@ export default function OnlineUserTable() {
           <form onSubmit={handleSearchSubmit} className="flex items-center gap-1.5 w-full sm:w-auto">
             <div className="relative w-full sm:w-56">
               <span className="absolute inset-y-0 left-2.5 flex items-center text-base-content/40 pointer-events-none">
-                <FaSearch size={11} />
+                {isLoading ? (
+                  <span className="loading loading-spinner loading-xs text-primary" />
+                ) : (
+                  <FaSearch size={11} />
+                )}
               </span>
               <input
                 type="text"
                 placeholder="Cari Username / IP..."
-                className="input input-sm bg-base-100 border border-base-300 w-full pl-8 pr-7 text-xs rounded-lg focus:border-primary focus:outline-none"
+                className={`input input-sm bg-base-100 border w-full pl-8 pr-7 text-xs rounded-lg focus:border-primary focus:outline-none transition-all ${
+                  isLoading ? "border-primary/50 ring-1 ring-primary/20 opacity-80" : "border-base-300"
+                }`}
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
+                disabled={isLoading}
               />
-              {searchInput && (
+              {searchInput && !isLoading && (
                 <button
                   type="button"
                   onClick={handleSearchClear}
@@ -287,11 +295,21 @@ export default function OnlineUserTable() {
 
             <button
               type="submit"
-              className="btn btn-sm btn-primary text-xs px-2.5 shadow-xs gap-1 font-medium flex items-center shrink-0 cursor-pointer"
+              disabled={isLoading}
+              className="btn btn-sm btn-primary text-xs px-2.5 shadow-xs gap-1 font-medium flex items-center shrink-0 cursor-pointer disabled:opacity-70 transition-all"
               title="Terapkan pencarian (Enter)"
             >
-              <FaSearch size={10} />
-              <span>Cari</span>
+              {isLoading ? (
+                <>
+                  <span className="loading loading-spinner loading-xs text-primary-content" />
+                  <span>Mencari...</span>
+                </>
+              ) : (
+                <>
+                  <FaSearch size={10} />
+                  <span>Cari</span>
+                </>
+              )}
             </button>
           </form>
 
@@ -303,7 +321,8 @@ export default function OnlineUserTable() {
               <button
                 type="button"
                 onClick={handleSearchClear}
-                className="hover:text-rose-400 ml-0.5 cursor-pointer text-xs"
+                disabled={isLoading}
+                className="hover:text-rose-400 ml-0.5 cursor-pointer text-xs disabled:opacity-40"
                 title="Hapus filter pencarian"
               >
                 ×
@@ -314,7 +333,16 @@ export default function OnlineUserTable() {
       </div>
 
       {/* TABLE */}
-      <div className="overflow-x-auto min-h-[400px]">
+      <div className="relative overflow-x-auto min-h-[400px]">
+        {/* Loading Progress Bar di atas tabel saat re-fetch */}
+        {isLoading && users.length > 0 && (
+          <div className="absolute inset-x-0 -top-1 z-20 overflow-hidden">
+            <div className="h-1 w-full bg-primary/20">
+              <div className="h-full bg-primary animate-pulse w-full"></div>
+            </div>
+          </div>
+        )}
+
         {isLoading && users.length === 0 ? (
           <div className="flex justify-center items-center h-48">
             <div className="flex flex-col items-center gap-2">
@@ -323,7 +351,8 @@ export default function OnlineUserTable() {
             </div>
           </div>
         ) : users.length > 0 ? (
-          <table className="table table-zebra w-full">
+          <div className={`transition-opacity duration-200 ${isLoading ? "opacity-60 pointer-events-none" : "opacity-100"}`}>
+            <table className="table table-zebra w-full">
             <thead className="bg-base-200/50">
               <tr>
                 <th className="w-12">#</th>
@@ -400,6 +429,7 @@ export default function OnlineUserTable() {
               })}
             </tbody>
           </table>
+        </div>
         ) : (
           <div className="text-center py-16">
             <div className="max-w-xs mx-auto flex flex-col items-center opacity-30">

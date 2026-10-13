@@ -72,12 +72,15 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
 - **Halaman Manajemen Switch & Perangkat Jaringan (`/switches`)**:
   - Mendukung **Multi-Perangkat**: `switch`, `router`, `nvr`, `cctv`, `ap`, `server`, dan `firewall`.
   - Mendukung **Multi-Metode Koneksi**: `snmp` (v1/v2c/v3), `ping` (ICMP Keepalive), `api` (REST / MikroTik API), dan `manual`.
-  - Deteksi otomatis brand & model perangkat (Ruijie Networks, ZTE, TP-Link, Cisco Systems, Huawei, MikroTik) berdasarkan `sysObjectID` (Enterprise PEN) dan regex `sysDescr`.
-  - Pemindaian VLAN dan keanggotaan port (*Access / Untagged* vs *Trunk / Tagged*) mendukung:
+  - Deteksi otomatis brand & model perangkat (Ruijie Networks, ZTE, TP-Link, Cisco Systems, Huawei, MikroTik) berdasarkan `sysObjectID` (Enterprise PEN) dan regex `sy    - Pemindaian VLAN dan keanggotaan port (*Access / Untagged* vs *Trunk / Tagged*) mendukung:
     - **Standar RFC 2674 (Q-BRIDGE-MIB)** via algoritma dekode bitmask port (`decodePortBitmap` di [snmp.ts](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/lib/snmp.ts)).
     - **TP-Link JetStream Private MIB (`TPLINK-DOT1Q-VLAN-MIB` OID `1.3.6.1.4.1.11863.6.14.1.2.1.1`)** dengan normalisasi nomor port fisik dan parsing range port (`1/0/1-12`).
     - **Cisco Catalyst VTP & VMPS MIB (`CISCO-VTP-MIB` & `CISCO-VLAN-MEMBERSHIP-MIB`)**.
-  - Menyediakan modal interaktif: *Detail VLAN & Port Matrix* (visual grid port 1..24/48 dengan status OperStatus Up/Down dan PVID), *Uji Cepat Probe SNMP*, serta aksi *Scan Ulang SNMP* real-time.
+  - **Deteksi Cerdas Perangkat Jaringan (Router vs Switch vs AP vs NVR)**:
+    - Mendeteksi Router MikroTik (Cloud Core Router CCR1009/CCR1036/CCR2004, RouterBOARD RB750/RB1100/RB4011/RB5009, hEX, hAP, CHR) secara otomatis sebagai tipe `router`, memisahkannya dari switch MikroTik (CRS/CSS).
+    - Auto-inference tipe perangkat pada API `/api/network/switches`, modal probe, background worker `devicePolling.ts`, dan sinkronisasi topologi.
+    - Modal Add/Edit Switch dan Uji Cepat Probe SNMP dilengkapi input USM Username, Security Level, serta toggle reveal/hide password Auth & Privacy.
+    - Terintegrasi langsung dengan background status poller 5 menit (`src/lib/devicePolling.ts`), API Route Handlers, dan tabel MySQL `SwitchDevice`.
   - **Sistem Pemantauan Status Otomatis 5 Menit (Device Status Poller)**:
     - **Engine Core (`src/lib/devicePolling.ts`)**: Memeriksa status setiap perangkat terdaftar di tabel `SwitchDevice` secara konkuren (SNMP probe dengan fallback ICMP ping aman cross-platform).
     - **Diferensiasi Status Jaringan (3 Status Presisi)**:
@@ -89,7 +92,11 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
     - **API Endpoint (`/api/network/switches/poll`)**: Mendukung pemanggilan manual dari tombol UI, script sistem lokal (`localhost`), atau cron eksternal dengan header `x-cron-secret`.
     - **CLI / Linux Crontab Runner (`scripts/poll-devices.js` & `npm run poll:devices`)**: Script mandiri untuk dieksekusi berkala via Linux system crontab (`*/5 * * * * curl -s -X POST http://localhost:3000/api/network/switches/poll > /dev/null 2>&1` atau `npm run poll:devices`).
     - **UI Toolbar & Filter (`/switches`)**: Dilengkapi KPI breakdown (Online, Offline SNMP, Offline Ping), badge indikator `Auto-Check 5m Aktif`, filter dropdown status spesifik, tombol `Scan Status Semua` reaktif, dan auto-fetch interval 5 menit.
-- **Halaman Pemetaan Topologi Jaringan & Sinkronisasi Switch (`/topology`)**:
+- **Halaman Pemetaan Topologi Jaringan & Deteksi Otomatis (`/topology`)**:
+  - **⚡ Engine Deteksi Otomatis Bentuk Topologi (`src/lib/topologyAutoDetect.ts` & `/api/network/topology/auto-detect`)**:
+    - **One-Click Auto-Discovery**: Tombol *⚡ Deteksi Bentuk* pada toolbar kanvas yang menganalisis seluruh perangkat aktif di database, mengklasifikasikan perannya ke dalam arsitektur hierarkis 3-Tier/4-Tier rumah sakit (Tier 1: Core Router/Firewall -> Tier 2: Core Switch -> Tier 3: Access Switch -> Tier 4: Endpoints).
+    - **Auto-Wiring Jalur Kabel Cerdas**: Otomatis mendeteksi dan menghubungkan kabel fiber optik 10G antar Core Router dan Core Switch, VLAN Trunk 802.1Q antar switch, dan PoE ke perangkat edge menggunakan port fisik riil (`sfp-sfpplus1`, `Gi0/24`, `gigabitEthernet 1/0/28`).
+    - **Zero Overlap Tree Layout**: Menata koordinat X & Y secara simetris, rapi, dan seimbang tanpa saling menimpa.
   - **Tata Letak Anti-Tumpang Tindih (Zero Overlap Canvas)**:
     - Toolbar kanvas menggunakan tata letak adaptif `min-h-14 py-2 px-4 flex flex-wrap xl:flex-nowrap items-center justify-between gap-3`.
     - Title block perangkat diisolasi dengan `shrink-0 min-w-[200px]`, filter tipe perangkat berkemampuan horizontal scroll / wrap responsif, serta tombol aksi yang tertata rapi di kanan tanpa menimpa judul atau kanvas.
@@ -98,7 +105,7 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - **Modal Diffing Interaktif (`SwitchSyncModal.tsx`)**: Menampilkan perbandingan status switch (Baru, Perlu Update, Tersinkron) berdasarkan data SNMP di tabel `SwitchDevice`, lengkap dengan opsi proteksi kabel koneksi (*Preserve Existing Edges*).
   - **API Engine (`/api/network/topology/sync-switches`)**: Melakukan mapping port fisik riil (`SwitchPortInfo`), status OperStatus `up`/`down`, PVID, serta konfigurasi tagged/untagged VLAN ke node topologi tanpa memutuskan kabel yang sudah ada.
   - **Node Switch & Telemetry SNMP**: Menampilkan chip badge `SNMP SYNC`, status port riil (e.g. `18 UP / 24 Port`), counter VLAN aktif, serta drawer detail multi-tab (*Ringkasan & Kabel*, *Port Matrix SNMP*, dan *VLAN Discovered*) dengan tautan langsung ke halaman `/switches`.
-  - **Kabel Interaktif & Legend**: Menampilkan 4 tipe kabel berstandar rumah sakit (Fiber Optic 10G, UTP Cat6 Gigabit 1G, PoE NVR CCTV/AP, VLAN Trunk 802.1Q) lengkap dengan tooltip port dan penghapusan kabel interaktif.
+  - **Kabel Interaktif & Legend**: Menampilkan 4 tipe kabel berstandar rumah sakit (Fiber Optic 10G, UTP Cat6 Gigabit 1G, PoE NVR CCTV/AP, VLAN Trunk 802.1Q) lengkap dengan tooltip port dan penghapusan kabel interaktif.usan kabel interaktif.
 
 ### 5. Keamanan, Validasi & Best Practices
 - **Middleware**: Middleware di `src/middleware.ts` melindungi semua rute kecuali `/login`, `/api` (beberapa API endpoint melakukan pengecekan session secara internal), dan file statis.

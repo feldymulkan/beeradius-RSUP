@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FaSortUp, FaSortDown, FaSort } from "react-icons/fa";
@@ -22,6 +22,7 @@ type DataTableProps<T> = {
   totalItems?: number;
   onSelectionChange?: (selectedIds: any[]) => void;
   idKey?: keyof T;
+  isLoading?: boolean;
 };
 
 export default function DataTable<T extends { [key: string]: any }>({
@@ -33,11 +34,13 @@ export default function DataTable<T extends { [key: string]: any }>({
   totalItems,
   onSelectionChange,
   idKey = "id" as keyof T,
+  isLoading = false,
 }: DataTableProps<T>) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedIds, setSelectedIds] = useState<any[]>([]);
+  const [isPending, startTransition] = useTransition();
 
   const currentSort = searchParams.get("sort") || "";
   const currentOrder = searchParams.get("order") || "asc";
@@ -70,7 +73,9 @@ export default function DataTable<T extends { [key: string]: any }>({
     const params = new URLSearchParams(searchParams.toString());
     params.set("pageSize", newSize);
     params.set("page", "1");
-    router.push(`${pathname}?${params.toString()}`);
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
   };
 
   const createSortURL = (sortKey: string) => {
@@ -124,88 +129,104 @@ export default function DataTable<T extends { [key: string]: any }>({
     return pages;
   };
 
+  const showLoading = Boolean(isLoading || isPending);
+
   return (
-    <div className="overflow-x-auto">
-      <table className="table w-full">
-        <thead>
-          <tr>
-            {onSelectionChange && (
-              <th className="w-12 text-center">
-                <input
-                  type="checkbox"
-                  className="checkbox checkbox-primary checkbox-sm"
-                  checked={data.length > 0 && selectedIds.length === data.length}
-                  onChange={(e) => toggleSelectAll(e.target.checked)}
-                />
-              </th>
-            )}
-            <th className="w-12">#</th>
-            {columns.map((column, idx) => (
-              <th key={idx} className={column.className}>
-                {column.sortKey ? (
-                  <Link
-                    href={createSortURL(column.sortKey)}
-                    className="cursor-pointer select-none hover:text-primary transition-colors inline-flex items-center gap-0.5"
-                    prefetch={false}
-                  >
-                    {column.header}
-                    {getSortIcon(column.sortKey)}
-                  </Link>
-                ) : (
-                  column.header
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.length === 0 ? (
+    <div className="relative">
+      {/* Loading Progress Bar di atas tabel */}
+      {showLoading && (
+        <div className="absolute inset-x-0 -top-1 z-20 overflow-hidden rounded-t-md">
+          <div className="h-1 w-full bg-primary/20">
+            <div className="h-full bg-primary animate-pulse w-full"></div>
+          </div>
+        </div>
+      )}
+
+      <div className={`overflow-x-auto transition-opacity duration-200 ${showLoading ? "opacity-60 pointer-events-none" : "opacity-100"}`}>
+        <table className="table w-full">
+          <thead>
             <tr>
-              <td colSpan={columns.length + (onSelectionChange ? 2 : 1)} className="text-center py-10 opacity-50 italic">
-                Tidak ada data ditemukan.
-              </td>
-            </tr>
-          ) : (
-            data.map((item, index) => {
-              const rowNumber = (page - 1) * pageSize + index + 1;
-              const itemId = item[idKey];
-              return (
-                <tr key={itemId} className="hover">
-                  {onSelectionChange && (
-                    <td className="text-center">
-                      <input
-                        type="checkbox"
-                        className="checkbox checkbox-primary checkbox-sm"
-                        checked={selectedIds.includes(itemId)}
-                        onChange={() => toggleSelect(itemId)}
-                      />
-                    </td>
-                  )}
-                  <td className="opacity-50 text-xs">{rowNumber}</td>
-                  {columns.map((column, idx) => (
-                    <td
-                      key={idx}
-                      className={column.className}
+              {onSelectionChange && (
+                <th className="w-12 text-center">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-primary checkbox-sm"
+                    checked={data.length > 0 && selectedIds.length === data.length}
+                    onChange={(e) => toggleSelectAll(e.target.checked)}
+                    disabled={showLoading}
+                  />
+                </th>
+              )}
+              <th className="w-12">#</th>
+              {columns.map((column, idx) => (
+                <th key={idx} className={column.className}>
+                  {column.sortKey ? (
+                    <Link
+                      href={createSortURL(column.sortKey)}
+                      className="cursor-pointer select-none hover:text-primary transition-colors inline-flex items-center gap-0.5"
+                      prefetch={false}
                     >
-                      {column.cell
-                        ? column.cell(item)
-                        : (item[column.accessorKey as keyof T] as React.ReactNode)}
-                    </td>
-                  ))}
-                </tr>
-              );
-            })
-          )}
-        </tbody>
-      </table>
+                      {column.header}
+                      {getSortIcon(column.sortKey)}
+                    </Link>
+                  ) : (
+                    column.header
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.length === 0 ? (
+              <tr>
+                <td colSpan={columns.length + (onSelectionChange ? 2 : 1)} className="text-center py-10 opacity-50 italic">
+                  Tidak ada data ditemukan.
+                </td>
+              </tr>
+            ) : (
+              data.map((item, index) => {
+                const rowNumber = (page - 1) * pageSize + index + 1;
+                const itemId = item[idKey];
+                return (
+                  <tr key={itemId} className="hover">
+                    {onSelectionChange && (
+                      <td className="text-center">
+                        <input
+                          type="checkbox"
+                          className="checkbox checkbox-primary checkbox-sm"
+                          checked={selectedIds.includes(itemId)}
+                          onChange={() => toggleSelect(itemId)}
+                          disabled={showLoading}
+                        />
+                      </td>
+                    )}
+                    <td className="opacity-50 text-xs">{rowNumber}</td>
+                    {columns.map((column, idx) => (
+                      <td
+                        key={idx}
+                        className={column.className}
+                      >
+                        {column.cell
+                          ? column.cell(item)
+                          : (item[column.accessorKey as keyof T] as React.ReactNode)}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
 
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 mt-6 px-2">
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold uppercase text-gray-400">Tampilkan</span>
           <select 
-            className="select select-bordered select-xs"
+            className={`select select-bordered select-xs ${showLoading ? "opacity-70 cursor-wait" : ""}`}
             value={pageSize}
             onChange={(e) => handlePageSizeChange(e.target.value)}
+            disabled={showLoading}
           >
             <option value="10">10</option>
             <option value="20">20</option>

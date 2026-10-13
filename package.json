@@ -25,6 +25,7 @@
     "net-snmp": "^3.29.1",
     "next": "15.5.2",
     "next-auth": "^4.24.11",
+    "nextjs-toploader": "^3.9.17",
     "qrcode.react": "^4.2.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
