@@ -400,7 +400,7 @@ export default function DeviceDetailsDrawer({
               </span>
               {device.ip && (
                 <Link
-                  href={`/switches?q=${encodeURIComponent(device.ip)}`}
+                  href={`/devices?q=${encodeURIComponent(device.ip)}`}
                   target="_blank"
                   className="text-primary hover:underline text-[11px] flex items-center gap-1 font-sans font-medium"
                 >
@@ -469,7 +469,7 @@ export default function DeviceDetailsDrawer({
         <div className="flex items-center gap-1.5">
           {device.ip && (
             <Link
-              href={`/switches?q=${encodeURIComponent(device.ip)}`}
+              href={`/devices?q=${encodeURIComponent(device.ip)}`}
               target="_blank"
               className="btn btn-xs btn-outline text-base-content/80 hover:text-base-content gap-1"
               title="Buka halaman Perangkat Jaringan"

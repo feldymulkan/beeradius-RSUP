@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { logAudit } from '@/lib/audit';
+import { getRuijieWifiList } from "@/lib/ruijie";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -12,72 +13,80 @@ export async function GET(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url);
-    const q = searchParams.get("q") || "";
+    const q = (searchParams.get("q") || "").toLowerCase().trim();
+    const parentGroup = searchParams.get("parentGroup") || "";
+    const subGroup = searchParams.get("subGroup") || "";
+    const groupId = searchParams.get("groupId");
+    const forceRefresh = searchParams.get("refresh") === "true";
     const page = parseInt(searchParams.get("page") || "1", 10);
     const pageSize = parseInt(searchParams.get("pageSize") || "10", 10);
 
-    const where: any = {};
-    if (q) {
-      where.ssid = {
-        contains: q,
-      };
+    const { wifiList, hierarchy } = await getRuijieWifiList(forceRefresh);
+
+    let filtered = wifiList;
+
+    // Filter Group Utama (Parent Group)
+    if (parentGroup && parentGroup !== "ALL") {
+      filtered = filtered.filter((item) => item.parentGroupName === parentGroup);
     }
 
-    const totalItems = await prisma.wifi.count({ where });
-    const totalPages = Math.ceil(totalItems / pageSize);
+    // Filter Sub Group
+    if (subGroup && subGroup !== "ALL") {
+      filtered = filtered.filter(
+        (item) => item.isSubGroup && item.groupName.toLowerCase() === subGroup.toLowerCase()
+      );
+    }
 
-    const wifiList = await prisma.wifi.findMany({
-      where,
-      orderBy: { ssid: "asc" },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-    });
+    // Filter Specific Group ID
+    if (groupId) {
+      const gId = parseInt(groupId, 10);
+      filtered = filtered.filter((item) => item.groupId === gId);
+    }
+
+    // Filter Pencarian Keyword (q)
+    if (q) {
+      filtered = filtered.filter((item) => {
+        const matchSsid = item.ssidName?.toLowerCase().includes(q);
+        const matchSubGroup = item.groupName?.toLowerCase().includes(q);
+        const matchParent = item.parentGroupName?.toLowerCase().includes(q);
+        const matchPath = item.path?.toLowerCase().includes(q);
+        const matchVlan = String(item.vlanId || "").includes(q);
+        const matchSecurity = (item.encryptionModeDesc || item.encryptionMode || "")
+          .toLowerCase()
+          .includes(q);
+        return matchSsid || matchSubGroup || matchParent || matchPath || matchVlan || matchSecurity;
+      });
+    }
+
+    const groupStats: Record<string, number> = {};
+    for (const item of wifiList) {
+      if (item.parentGroupName) {
+        groupStats[item.parentGroupName] = (groupStats[item.parentGroupName] || 0) + 1;
+      }
+    }
+
+    const totalItems = filtered.length;
+    const totalPages = Math.ceil(totalItems / pageSize) || 1;
+    const startIndex = (page - 1) * pageSize;
+    const paginatedData = filtered.slice(startIndex, startIndex + pageSize);
 
     return NextResponse.json({
-      data: wifiList,
+      data: paginatedData,
+      hierarchy,
+      groupStats,
+      totalAll: wifiList.length,
       pagination: {
         page,
         pageSize,
         totalItems,
         totalPages,
-      }
-    });
-  } catch (error: any) {
-    return NextResponse.json({ message: "Gagal mengambil daftar wifi", error: error.message }, { status: 500 });
-  }
-}
-
-export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session || (session.user as any).role !== "superadmin") {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
-  try {
-    const { ssid, password } = await req.json();
-
-    if (!ssid || !password) {
-      return NextResponse.json({ message: "SSID dan Password harus diisi" }, { status: 400 });
-    }
-
-    const existingWifi = await prisma.wifi.findUnique({
-      where: { ssid },
-    });
-
-    if (existingWifi) {
-      return NextResponse.json({ message: "SSID sudah terdaftar" }, { status: 400 });
-    }
-
-    const newWifi = await prisma.wifi.create({
-      data: {
-        ssid,
-        password,
       },
+      source: "ruijie_cloud",
     });
-
-    await logAudit('CREATE_WIFI', 'wifi', ssid, { id: newWifi.id });
-    return NextResponse.json({ message: "Wifi berhasil ditambahkan", id: newWifi.id }, { status: 201 });
   } catch (error: any) {
-    return NextResponse.json({ message: "Gagal menambahkan wifi", error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Gagal mengambil data WiFi dari Ruijie Cloud", error: error.message },
+      { status: 500 }
+    );
   }
 }

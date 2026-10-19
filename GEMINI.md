@@ -13,7 +13,7 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - `RadiusPool`: Konfigurasi IP Pool untuk manajemen alokasi IP.
   - `MikrotikConfig`: Konfigurasi koneksi router MikroTik.
   - `WireguardPeer`: Konfigurasi peer WireGuard untuk koneksi VPN WireGuard.
-  - `Wifi`: Daftar SSID dan password wifi internal RSUD NTB.
+  - `Wifi`: Integrasi langsung dengan Ruijie Cloud Northbound RESTful API (`src/lib/ruijie.ts`) untuk sinkronisasi live SSID, password, VLAN, dan profil keamanan nirkabel RSUD NTB.
   - `SwitchDevice`: Data perangkat switch managed (IP, brand, model, SNMP community, port, VLAN & port configuration JSON).
 - **Autentikasi**: NextAuth.js v4 dengan `CredentialsProvider`. Mendukung Role-Based Access Control (RBAC) dengan role `superadmin` dan `admin`.
 - **UI & Styling**: Tailwind CSS dan DaisyUI (dengan tema ganda Dark & Light mode).
@@ -57,10 +57,18 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
     - **Unified Footer Bar**: Tombol *Batalkan* dan tombol *Simpan & Aktifkan User* berstatus loading reaktif dengan glowing shadow.
   - Kompatibel penuh dengan tema ganda: Gelap (`beeradius`) dan Terang (`beeradius-light`) menggunakan token semantik `text-base-content`, `border-base-300`, dan `bg-base-100`.
 - **Halaman Laporan & Statistik (`/reports`)**:
-  - Mengadopsi prinsip desain **Telemetry Dark Glass** (`#131b2e` border `primary/10`, aksen cyan `#38bdf8`) dengan tata letak **Single-Row Unified Navigation Bar** untuk beralih antar tab (Ringkasan, Penggunaan Data, Distribusi Grup, Aktivitas Login, Sistem & NAS) tanpa *stacked clutter*.
+  - Mengadopsi prinsip desain **Telemetry Dark Glass** (`#131b2e` border `primary/10`, aksen cyan `#38bdf8`) dengan tata letak **Single-Row Unified Navigation Bar** untuk beralih antar tab (Ringkasan, Penggunaan Data, Distribusi Grup, Aktivitas Login, Sistem & NAS, dan **Wi-Fi Ruijie Cloud**) tanpa *stacked clutter*.
   - **KPI Metric Cards**: 4 kartu berjejer horizontal (Total Download, Total Upload, User Aktif Harian, Auth Rejects) dengan angka metrik tebal berfont monospace (`font-mono`) serta border aksen warna fungsional (*cyan, emerald, amber, rose*).
   - **Interactive Telemetry Charts**: Menggunakan Recharts dengan tema gelap, *dual-gradient glowing fill*, tooltip *dark glass* kustom, serta pemilih rentang waktu mikro (*24j | 7h | 30h | 1t*) yang diletakkan secara *inline* pada header kartu.
   - **Telemetry Mini-Insights**: Visualisasi terpadu untuk proporsi tipe pengguna (Hotspot vs VPN), kesehatan gateway & NAS, serta kalkulasi rasio throughput (Rx/Tx).
+  - **Menu Terpisah Telemetri Wi-Fi Ruijie Cloud (`activeTab === 'ruijie_wifi'`)**:
+    - Menu independen terpisah dari FreeRADIUS standar untuk memantau infrastruktur nirkabel Ruijie RSUD NTB secara live.
+    - **KPI Metrics Wi-Fi**: Total Klien Wi-Fi Aktif (~3.900+ klien real-time), Akumulasi Trafik Wi-Fi (Rx/Tx), Status Kesehatan Access Point (**294/304 AP Online**, 10 Offline + 6 Home Router), dan Rasio Spektrum Frekuensi Radio (5 GHz vs 2.4 GHz).
+    - **Algoritma Auto-Pagination Northbound API**: Mengatasi batas 100 item/halaman Ruijie Cloud via perulangan paginasi dinamis (`page = 1, 2, ...`), memastikan seluruh 206 AP di proyek `RSUD-NTB-UTAMA` ditarik tuntas tanpa terpotong.
+    - **Pemisahan Kategori Perangkat Nirkabel**: Membedakan Access Point murni (304 unit: 294 online, 10 offline) dan Home Router Wi-Fi Reyee EW Series (6 unit: 6 online di Poli Anak, IBS, RM, TB DOTS, Diklat Onkologi, dan Lab).
+    - **Grafik Analitik 4-Grid Recharts**: (1) Kepadatan Klien per Gedung/Proyek, (2) Top 8 SSID Paling Padat Klien, (3) Proporsi Spektrum Radio Donut Chart (5G Cyan vs 2.4G Amber), dan (4) Top 6 Access Point Paling Padat Pengguna (AP Load).
+    - **Tabel Klien Wi-Fi Real-time**: Menampilkan daftar klien terhubung (Hostname/Model, MAC, IP, SSID, Lokasi AP & Gedung, Band 5G/2.4G, Sinyal RSSI dBm, Volume Unduh/Unggah/Total, dan Durasi Aktif) dilengkapi filter dropdown proyek gedung, pencarian instan, dan paginasi data.
+    - **Integrasi API (`/api/reports/ruijie-wifi`)**: Mengonsumsi `getRuijieWifiReport` di [src/lib/ruijie.ts](file:///d:/projek/beeradius-RSUP/src/lib/ruijie.ts) dengan in-memory cache 2 menit dan dukungan tombol reaktif *Sinkronkan Live Ruijie*.
 - **Sistem Tema Dark & Light Mode (Release v1.0.0 Standard)**:
   - Menggunakan DaisyUI v5 dengan tema `beeradius` (*Telemetry Dark Glass*) dan `beeradius-light` (*Clinical NOC Precision*).
   - **Aturan Kontras Ketat**: DILARANG menggunakan `text-white`, `text-slate-100`, `text-slate-200`, atau `text-slate-300` secara telanjang pada judul halaman, tabel, atau kartu umum, karena teks tersebut menjadi tidak terlihat (*invisible*) pada tema terang (`beeradius-light`).
@@ -69,29 +77,33 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - Preferensi disimpan di `localStorage` melalui [ThemeProvider.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/ThemeProvider.tsx).
   - Komponen [ThemeToggle.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/ThemeToggle.tsx) diletakkan di Navbar kanan atas dan bagian bawah Sidebar.
   - Script inline `ThemeLoaderScript` di [layout.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/app/layout.tsx) mencegah *flash of unstyled content* (FOUC) saat halaman dimuat ulang.
-- **Halaman Manajemen Switch & Perangkat Jaringan (`/switches`)**:
-  - Mendukung **Multi-Perangkat**: `switch`, `router`, `nvr`, `cctv`, `ap`, `server`, dan `firewall`.
-  - Mendukung **Multi-Metode Koneksi**: `snmp` (v1/v2c/v3), `ping` (ICMP Keepalive), `api` (REST / MikroTik API), dan `manual`.
-  - Deteksi otomatis brand & model perangkat (Ruijie Networks, ZTE, TP-Link, Cisco Systems, Huawei, MikroTik) berdasarkan `sysObjectID` (Enterprise PEN) dan regex `sy    - Pemindaian VLAN dan keanggotaan port (*Access / Untagged* vs *Trunk / Tagged*) mendukung:
-    - **Standar RFC 2674 (Q-BRIDGE-MIB)** via algoritma dekode bitmask port (`decodePortBitmap` di [snmp.ts](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/lib/snmp.ts)).
+- **Halaman Manajemen Perangkat Jaringan (`/devices` & Redirect dari `/switches`)**:
+  - Menggantikan endpoint `/switches` menjadi `/devices` untuk menampung seluruh infrastruktur multi-perangkat (switch, router, access point, NVR CCTV, server, dan firewall). Endpoint `/switches` otomatis melakukan redirect ke `/devices`.
+  - Mendukung **Multi-Metode Koneksi**: `snmp` (v1/v2c/v3), `cloud` (Ruijie Cloud Northbound REST API), `ping` (ICMP Keepalive), `api` (REST / MikroTik API), dan `manual`.
+  - **Integrasi Ruijie Cloud Northbound API**: Menarik dan menyinkronkan seluruh Access Point (~304 AP) dan Home Router (6 unit Reyee EW1200G-PRO) dari Ruijie Cloud ke database lokal BeeRadius secara otomatis (via tombol toolbar `☁️ Sinkron Ruijie Cloud` dan endpoint `POST /api/network/devices/sync-ruijie`). Perangkat cloud ditandai dengan badge khusus `Ruijie Cloud` dan status online/offline live.
+  - **Pencegahan Duplikasi & Unique Constraint IP**: Menggunakan fallback IP lokal riil, CPE IP, atau serial number (`ruijie-${dev.serialNumber}`) untuk perangkat cloud tanpa IP LAN terdeteksi guna menjamin integritas *unique constraint* tabel `SwitchDevice`.
+  - Deteksi otomatis brand & model perangkat (Ruijie Networks, ZTE, TP-Link, Cisco Systems, Huawei, MikroTik) berdasarkan `sysObjectID` (Enterprise PEN) dan regex `sysDescr`.
+  - Pemindaian VLAN dan keanggotaan port (*Access / Untagged* vs *Trunk / Tagged*) mendukung:
+    - **Standar RFC 2674 (Q-BRIDGE-MIB)** via algoritma dekode bitmask port (`decodePortBitmap` di [snmp.ts](file:///d:/projek/beeradius-RSUP/src/lib/snmp.ts)).
     - **TP-Link JetStream Private MIB (`TPLINK-DOT1Q-VLAN-MIB` OID `1.3.6.1.4.1.11863.6.14.1.2.1.1`)** dengan normalisasi nomor port fisik dan parsing range port (`1/0/1-12`).
     - **Cisco Catalyst VTP & VMPS MIB (`CISCO-VTP-MIB` & `CISCO-VLAN-MEMBERSHIP-MIB`)**.
   - **Deteksi Cerdas Perangkat Jaringan (Router vs Switch vs AP vs NVR)**:
     - Mendeteksi Router MikroTik (Cloud Core Router CCR1009/CCR1036/CCR2004, RouterBOARD RB750/RB1100/RB4011/RB5009, hEX, hAP, CHR) secara otomatis sebagai tipe `router`, memisahkannya dari switch MikroTik (CRS/CSS).
-    - Auto-inference tipe perangkat pada API `/api/network/switches`, modal probe, background worker `devicePolling.ts`, dan sinkronisasi topologi.
-    - Modal Add/Edit Switch dan Uji Cepat Probe SNMP dilengkapi input USM Username, Security Level, serta toggle reveal/hide password Auth & Privacy.
+    - Auto-inference tipe perangkat pada API `/api/network/devices`, modal probe, background worker `devicePolling.ts`, dan sinkronisasi topologi.
+    - Modal Add/Edit Device dan Uji Cepat Probe SNMP dilengkapi input USM Username, Security Level, serta toggle reveal/hide password Auth & Privacy.
     - Terintegrasi langsung dengan background status poller 5 menit (`src/lib/devicePolling.ts`), API Route Handlers, dan tabel MySQL `SwitchDevice`.
   - **Sistem Pemantauan Status Otomatis 5 Menit (Device Status Poller)**:
     - **Engine Core (`src/lib/devicePolling.ts`)**: Memeriksa status setiap perangkat terdaftar di tabel `SwitchDevice` secara konkuren (SNMP probe dengan fallback ICMP ping aman cross-platform).
+    - **Penanganan Khusus Perangkat Cloud (`connMethod === 'cloud'`)**: Memeriksa IP lokal AP via ping jika reachable; jika timeout (karena isolasi subnet/VLAN berbeda), status live tetap dipertahankan dari Ruijie Cloud tanpa menghasilkan error SNMP timeout palsu (*false-positive*).
     - **Diferensiasi Status Jaringan (3 Status Presisi)**:
       - 🟢 **`online`**: SNMP & ICMP Ping berfungsi normal (perangkat UP, telemetri port & VLAN dapat ditarik).
       - 🟡 **`snmp_offline`**: ICMP Ping hidup (Host UP / kabel & power normal), TETAPI agen SNMP tidak merespon / timeout / community string salah / port 161 terblokir. Pada peta topologi ditandai amber (`warning`).
       - 🔴 **`offline`**: Host Unreachable (ICMP Ping & SNMP keduanya mati total / perangkat mati atau link putus). Pada peta topologi ditandai merah (`offline`).
     - **Next.js Background Worker (`src/instrumentation.ts`)**: Terintegrasi via Next.js 15 `register()` hook untuk menjalankan background daemon timer setiap 5 menit (300.000 ms) begitu runtime Node.js aktif tanpa dependensi cron eksternal.
-    - **Sinkronisasi Topologi Otomatis**: Setiap perubahan status online / snmp_offline / offline pada switch langsung disinkronkan ke node peta topologi aktif (`NetworkTopology`) serta melakukan invalidasi cache Next.js (`/switches` & `/topology`).
-    - **API Endpoint (`/api/network/switches/poll`)**: Mendukung pemanggilan manual dari tombol UI, script sistem lokal (`localhost`), atau cron eksternal dengan header `x-cron-secret`.
-    - **CLI / Linux Crontab Runner (`scripts/poll-devices.js` & `npm run poll:devices`)**: Script mandiri untuk dieksekusi berkala via Linux system crontab (`*/5 * * * * curl -s -X POST http://localhost:3000/api/network/switches/poll > /dev/null 2>&1` atau `npm run poll:devices`).
-    - **UI Toolbar & Filter (`/switches`)**: Dilengkapi KPI breakdown (Online, Offline SNMP, Offline Ping), badge indikator `Auto-Check 5m Aktif`, filter dropdown status spesifik, tombol `Scan Status Semua` reaktif, dan auto-fetch interval 5 menit.
+    - **Sinkronisasi Topologi Otomatis**: Setiap perubahan status online / snmp_offline / offline pada switch langsung disinkronkan ke node peta topologi aktif (`NetworkTopology`) serta melakukan invalidasi cache Next.js (`/devices`, `/switches` & `/topology`).
+    - **API Endpoint (`/api/network/devices/poll` & `/api/network/switches/poll`)**: Mendukung pemanggilan manual dari tombol UI, script sistem lokal (`localhost`), atau cron eksternal dengan header `x-cron-secret`.
+    - **CLI / Linux Crontab Runner (`scripts/poll-devices.js` & `npm run poll:devices`)**: Script mandiri untuk dieksekusi berkala via Linux system crontab (`*/5 * * * * curl -s -X POST http://localhost:3000/api/network/devices/poll > /dev/null 2>&1` atau `npm run poll:devices`).
+    - **UI Toolbar & Filter (`/devices`)**: Dilengkapi KPI breakdown (Total, Online, Offline SNMP, Offline Host, Wi-Fi AP, Port Up), badge indikator `Auto-Check 5m Aktif`, filter dropdown metode koneksi & status spesifik, tombol `Scan Status Semua` reaktif, dan auto-fetch interval 5 menit.
 - **Halaman Pemetaan Topologi Jaringan & Deteksi Otomatis (`/topology`)**:
   - **⚡ Engine Deteksi Otomatis Bentuk Topologi (`src/lib/topologyAutoDetect.ts` & `/api/network/topology/auto-detect`)**:
     - **One-Click Auto-Discovery**: Tombol *⚡ Deteksi Bentuk* pada toolbar kanvas yang menganalisis seluruh perangkat aktif di database, mengklasifikasikan perannya ke dalam arsitektur hierarkis 3-Tier/4-Tier rumah sakit (Tier 1: Core Router/Firewall -> Tier 2: Core Switch -> Tier 3: Access Switch -> Tier 4: Endpoints).
@@ -104,8 +116,8 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - **Sinkronisasi Langsung dengan Perangkat Jaringan**: Dilengkapi tombol toolbar reaktif `🔄 Sinkron Perangkat` dengan badge notifikasi jumlah perangkat baru/berubah.
   - **Modal Diffing Interaktif (`SwitchSyncModal.tsx`)**: Menampilkan perbandingan status switch (Baru, Perlu Update, Tersinkron) berdasarkan data SNMP di tabel `SwitchDevice`, lengkap dengan opsi proteksi kabel koneksi (*Preserve Existing Edges*).
   - **API Engine (`/api/network/topology/sync-switches`)**: Melakukan mapping port fisik riil (`SwitchPortInfo`), status OperStatus `up`/`down`, PVID, serta konfigurasi tagged/untagged VLAN ke node topologi tanpa memutuskan kabel yang sudah ada.
-  - **Node Switch & Telemetry SNMP**: Menampilkan chip badge `SNMP SYNC`, status port riil (e.g. `18 UP / 24 Port`), counter VLAN aktif, serta drawer detail multi-tab (*Ringkasan & Kabel*, *Port Matrix SNMP*, dan *VLAN Discovered*) dengan tautan langsung ke halaman `/switches`.
-  - **Kabel Interaktif & Legend**: Menampilkan 4 tipe kabel berstandar rumah sakit (Fiber Optic 10G, UTP Cat6 Gigabit 1G, PoE NVR CCTV/AP, VLAN Trunk 802.1Q) lengkap dengan tooltip port dan penghapusan kabel interaktif.usan kabel interaktif.
+  - **Node Switch & Telemetry SNMP**: Menampilkan chip badge `SNMP SYNC`, status port riil (e.g. `18 UP / 24 Port`), counter VLAN aktif, serta drawer detail multi-tab (*Ringkasan & Kabel*, *Port Matrix SNMP*, dan *VLAN Discovered*) dengan tautan langsung ke halaman `/devices`.
+  - **Kabel Interaktif & Legend**: Menampilkan 4 tipe kabel berstandar rumah sakit (Fiber Optic 10G, UTP Cat6 Gigabit 1G, PoE NVR CCTV/AP, VLAN Trunk 802.1Q) lengkap dengan tooltip port dan penghapusan kabel interaktif.
 
 ### 5. Keamanan, Validasi & Best Practices
 - **Middleware**: Middleware di `src/middleware.ts` melindungi semua rute kecuali `/login`, `/api` (beberapa API endpoint melakukan pengecekan session secara internal), dan file statis.

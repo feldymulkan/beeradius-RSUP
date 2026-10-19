@@ -19,6 +19,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const summary = await pollAllDevices();
+    revalidatePath("/devices");
     revalidatePath("/switches");
     revalidatePath("/topology");
     return NextResponse.json({

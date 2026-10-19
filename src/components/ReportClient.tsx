@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import {
   BarChart,
   Bar,
@@ -36,6 +36,9 @@ import {
   FaWifi,
   FaNetworkWired,
   FaCrown,
+  FaBroadcastTower,
+  FaSignal,
+  FaSyncAlt,
 } from "react-icons/fa";
 
 type ReportClientProps = {
@@ -169,6 +172,31 @@ const CustomPieTooltip = ({ active, payload }: any) => {
   return null;
 };
 
+const CustomRuijieTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#0f172a]/95 backdrop-blur-xl border border-primary/20 rounded-xl p-3 shadow-2xl text-xs font-mono">
+        <p className="font-semibold text-slate-200 mb-2 pb-1 border-b border-white/10 flex items-center justify-between gap-4">
+          <span className="text-[10px] uppercase text-slate-400">Lokasi / Kategori</span>
+          <span className="text-cyan-400">{label || payload[0]?.name}</span>
+        </p>
+        {payload.map((entry: any, index: number) => (
+          <div key={`entry-${index}`} className="flex items-center justify-between gap-6 py-0.5">
+            <span className="flex items-center gap-1.5 text-slate-300">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+              {entry.name}:
+            </span>
+            <span className="font-bold text-white">
+              {entry.value?.toLocaleString()} {entry.unit || ""}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
+
 export default function ReportClient({
   usageData: initialUsageData,
   loginData,
@@ -198,9 +226,43 @@ export default function ReportClient({
   const [loadingUser, setLoadingUser] = useState(false);
   const [loadingTop, setLoadingTop] = useState(false);
 
+  // Ruijie Wi-Fi Telemetry states
+  const [ruijieReport, setRuijieReport] = useState<any>(null);
+  const [loadingRuijie, setLoadingRuijie] = useState(false);
+  const [ruijieError, setRuijieError] = useState<string | null>(null);
+  const [ruijieProjectFilter, setRuijieProjectFilter] = useState("ALL");
+  const [ruijieSearch, setRuijieSearch] = useState("");
+  const [ruijiePage, setRuijiePage] = useState(1);
+  const [ruijiePageSize, setRuijiePageSize] = useState(10);
+
+  const fetchRuijieData = useCallback(async (forceRefresh = false) => {
+    setLoadingRuijie(true);
+    setRuijieError(null);
+    try {
+      const url = forceRefresh ? "/api/reports/ruijie-wifi?refresh=true" : "/api/reports/ruijie-wifi";
+      const res = await fetch(url);
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Gagal memuat telemetri Wi-Fi Ruijie");
+      }
+      const data = await res.json();
+      setRuijieReport(data);
+    } catch (err: any) {
+      setRuijieError(err.message || "Terjadi kesalahan saat memuat data Wi-Fi Ruijie");
+    } finally {
+      setLoadingRuijie(false);
+    }
+  }, []);
+
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "ruijie_wifi" && !ruijieReport && !loadingRuijie) {
+      fetchRuijieData();
+    }
+  }, [activeTab, ruijieReport, loadingRuijie, fetchRuijieData]);
 
   // Fetching logic for Bandwidth Chart
   useEffect(() => {
@@ -371,12 +433,164 @@ export default function ReportClient({
     },
   ];
 
+  const filteredRuijieClients = useMemo(() => {
+    let list = ruijieReport?.clients || [];
+    if (ruijieProjectFilter && ruijieProjectFilter !== "ALL") {
+      list = list.filter((c: any) => c.parentGroupName === ruijieProjectFilter);
+    }
+    if (ruijieSearch) {
+      const q = ruijieSearch.toLowerCase().trim();
+      list = list.filter(
+        (c: any) =>
+          c.mac?.toLowerCase().includes(q) ||
+          c.ip?.toLowerCase().includes(q) ||
+          c.userName?.toLowerCase().includes(q) ||
+          c.deviceName?.toLowerCase().includes(q) ||
+          c.ssid?.toLowerCase().includes(q) ||
+          c.groupName?.toLowerCase().includes(q) ||
+          c.parentGroupName?.toLowerCase().includes(q) ||
+          c.staModel?.toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [ruijieReport, ruijieProjectFilter, ruijieSearch]);
+
+  const ruijieTotalPages = Math.ceil(filteredRuijieClients.length / ruijiePageSize) || 1;
+  const paginatedRuijieClients = useMemo(() => {
+    const start = (ruijiePage - 1) * ruijiePageSize;
+    return filteredRuijieClients.slice(start, start + ruijiePageSize);
+  }, [filteredRuijieClients, ruijiePage, ruijiePageSize]);
+
+  const bandPieData = useMemo(() => {
+    if (!ruijieReport?.summary?.bandStats) return [];
+    return [
+      { name: "5 GHz (High Speed)", value: ruijieReport.summary.bandStats.count5G || 0, color: "#38bdf8" },
+      { name: "2.4 GHz (Long Range)", value: ruijieReport.summary.bandStats.count24G || 0, color: "#f59e0b" },
+    ];
+  }, [ruijieReport]);
+
+  const ruijieClientColumns: ColumnDef<any>[] = [
+    {
+      header: "KLIEN & PERANGKAT",
+      accessorKey: "userName",
+      className: "min-w-[200px]",
+      cell: (c) => (
+        <div className="flex flex-col gap-0.5">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="font-bold text-base-content text-xs">
+              {c.userName || c.staModel || "Perangkat Klien"}
+            </span>
+            {c.staCategoryName && (
+              <span className="badge badge-xs badge-neutral text-[9px] uppercase font-mono">
+                {c.staCategoryName}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2 text-[11px] font-mono text-base-content/70">
+            <span>{c.mac}</span>
+            <span>•</span>
+            <span className="text-primary font-semibold">{c.ip}</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "SSID & LOKASI AP",
+      accessorKey: "ssid",
+      className: "min-w-[220px]",
+      cell: (c) => (
+        <div className="flex flex-col gap-0.5">
+          <div>
+            <span className="badge badge-info badge-sm font-semibold tracking-tight text-[11px]">
+              {c.ssid}
+            </span>
+          </div>
+          <div className="text-[11px] text-base-content/70 flex items-center gap-1">
+            <span className="font-medium text-base-content">{c.deviceName || "AP"}</span>
+            <span className="truncate">({c.parentGroupName} &gt; {c.groupName})</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "RADIO & SINYAL",
+      accessorKey: "band",
+      className: "min-w-[120px]",
+      cell: (c) => (
+        <div className="flex items-center gap-2">
+          <span
+            className={`badge badge-xs font-mono text-[10px] font-bold ${
+              c.band === "5G" ? "badge-primary" : "badge-warning"
+            }`}
+          >
+            {c.band}
+          </span>
+          <span
+            className={`text-xs font-mono font-medium ${
+              c.rssi > -65
+                ? "text-emerald-500"
+                : c.rssi > -75
+                ? "text-amber-500"
+                : "text-rose-500"
+            }`}
+          >
+            {c.rssi} dBm
+          </span>
+        </div>
+      ),
+    },
+    {
+      header: "UNDUH (RX)",
+      accessorKey: "flowDown",
+      className: "min-w-[110px]",
+      cell: (c) => (
+        <span className="font-mono text-xs font-semibold text-cyan-600 dark:text-cyan-400">
+          {formatBytes(c.flowDown)}
+        </span>
+      ),
+    },
+    {
+      header: "UNGGAH (TX)",
+      accessorKey: "flowUp",
+      className: "min-w-[110px]",
+      cell: (c) => (
+        <span className="font-mono text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+          {formatBytes(c.flowUp)}
+        </span>
+      ),
+    },
+    {
+      header: "TOTAL DATA",
+      accessorKey: "flowUpDown",
+      className: "min-w-[120px]",
+      cell: (c) => (
+        <span className="font-mono text-xs font-bold text-primary">
+          {formatBytes(c.flowUpDown)}
+        </span>
+      ),
+    },
+    {
+      header: "DURASI AKTIF",
+      accessorKey: "activeSec",
+      className: "min-w-[100px]",
+      cell: (c) => {
+        const sec = c.activeSec || 0;
+        const mins = Math.floor(sec / 60);
+        const hours = Math.floor(mins / 60);
+        const remMins = mins % 60;
+        const display = hours > 0 ? `${hours}j ${remMins}m` : `${mins}m`;
+        return <span className="font-mono text-xs text-base-content/80">{display}</span>;
+      },
+    },
+  ];
+
   const TABS = [
     { id: "summary", label: "Ringkasan", icon: FaChartPie },
     { id: "usage", label: "Penggunaan Data", icon: FaDatabase },
     { id: "groups", label: "Distribusi Grup", icon: FaLayerGroup },
     { id: "login", label: "Aktivitas Login", icon: FaHistory },
     { id: "system", label: "Sistem & NAS", icon: FaServer },
+    { id: "ruijie_wifi", label: "Wi-Fi Ruijie Cloud", icon: FaWifi },
   ];
 
   if (!isClient) {
@@ -435,10 +649,27 @@ export default function ReportClient({
 
         {/* Status Telemetry Pill */}
         <div className="flex items-center gap-2 self-end md:self-center px-2">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            FreeRADIUS Synchronized
-          </span>
+          {activeTab === "ruijie_wifi" ? (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => fetchRuijieData(true)}
+                disabled={loadingRuijie}
+                className="btn btn-xs btn-outline gap-1 text-[11px] font-mono border-primary/30 text-primary hover:bg-primary/10"
+              >
+                <FaSyncAlt className={`h-3 w-3 ${loadingRuijie ? "animate-spin" : ""}`} />
+                Sinkronkan Live
+              </button>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 font-semibold">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                Ruijie Cloud Live
+              </span>
+            </div>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              FreeRADIUS Synchronized
+            </span>
+          )}
         </div>
       </div>
 
@@ -1027,6 +1258,473 @@ export default function ReportClient({
               totalPages={1}
             />
           </div>
+        </div>
+      )}
+
+      {/* TAB 6: RUIJIE WI-FI CLOUD */}
+      {activeTab === "ruijie_wifi" && (
+        <div className="space-y-6">
+          {/* Header & Live Sync Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-4 shadow-lg">
+            <div>
+              <div className="flex items-center gap-2">
+                <FaWifi className="h-4 w-4 text-primary" />
+                <h2 className="text-base font-bold text-base-content">
+                  Telemetri Wi-Fi Ruijie Cloud RSUD NTB
+                </h2>
+                <span className="badge badge-info badge-sm font-mono text-[10px] font-semibold">
+                  Live Controller
+                </span>
+              </div>
+              <p className="text-xs text-base-content/70 mt-0.5">
+                Pemantauan real-time jumlah klien terhubung, penggunaan bandwidth per SSID/Klien, kesehatan AP, dan rasio sinyal frekuensi dari Ruijie Cloud.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 self-start sm:self-center">
+              <button
+                onClick={() => fetchRuijieData(true)}
+                disabled={loadingRuijie}
+                className="btn btn-sm btn-primary gap-2 shadow-sm font-semibold text-xs"
+              >
+                <FaSyncAlt className={`h-3.5 w-3.5 ${loadingRuijie ? "animate-spin" : ""}`} />
+                Sinkronkan Live Ruijie
+              </button>
+            </div>
+          </div>
+
+          {/* Error Banner if any */}
+          {ruijieError && (
+            <div className="alert alert-error shadow-sm text-xs flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FaExclamationTriangle className="h-4 w-4 shrink-0" />
+                <span>{ruijieError}</span>
+              </div>
+              <button
+                onClick={() => fetchRuijieData(true)}
+                className="btn btn-xs btn-outline border-current text-current hover:bg-base-100/20"
+              >
+                Coba Lagi
+              </button>
+            </div>
+          )}
+
+          {/* Loading Skeleton */}
+          {loadingRuijie && !ruijieReport ? (
+            <div className="space-y-6 animate-pulse">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="h-28 rounded-xl bg-base-200 border border-base-300"></div>
+                ))}
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="h-72 rounded-xl bg-base-200 border border-base-300"></div>
+                <div className="h-72 rounded-xl bg-base-200 border border-base-300"></div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* 4 KPI Metric Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Total Klien Wi-Fi Aktif */}
+                <div className="border-l-4 border-l-cyan-400 bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg relative overflow-hidden group hover:border-cyan-500/30 transition-all">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-mono font-semibold tracking-wider text-base-content/60 uppercase">
+                      TOTAL KLIEN WI-FI AKTIF
+                    </span>
+                    <div className="w-7 h-7 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+                      <FaUsers className="h-3.5 w-3.5" />
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl lg:text-3xl font-mono font-bold text-base-content tracking-tight">
+                      {(ruijieReport?.summary?.totalClients || 0).toLocaleString()}
+                    </span>
+                    <span className="text-xs font-mono font-semibold text-cyan-500 dark:text-cyan-400">
+                      Klien
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-base-content/60 mt-2">
+                    Terhubung di {ruijieReport?.projectStats?.length || 0} Proyek Gedung RSUD NTB
+                  </p>
+                </div>
+
+                {/* Total Bandwidth Wi-Fi Terpakai */}
+                <div className="border-l-4 border-l-emerald-400 bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-mono font-semibold tracking-wider text-base-content/60 uppercase">
+                      AKUMULASI TRAFIK WI-FI
+                    </span>
+                    <div className="w-7 h-7 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                      <FaDatabase className="h-3.5 w-3.5" />
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl lg:text-3xl font-mono font-bold text-base-content tracking-tight">
+                      {formatBytes(ruijieReport?.summary?.totalFlow || 0).split(" ")[0]}
+                    </span>
+                    <span className="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                      {formatBytes(ruijieReport?.summary?.totalFlow || 0).split(" ")[1]}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-base-content/60 mt-2">
+                    Rx: {formatBytes(ruijieReport?.summary?.totalFlowDown || 0)} · Tx: {formatBytes(ruijieReport?.summary?.totalFlowUp || 0)}
+                  </p>
+                </div>
+
+                {/* Kesehatan Access Point */}
+                <div className="border-l-4 border-l-amber-400 bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg relative overflow-hidden group hover:border-amber-500/30 transition-all">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-mono font-semibold tracking-wider text-base-content/60 uppercase">
+                      ACCESS POINT RUIJIE
+                    </span>
+                    <div className="w-7 h-7 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                      <FaBroadcastTower className="h-3.5 w-3.5" />
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl lg:text-3xl font-mono font-bold text-base-content tracking-tight">
+                      {ruijieReport?.summary?.onlineAps || 0}
+                    </span>
+                    <span className="text-xs font-mono font-semibold text-base-content/60">
+                      / {ruijieReport?.summary?.totalAps || 0} AP Online
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-base-content/60 mt-2 flex flex-col gap-0.5">
+                    <div className="flex items-center justify-between">
+                      {ruijieReport?.summary?.offlineAps ? (
+                        <span className="text-rose-500 font-semibold">{ruijieReport.summary.offlineAps} AP Offline</span>
+                      ) : (
+                        <span className="text-emerald-500 font-semibold">100% AP Beroperasi Normal</span>
+                      )}
+                      {Boolean(ruijieReport?.summary?.totalHomeRouters && ruijieReport.summary.totalHomeRouters > 0) && (
+                        <span className="badge badge-xs bg-sky-500/10 text-sky-400 border border-sky-500/30 font-mono">
+                          +{ruijieReport.summary.onlineHomeRouters}/{ruijieReport.summary.totalHomeRouters} Home Router
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Spektrum Frekuensi Radio */}
+                <div className="border-l-4 border-l-indigo-400 bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg relative overflow-hidden group hover:border-indigo-500/30 transition-all">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-mono font-semibold tracking-wider text-base-content/60 uppercase">
+                      SPEKTRUM RADIO WI-FI
+                    </span>
+                    <div className="w-7 h-7 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+                      <FaSignal className="h-3.5 w-3.5" />
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="text-2xl lg:text-3xl font-mono font-bold text-primary tracking-tight">
+                      {ruijieReport?.summary?.bandStats?.pct5G || 0}%
+                    </span>
+                    <span className="text-xs font-mono font-semibold text-base-content/60">
+                      5 GHz Band
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-base-content/60 mt-2">
+                    2.4 GHz: {ruijieReport?.summary?.bandStats?.pct24G || 0}% ({ruijieReport?.summary?.bandStats?.count24G || 0} Klien)
+                  </p>
+                </div>
+              </div>
+
+              {/* Telemetry Charts Row 1 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Chart 1: Distribusi Klien per Gedung / Proyek */}
+                <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-sm font-bold text-base-content flex items-center gap-2">
+                        <FaLayerGroup className="text-cyan-500 h-3.5 w-3.5" />
+                        Kepadatan Klien per Gedung (Proyek)
+                      </h3>
+                      <p className="text-[11px] text-base-content/60 mt-0.5">
+                        Sebaran total klien Wi-Fi aktif per gedung RSUD NTB
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={ruijieReport?.projectStats || []} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} vertical={false} />
+                        <XAxis
+                          dataKey="name"
+                          tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: "monospace" }}
+                          axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                          interval={0}
+                          angle={-15}
+                          textAnchor="end"
+                        />
+                        <YAxis
+                          tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: "monospace" }}
+                          axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                        />
+                        <Tooltip content={<CustomRuijieTooltip />} />
+                        <Bar dataKey="clients" name="Klien Aktif" fill="#38bdf8" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Chart 2: Top 8 SSID Paling Padat Klien */}
+                <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-sm font-bold text-base-content flex items-center gap-2">
+                        <FaWifi className="text-emerald-500 h-3.5 w-3.5" />
+                        Top 8 SSID Paling Ramai Klien
+                      </h3>
+                      <p className="text-[11px] text-base-content/60 mt-0.5">
+                        SSID dengan jumlah perangkat pengguna terhubung terbanyak
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={(ruijieReport?.topSsids || []).slice(0, 8)}
+                        layout="vertical"
+                        margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} horizontal={false} />
+                        <XAxis
+                          type="number"
+                          tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: "monospace" }}
+                          axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                        />
+                        <YAxis
+                          type="category"
+                          dataKey="ssid"
+                          width={110}
+                          tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: "monospace" }}
+                          axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                        />
+                        <Tooltip content={<CustomRuijieTooltip />} />
+                        <Bar dataKey="clients" name="Klien Terhubung" fill="#10b981" radius={[0, 4, 4, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              {/* Telemetry Charts Row 2 */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Chart 3: Proporsi Band Frekuensi Radio */}
+                <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-sm font-bold text-base-content flex items-center gap-2">
+                        <FaSignal className="text-indigo-400 h-3.5 w-3.5" />
+                        Proporsi Spektrum Radio (5 GHz vs 2.4 GHz)
+                      </h3>
+                      <p className="text-[11px] text-base-content/60 mt-0.5">
+                        Rasio efisiensi alokasi kanal frekuensi pada perangkat klien
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-64 flex items-center justify-center">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={bandPieData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={85}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          {bandPieData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip content={<CustomRuijieTooltip />} />
+                        <Legend
+                          verticalAlign="bottom"
+                          height={36}
+                          formatter={(value) => <span className="text-xs text-base-content/80 font-mono">{value}</span>}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Chart 4: Top 6 Access Point Terpadat */}
+                <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl p-5 shadow-lg">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-sm font-bold text-base-content flex items-center gap-2">
+                        <FaBroadcastTower className="text-amber-500 h-3.5 w-3.5" />
+                        Top 6 Access Point Paling Padat (AP Load)
+                      </h3>
+                      <p className="text-[11px] text-base-content/60 mt-0.5">
+                        Access Point dengan jumlah klien aktif terbanyak di RSUD NTB
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={(ruijieReport?.topAps || []).slice(0, 6)}
+                        margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} vertical={false} />
+                        <XAxis
+                          dataKey="name"
+                          tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: "monospace" }}
+                          axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                          interval={0}
+                          angle={-15}
+                          textAnchor="end"
+                        />
+                        <YAxis
+                          tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: "monospace" }}
+                          axisLine={{ stroke: "#334155", opacity: 0.3 }}
+                        />
+                        <Tooltip content={<CustomRuijieTooltip />} />
+                        <Bar dataKey="clients" name="Klien Terhubung" fill="#f59e0b" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              {/* Live Client Table Section */}
+              <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl overflow-hidden shadow-xl">
+                <div className="p-5 border-b border-primary/10 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-base font-bold text-base-content flex items-center gap-2">
+                      <FaUsers className="text-primary h-4 w-4" />
+                      Daftar Klien Wi-Fi Aktif & Penggunaan Bandwidth (Live)
+                    </h2>
+                    <p className="text-xs text-base-content/70 mt-0.5">
+                      Telemetri riil konsumsi data, SSID tujuan, dan kualitas sinyal RSSI per klien
+                    </p>
+                  </div>
+
+                  {/* Filter Toolbar */}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <select
+                      value={ruijieProjectFilter}
+                      onChange={(e) => {
+                        setRuijieProjectFilter(e.target.value);
+                        setRuijiePage(1);
+                      }}
+                      className="select select-bordered select-xs font-medium text-xs bg-base-100 text-base-content focus:outline-primary"
+                    >
+                      <option value="ALL">Semua Gedung (Proyek)</option>
+                      {(ruijieReport?.projectStats || []).map((p: any) => (
+                        <option key={p.groupId} value={p.name}>
+                          {p.name} ({p.clients} Klien)
+                        </option>
+                      ))}
+                    </select>
+
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={ruijieSearch}
+                        onChange={(e) => {
+                          setRuijieSearch(e.target.value);
+                          setRuijiePage(1);
+                        }}
+                        placeholder="Cari MAC, IP, SSID, AP..."
+                        className="input input-bordered input-xs w-48 text-xs focus:outline-primary"
+                      />
+                      {ruijieSearch && (
+                        <button
+                          onClick={() => setRuijieSearch("")}
+                          className="absolute right-2 top-1 text-xs text-base-content/50 hover:text-base-content"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="table w-full">
+                    <thead>
+                      <tr>
+                        <th className="w-12">#</th>
+                        {ruijieClientColumns.map((col, idx) => (
+                          <th key={idx} className={col.className}>
+                            {col.header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedRuijieClients.length === 0 ? (
+                        <tr>
+                          <td colSpan={ruijieClientColumns.length + 1} className="text-center py-8 text-base-content/60 text-xs">
+                            Tidak ada data klien yang cocok dengan filter.
+                          </td>
+                        </tr>
+                      ) : (
+                        paginatedRuijieClients.map((client: any, idx: number) => (
+                          <tr key={client.mac || idx} className="hover:bg-base-200/50 transition-colors">
+                            <td className="font-mono text-xs text-base-content/60">
+                              {(ruijiePage - 1) * ruijiePageSize + idx + 1}
+                            </td>
+                            {ruijieClientColumns.map((col, cIdx) => (
+                              <td key={cIdx} className={col.className}>
+                                {col.cell ? col.cell(client) : client[col.accessorKey as string]}
+                              </td>
+                            ))}
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Table Footer with Pagination Controls */}
+                <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 border-t border-primary/10 text-xs">
+                  <div className="flex items-center gap-2 text-base-content/70">
+                    <span>Tampilkan</span>
+                    <select
+                      className="select select-bordered select-xs"
+                      value={ruijiePageSize}
+                      onChange={(e) => {
+                        setRuijiePageSize(Number(e.target.value));
+                        setRuijiePage(1);
+                      }}
+                    >
+                      <option value="10">10</option>
+                      <option value="20">20</option>
+                      <option value="50">50</option>
+                    </select>
+                    <span>data dari total <strong className="text-primary font-mono">{filteredRuijieClients.length}</strong> klien tersaring</span>
+                  </div>
+
+                  {ruijieTotalPages > 1 && (
+                    <div className="join">
+                      <button
+                        onClick={() => setRuijiePage((p) => Math.max(1, p - 1))}
+                        disabled={ruijiePage <= 1}
+                        className="join-item btn btn-xs px-3"
+                      >
+                        «
+                      </button>
+                      <span className="join-item btn btn-xs px-3 btn-ghost font-mono">
+                        Hal {ruijiePage} / {ruijieTotalPages}
+                      </span>
+                      <button
+                        onClick={() => setRuijiePage((p) => Math.min(ruijieTotalPages, p + 1))}
+                        disabled={ruijiePage >= ruijieTotalPages}
+                        className="join-item btn btn-xs px-3"
+                      >
+                        »
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

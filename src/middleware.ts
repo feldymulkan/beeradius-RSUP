@@ -13,8 +13,8 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
     return NextResponse.next();
   }
 
-  // [1b] /api/network/switches/poll → autentikasi (session / cron-secret / localhost) ditangani langsung di route handler
-  if (pathname === "/api/network/switches/poll") {
+  // [1b] /api/network/switches/poll & /api/network/devices/poll → autentikasi (session / cron-secret / localhost) ditangani langsung di route handler
+  if (pathname === "/api/network/switches/poll" || pathname === "/api/network/devices/poll") {
     return NextResponse.next();
   }
 

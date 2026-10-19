@@ -159,6 +159,27 @@ export async function pollSingleDevice(sw: any): Promise<PollResult> {
         errorMsg = 'Host unreachable (Ping & SNMP timeout)';
       }
     }
+  } else if (connMethod === 'cloud') {
+    // connMethod: cloud (Ruijie Cloud AP)
+    snmpStatus = 'unsupported';
+    const isValidIpv4 = /^([0-9]{1,3}\.){3}[0-9]{1,3}$/.test(sw.ip.trim());
+    if (isValidIpv4) {
+      const pingOk = await pingHost(sw.ip, 1500);
+      if (pingOk) {
+        pingStatus = 'up';
+        finalStatus = 'online';
+        methodUsed = 'ping-cloud';
+      } else {
+        // Jika ping timeout (karena beda VLAN/isolated), tetap pertahankan status terakhir dari cloud jika ada
+        pingStatus = 'down';
+        finalStatus = sw.status === 'online' ? 'online' : 'offline';
+        methodUsed = 'cloud-status';
+        errorMsg = 'Ping lokal timeout (status dipertahankan dari Ruijie Cloud)';
+      }
+    } else {
+      finalStatus = sw.status || 'online';
+      methodUsed = 'cloud-status';
+    }
   } else {
     // connMethod: ping, api, atau manual
     snmpStatus = 'unsupported';
@@ -302,6 +323,7 @@ export async function pollAllDevices(): Promise<PollSummary> {
   }
 
   try {
+    revalidatePath('/devices');
     revalidatePath('/switches');
   } catch {
     // Abaikan jika dipanggil di luar konteks HTTP request Next.js (misal background poller timer)
