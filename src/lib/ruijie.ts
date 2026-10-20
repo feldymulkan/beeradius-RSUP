@@ -91,44 +91,61 @@ export function getRuijieConfig() {
 }
 
 /**
- * Mendapatkan Access Token (dengan in-memory caching 20 menit)
+ * Mendapatkan Access Token (dengan in-memory caching 20 menit dan thread-safe mutex)
  */
+let isRefreshingToken: Promise<string> | null = null;
+
 export async function getRuijieToken(forceRefresh = false): Promise<string> {
   const now = Date.now();
   if (!forceRefresh && tokenCache && tokenCache.expiresAt > now) {
     return tokenCache.accessToken;
   }
 
-  const { cloudUrl, appid, secret } = getRuijieConfig();
-  const authUrl = `${cloudUrl}/service/api/oauth20/client/access_token?token=d63dss0a81e4415a889ac5b78fsc904a`;
-
-  const res = await fetch(authUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ appid, secret }),
-    cache: "no-store",
-  });
-
-  if (!res.ok) {
-    throw new Error(`HTTP Error saat login Ruijie: ${res.status} ${res.statusText}`);
+  // Jika sedang ada proses refresh token yang berjalan, gunakan promise yang sama (cegah token collision)
+  if (isRefreshingToken) {
+    return isRefreshingToken;
   }
 
-  const data = await res.json();
-  if (data.code !== 0 || !data.accessToken) {
-    throw new Error(`Gagal mendapatkan token Ruijie: ${data.msg || JSON.stringify(data)}`);
-  }
+  isRefreshingToken = (async () => {
+    try {
+      const { cloudUrl, appid, secret } = getRuijieConfig();
+      const authUrl = `${cloudUrl}/service/api/oauth20/client/access_token?token=d63dss0a81e4415a889ac5b78fsc904a`;
 
-  tokenCache = {
-    accessToken: data.accessToken,
-    refreshToken: data.refreshToken || "",
-    expiresAt: now + 20 * 60 * 1000,
-  };
+      const res = await fetch(authUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ appid, secret }),
+        cache: "no-store",
+        signal: AbortSignal.timeout(15000),
+      });
 
-  return tokenCache.accessToken;
+      if (!res.ok) {
+        throw new Error(`HTTP Error saat login Ruijie: ${res.status} ${res.statusText}`);
+      }
+
+      const data = await res.json();
+      if (data.code !== 0 || !data.accessToken) {
+        throw new Error(`Gagal mendapatkan token Ruijie: ${data.msg || JSON.stringify(data)}`);
+      }
+
+      tokenCache = {
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken || "",
+        expiresAt: Date.now() + 20 * 60 * 1000,
+      };
+
+      return tokenCache.accessToken;
+    } finally {
+      isRefreshingToken = null;
+    }
+  })();
+
+  return isRefreshingToken;
 }
 
 /**
  * Fetch helper dengan penanganan otomatis jika token kedaluwarsa (code === 4)
+ * dan proteksi auto-retry jika terkena rate limit / server busy
  */
 export async function fetchRuijie<T = any>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const { cloudUrl } = getRuijieConfig();
@@ -137,14 +154,42 @@ export async function fetchRuijie<T = any>(endpoint: string, options: RequestIni
   const delimiter = endpoint.includes("?") ? "&" : "?";
   let url = `${cloudUrl}${endpoint}${delimiter}access_token=${token}`;
 
-  let res = await fetch(url, { ...options, cache: "no-store" });
+  let res = await fetch(url, {
+    ...options,
+    cache: "no-store",
+    signal: options.signal || AbortSignal.timeout(15000),
+  });
   let data = await res.json();
 
-  // Code 4: Token is overdued
+  // Code 4: Token is overdued -> Segarkan token dan ulangi request
   if (data.code === 4) {
     token = await getRuijieToken(true);
     url = `${cloudUrl}${endpoint}${delimiter}access_token=${token}`;
-    res = await fetch(url, { ...options, cache: "no-store" });
+    res = await fetch(url, {
+      ...options,
+      cache: "no-store",
+      signal: options.signal || AbortSignal.timeout(15000),
+    });
+    data = await res.json();
+  }
+
+  // Rate Limiting Detection (Code 429 atau pesan frequency / busy dari server Ruijie)
+  const isRateLimited =
+    data.code === 429 ||
+    res.status === 429 ||
+    (typeof data.msg === "string" &&
+      (data.msg.toLowerCase().includes("frequency") ||
+        data.msg.toLowerCase().includes("busy") ||
+        data.msg.toLowerCase().includes("too many")));
+
+  if (isRateLimited) {
+    // Jeda 600ms lalu coba ulangi request sekali lagi
+    await new Promise((r) => setTimeout(r, 600));
+    res = await fetch(url, {
+      ...options,
+      cache: "no-store",
+      signal: options.signal || AbortSignal.timeout(15000),
+    });
     data = await res.json();
   }
 
@@ -241,37 +286,46 @@ export async function getRuijieWifiList(forceRefresh = false): Promise<{
 
   const allSsids: RuijieSsid[] = [];
 
-  // Pindai secara paralel dalam batch 16 agar cepat tanpa membebani rate limit
-  const BATCH_SIZE = 16;
+  // Pindai secara paralel dalam batch kecil (6) dengan retry otomatis untuk mencegah throttling/rate limit Ruijie Cloud
+  const BATCH_SIZE = 6;
   for (let i = 0; i < nodesToScan.length; i += BATCH_SIZE) {
     const chunk = nodesToScan.slice(i, i + BATCH_SIZE);
     const chunkResults = await Promise.all(
       chunk.map(async (node) => {
-        try {
-          const res = await fetchRuijie<{ code: number; msg?: string; ssidList?: any[] }>(
-            `/service/api/open/v1/wifi?group_id=${node.groupId}`
-          );
-          if (res.code === 0 && Array.isArray(res.ssidList)) {
-            return res.ssidList.map((s) => ({
-              ...s,
-              id: s.id,
-              ssidName: s.ssidName,
-              password: s.password || "",
-              vlanId: s.vlanId,
-              encryptionMode: s.encryptionMode,
-              encryptionModeDesc: s.encryptionModeDesc || s.encryptionMode,
-              enable: s.enable,
-              ishidden: s.ishidden,
-              relatedRadio: s.relatedRadio,
-              groupId: node.groupId,
-              groupName: node.groupName,
-              parentGroupName: node.parentGroupName,
-              isSubGroup: node.isSubGroup,
-              path: node.isSubGroup ? `${node.parentGroupName} > ${node.groupName}` : node.groupName,
-            }));
+        // Coba hingga 2 kali dengan jeda jika gagal atau terkena rate limit
+        for (let attempt = 1; attempt <= 2; attempt++) {
+          try {
+            const res = await fetchRuijie<{ code: number; msg?: string; ssidList?: any[] }>(
+              `/service/api/open/v1/wifi?group_id=${node.groupId}`
+            );
+            if (res.code === 0 && Array.isArray(res.ssidList)) {
+              return res.ssidList.map((s) => ({
+                ...s,
+                id: s.id,
+                ssidName: s.ssidName,
+                password: s.password || "",
+                vlanId: s.vlanId,
+                encryptionMode: s.encryptionMode,
+                encryptionModeDesc: s.encryptionModeDesc || s.encryptionMode,
+                enable: s.enable,
+                ishidden: s.ishidden,
+                relatedRadio: s.relatedRadio,
+                groupId: node.groupId,
+                groupName: node.groupName,
+                parentGroupName: node.parentGroupName,
+                isSubGroup: node.isSubGroup,
+                path: node.isSubGroup ? `${node.parentGroupName} > ${node.groupName}` : node.groupName,
+              }));
+            }
+            // Jika respons bukan code 0 dan masih ada percobaan, jeda sebentar
+            if (attempt === 1) {
+              await new Promise((r) => setTimeout(r, 400));
+            }
+          } catch {
+            if (attempt === 1) {
+              await new Promise((r) => setTimeout(r, 400));
+            }
           }
-        } catch {
-          // Abaikan grup tanpa WiFi
         }
         return [];
       })
@@ -282,6 +336,11 @@ export async function getRuijieWifiList(forceRefresh = false): Promise<{
         allSsids.push(...items);
       }
     });
+
+    // Jeda mikro antar-batch agar API Ruijie Cloud tidak terkena burst rate limit
+    if (i + BATCH_SIZE < nodesToScan.length) {
+      await new Promise((r) => setTimeout(r, 150));
+    }
   }
 
   // Update in-memory cache
@@ -354,13 +413,15 @@ export async function updateRuijieWifi(params: {
     wirelessConfEntity,
   };
 
-  const res = await fetch(`${cloudUrl}/service/api/open/v1/wifi?access_token=${token}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
+  const data = await fetchRuijie<{ code: number; msg?: string }>(
+    "/service/api/open/v1/wifi",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }
+  );
 
-  const data = await res.json();
   if (data.code !== 0) {
     throw new Error(`Gagal update WiFi Ruijie: ${data.msg || JSON.stringify(data)}`);
   }
@@ -503,6 +564,7 @@ export async function getRuijieWifiReport(forceRefresh = false): Promise<RuijieW
               break;
             }
             clientPage++;
+            await new Promise((r) => setTimeout(r, 100));
           } catch {
             break;
           }
@@ -522,6 +584,7 @@ export async function getRuijieWifiReport(forceRefresh = false): Promise<RuijieW
             rawAps.push(...list);
             if (list.length < 100 || (reportedTotal && rawAps.length >= reportedTotal)) break;
             apPage++;
+            await new Promise((r) => setTimeout(r, 100));
           } catch {
             break;
           }
@@ -789,6 +852,7 @@ export async function syncRuijieCloudDevicesToDb(): Promise<{
         });
         if (list.length < 100 || rawDevices.length >= (res.totalCount || 0)) break;
         page++;
+        await new Promise((r) => setTimeout(r, 100));
       } catch {
         break;
       }
