@@ -370,7 +370,7 @@ export default function ReportClient({
       ),
     },
     {
-      header: "NAS IP",
+      header: "IP Perangkat RADIUS",
       cell: (log) => (
         <span className="font-mono text-xs text-slate-400">
           {log.nasipaddress || "-"}
@@ -405,7 +405,7 @@ export default function ReportClient({
 
   const nasActivityColumns: ColumnDef<any>[] = [
     {
-      header: "NAS IP Address",
+      header: "IP Perangkat RADIUS",
       cell: (row) => (
         <span className="font-mono font-semibold text-cyan-400">
           {row.nasipaddress || "-"}
@@ -460,6 +460,26 @@ export default function ReportClient({
     const start = (ruijiePage - 1) * ruijiePageSize;
     return filteredRuijieClients.slice(start, start + ruijiePageSize);
   }, [filteredRuijieClients, ruijiePage, ruijiePageSize]);
+
+  const getRuijiePageNumbers = () => {
+    const pages: (number | "...")[] = [];
+    const maxVisible = 5;
+
+    if (ruijieTotalPages <= maxVisible + 2) {
+      for (let i = 1; i <= ruijieTotalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (ruijiePage > 3) pages.push("...");
+
+      const start = Math.max(2, ruijiePage - 1);
+      const end = Math.min(ruijieTotalPages - 1, ruijiePage + 1);
+      for (let i = start; i <= end; i++) pages.push(i);
+
+      if (ruijiePage < ruijieTotalPages - 2) pages.push("...");
+      pages.push(ruijieTotalPages);
+    }
+    return pages;
+  };
 
   const bandPieData = useMemo(() => {
     if (!ruijieReport?.summary?.bandStats) return [];
@@ -589,7 +609,7 @@ export default function ReportClient({
     { id: "usage", label: "Penggunaan Data", icon: FaDatabase },
     { id: "groups", label: "Distribusi Grup", icon: FaLayerGroup },
     { id: "login", label: "Aktivitas Login", icon: FaHistory },
-    { id: "system", label: "Sistem & NAS", icon: FaServer },
+    { id: "system", label: "Sistem & RADIUS", icon: FaServer },
     { id: "ruijie_wifi", label: "Wi-Fi Ruijie Cloud", icon: FaWifi },
   ];
 
@@ -783,7 +803,7 @@ export default function ReportClient({
               </div>
               <div className="h-[300px] w-full min-h-[300px]">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={300}>
-                  <AreaChart data={bandwidthChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <AreaChart data={bandwidthChartData} margin={{ top: 10, right: 10, left: 5, bottom: 0 }}>
                     <defs>
                       <linearGradient id="downloadGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4} />
@@ -802,6 +822,9 @@ export default function ReportClient({
                     />
                     <YAxis
                       stroke="#64748b"
+                      domain={[0, 'auto']}
+                      width={45}
+                      tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : `${v}`)}
                       tick={{ fill: "#94a3b8", fontSize: 11, fontFamily: "monospace" }}
                     />
                     <Tooltip content={<CustomAreaTooltip />} />
@@ -853,7 +876,7 @@ export default function ReportClient({
               </div>
               <div className="h-[300px] w-full min-h-[300px]">
                 <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={300}>
-                  <BarChart data={dailyActiveChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <BarChart data={dailyActiveChartData} margin={{ top: 10, right: 10, left: 5, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.3} vertical={false} />
                     <XAxis
                       dataKey="name"
@@ -862,6 +885,8 @@ export default function ReportClient({
                     />
                     <YAxis
                       stroke="#64748b"
+                      domain={[0, 'auto']}
+                      width={36}
                       tick={{ fill: "#94a3b8", fontSize: 11, fontFamily: "monospace" }}
                     />
                     <Tooltip content={<CustomBarTooltip />} />
@@ -934,9 +959,9 @@ export default function ReportClient({
               </h3>
               <div className="grid grid-cols-2 gap-3 pt-1">
                 <div className="p-2.5 rounded-lg bg-base-200/50 border border-primary/5">
-                  <p className="text-[10px] font-mono text-slate-400 uppercase">NAS Router</p>
+                  <p className="text-[10px] font-mono text-slate-400 uppercase">Perangkat RADIUS</p>
                   <p className="text-xl font-mono font-bold text-cyan-400 mt-0.5">{nasData?.length || 0}</p>
-                  <p className="text-[10px] text-slate-500">Router aktif</p>
+                  <p className="text-[10px] text-slate-500">Gateway aktif</p>
                 </div>
                 <div className="p-2.5 rounded-lg bg-base-200/50 border border-primary/5">
                   <p className="text-[10px] font-mono text-slate-400 uppercase">WG Peers</p>
@@ -1237,16 +1262,16 @@ export default function ReportClient({
       {/* TAB 5: SYSTEM & NAS */}
       {activeTab === "system" && (
         <div className="space-y-6">
-          {/* NAS Router Stats */}
+          {/* Perangkat RADIUS Stats */}
           <div className="bg-base-100/90 backdrop-blur-xl border border-primary/10 rounded-xl overflow-hidden shadow-xl">
             <div className="p-5 border-b border-primary/10 flex items-center justify-between">
               <div>
                 <h2 className="text-base font-bold text-cyan-400 flex items-center gap-2">
                   <FaServer className="h-4 w-4" />
-                  Statistik NAS (Router Gateway)
+                  Statistik Perangkat RADIUS (Router Gateway)
                 </h2>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Volume sesi dan beban throughput yang ditangani oleh masing-masing NAS Client
+                  Volume sesi dan beban throughput yang ditangani oleh masing-masing Perangkat RADIUS Client
                 </p>
               </div>
             </div>
@@ -1309,16 +1334,83 @@ export default function ReportClient({
           )}
 
           {/* Loading Skeleton */}
-          {loadingRuijie && !ruijieReport ? (
+          {(loadingRuijie && !ruijieReport) || (!ruijieReport && !ruijieError) ? (
             <div className="space-y-6 animate-pulse">
+              {/* 4 KPI Cards Skeleton */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="h-28 rounded-xl bg-base-200 border border-base-300"></div>
+                {[
+                  { border: "border-l-cyan-400" },
+                  { border: "border-l-emerald-400" },
+                  { border: "border-l-amber-400" },
+                  { border: "border-l-indigo-400" },
+                ].map((item, i) => (
+                  <div key={i} className={`border-l-4 ${item.border} bg-base-100/90 border border-base-300 rounded-xl p-5 shadow-lg`}>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="skeleton h-3 w-28 rounded" />
+                      <div className="skeleton h-7 w-7 rounded-lg" />
+                    </div>
+                    <div className="skeleton h-9 w-24 rounded my-2" />
+                    <div className="skeleton h-3.5 w-40 rounded mt-1" />
+                  </div>
                 ))}
               </div>
+
+              {/* Charts Row 1 Skeleton */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="h-72 rounded-xl bg-base-200 border border-base-300"></div>
-                <div className="h-72 rounded-xl bg-base-200 border border-base-300"></div>
+                <div className="bg-base-100/90 border border-base-300 rounded-xl p-5 shadow-lg">
+                  <div className="space-y-1.5 mb-4">
+                    <div className="skeleton h-4 w-48 rounded" />
+                    <div className="skeleton h-3 w-56 rounded" />
+                  </div>
+                  <div className="skeleton h-64 w-full rounded-xl" />
+                </div>
+                <div className="bg-base-100/90 border border-base-300 rounded-xl p-5 shadow-lg">
+                  <div className="space-y-1.5 mb-4">
+                    <div className="skeleton h-4 w-44 rounded" />
+                    <div className="skeleton h-3 w-56 rounded" />
+                  </div>
+                  <div className="skeleton h-64 w-full rounded-xl" />
+                </div>
+              </div>
+
+              {/* Charts Row 2 Skeleton */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="bg-base-100/90 border border-base-300 rounded-xl p-5 shadow-lg">
+                  <div className="space-y-1.5 mb-4">
+                    <div className="skeleton h-4 w-52 rounded" />
+                    <div className="skeleton h-3 w-60 rounded" />
+                  </div>
+                  <div className="skeleton h-64 w-full rounded-xl" />
+                </div>
+                <div className="bg-base-100/90 border border-base-300 rounded-xl p-5 shadow-lg">
+                  <div className="space-y-1.5 mb-4">
+                    <div className="skeleton h-4 w-52 rounded" />
+                    <div className="skeleton h-3 w-60 rounded" />
+                  </div>
+                  <div className="skeleton h-64 w-full rounded-xl" />
+                </div>
+              </div>
+
+              {/* Table Card Skeleton */}
+              <div className="bg-base-100/90 border border-base-300 rounded-xl p-5 shadow-xl">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-4 pb-4 border-b border-base-200">
+                  <div className="space-y-1">
+                    <div className="skeleton h-4 w-64 rounded" />
+                    <div className="skeleton h-3 w-48 rounded" />
+                  </div>
+                  <div className="skeleton h-9 w-60 rounded-lg" />
+                </div>
+                <div className="space-y-3">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div key={i} className="flex items-center justify-between py-2 border-b border-base-200">
+                      <div className="skeleton h-4 w-32 rounded" />
+                      <div className="skeleton h-4 w-24 rounded font-mono" />
+                      <div className="skeleton h-4 w-28 rounded font-mono" />
+                      <div className="skeleton h-4 w-20 rounded" />
+                      <div className="skeleton h-4 w-16 rounded font-mono" />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           ) : (
@@ -1446,7 +1538,7 @@ export default function ReportClient({
                   </div>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={ruijieReport?.projectStats || []} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+                      <BarChart data={ruijieReport?.projectStats || []} margin={{ top: 10, right: 10, left: 5, bottom: 20 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} vertical={false} />
                         <XAxis
                           dataKey="name"
@@ -1457,6 +1549,8 @@ export default function ReportClient({
                           textAnchor="end"
                         />
                         <YAxis
+                          domain={[0, 'auto']}
+                          width={36}
                           tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: "monospace" }}
                           axisLine={{ stroke: "#334155", opacity: 0.3 }}
                         />
@@ -1567,7 +1661,7 @@ export default function ReportClient({
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart
                         data={(ruijieReport?.topAps || []).slice(0, 6)}
-                        margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
+                        margin={{ top: 10, right: 10, left: 5, bottom: 20 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.2} vertical={false} />
                         <XAxis
@@ -1579,6 +1673,8 @@ export default function ReportClient({
                           textAnchor="end"
                         />
                         <YAxis
+                          domain={[0, 'auto']}
+                          width={36}
                           tick={{ fill: "#94a3b8", fontSize: 10, fontFamily: "monospace" }}
                           axisLine={{ stroke: "#334155", opacity: 0.3 }}
                         />
@@ -1682,43 +1778,99 @@ export default function ReportClient({
                 </div>
 
                 {/* Table Footer with Pagination Controls */}
-                <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 border-t border-primary/10 text-xs">
-                  <div className="flex items-center gap-2 text-base-content/70">
-                    <span>Tampilkan</span>
-                    <select
-                      className="select select-bordered select-xs"
-                      value={ruijiePageSize}
-                      onChange={(e) => {
-                        setRuijiePageSize(Number(e.target.value));
-                        setRuijiePage(1);
-                      }}
-                    >
-                      <option value="10">10</option>
-                      <option value="20">20</option>
-                      <option value="50">50</option>
-                    </select>
-                    <span>data dari total <strong className="text-primary font-mono">{filteredRuijieClients.length}</strong> klien tersaring</span>
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-4 border-t border-primary/10 text-xs">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="text-base-content/70">
+                      Menampilkan <strong className="text-base-content font-bold font-mono">{(ruijiePage - 1) * ruijiePageSize + (filteredRuijieClients.length > 0 ? 1 : 0)}</strong> - <strong className="text-base-content font-bold font-mono">{Math.min(ruijiePage * ruijiePageSize, filteredRuijieClients.length)}</strong> dari <strong className="text-primary font-bold font-mono">{filteredRuijieClients.length.toLocaleString()}</strong> klien tersaring
+                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[11px] text-base-content/60">Tampilkan:</span>
+                      <select
+                        className="select select-bordered select-xs font-mono"
+                        value={ruijiePageSize}
+                        onChange={(e) => {
+                          setRuijiePageSize(Number(e.target.value));
+                          setRuijiePage(1);
+                        }}
+                      >
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                      </select>
+                    </div>
                   </div>
 
                   {ruijieTotalPages > 1 && (
-                    <div className="join">
-                      <button
-                        onClick={() => setRuijiePage((p) => Math.max(1, p - 1))}
-                        disabled={ruijiePage <= 1}
-                        className="join-item btn btn-xs px-3"
-                      >
-                        «
-                      </button>
-                      <span className="join-item btn btn-xs px-3 btn-ghost font-mono">
+                    <div className="flex items-center gap-2">
+                      <div className="join">
+                        <button
+                          type="button"
+                          onClick={() => setRuijiePage(1)}
+                          disabled={ruijiePage <= 1}
+                          className="join-item btn btn-xs border-base-300 disabled:opacity-30 cursor-pointer"
+                          title="Halaman Pertama"
+                        >
+                          ««
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setRuijiePage((p) => Math.max(1, p - 1))}
+                          disabled={ruijiePage <= 1}
+                          className="join-item btn btn-xs border-base-300 disabled:opacity-30 cursor-pointer"
+                          title="Halaman Sebelumnya"
+                        >
+                          «
+                        </button>
+
+                        {getRuijiePageNumbers().map((p, idx) =>
+                          p === "..." ? (
+                            <button
+                              key={`ellipsis-${idx}`}
+                              disabled
+                              className="join-item btn btn-xs border-base-300 pointer-events-none opacity-50"
+                            >
+                              …
+                            </button>
+                          ) : (
+                            <button
+                              key={p}
+                              type="button"
+                              onClick={() => setRuijiePage(p as number)}
+                              className={`join-item btn btn-xs font-mono cursor-pointer ${
+                                ruijiePage === p
+                                  ? "btn-primary font-bold shadow-xs text-black"
+                                  : "btn-ghost border-base-300 text-base-content/80 hover:text-base-content"
+                              }`}
+                            >
+                              {p}
+                            </button>
+                          )
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() => setRuijiePage((p) => Math.min(ruijieTotalPages, p + 1))}
+                          disabled={ruijiePage >= ruijieTotalPages}
+                          className="join-item btn btn-xs border-base-300 disabled:opacity-30 cursor-pointer"
+                          title="Halaman Selanjutnya"
+                        >
+                          »
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setRuijiePage(ruijieTotalPages)}
+                          disabled={ruijiePage >= ruijieTotalPages}
+                          className="join-item btn btn-xs border-base-300 disabled:opacity-30 cursor-pointer"
+                          title="Halaman Terakhir"
+                        >
+                          »»
+                        </button>
+                      </div>
+
+                      <span className="text-[11px] text-base-content/60 font-mono hidden md:inline ml-1">
                         Hal {ruijiePage} / {ruijieTotalPages}
                       </span>
-                      <button
-                        onClick={() => setRuijiePage((p) => Math.min(ruijieTotalPages, p + 1))}
-                        disabled={ruijiePage >= ruijieTotalPages}
-                        className="join-item btn btn-xs px-3"
-                      >
-                        »
-                      </button>
                     </div>
                   )}
                 </div>

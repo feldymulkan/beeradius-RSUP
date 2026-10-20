@@ -45,12 +45,12 @@ function TopProgressBarInner() {
     const originalReplaceState = window.history.replaceState;
 
     window.history.pushState = function (...args) {
-      startProgress();
+      setTimeout(startProgress, 0);
       return originalPushState.apply(this, args);
     };
 
     window.history.replaceState = function (...args) {
-      startProgress();
+      setTimeout(startProgress, 0);
       return originalReplaceState.apply(this, args);
     };
 

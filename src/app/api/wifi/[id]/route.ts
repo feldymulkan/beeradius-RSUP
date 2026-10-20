@@ -28,7 +28,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       vlanId: vlanId ? parseInt(vlanId, 10) : undefined,
     });
 
-    await logAudit("UPDATE_RUIJIE_WIFI", "wifi", ssidName, {
+    await logAudit("UPDATE_WIFI", "wifi", ssidName, {
       ssidId,
       groupId,
       hasPassword: Boolean(password),

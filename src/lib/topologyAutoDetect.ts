@@ -257,14 +257,12 @@ export async function autoDetectTopology(
 
   // 5. Hitung Posisi Koordinat Hirarkis & Estetis (Centered Zero-Overlap Tree)
   const canvasCenterX = 700;
-  const routerSpacing = 340;
-  const switchSpacing = 320;
-  const accessSpacing = 280;
-  const endpointSpacing = 240;
+  const routerSpacing = 360;
+  const switchSpacing = 360;
+  const accessSpacing = 520; // Ruang cukup untuk 2 kolom AP di bawah tiap switch
 
   // Layer 1: Routers & Firewall (Y = 90)
   if (routers.length > 0) {
-    // Urutkan agar Primary Core Router di tengah
     const sortedRouters = [...routers];
     if (primaryCoreRouter) {
       sortedRouters.sort((a, b) => {
@@ -301,15 +299,49 @@ export async function autoDetectTopology(
     });
   }
 
-  // Layer 4: Endpoints (Y = 780)
-  if (endpoints.length > 0) {
-    const totalWidth = (endpoints.length - 1) * endpointSpacing;
-    const startX = canvasCenterX - totalWidth / 2;
-    endpoints.forEach((ep, idx) => {
-      ep.x = Math.round(startX + idx * endpointSpacing);
-      ep.y = 780;
-    });
+  // Layer 4: Endpoints Clustered Under Their Parent Switch (Y >= 750)
+  const switchEndpointsMap = new Map<string, TopologyNode[]>();
+  for (let i = 0; i < endpoints.length; i++) {
+    const ep = endpoints[i];
+    if (ep.type === "server" && primaryCoreSwitch) {
+      const swId = primaryCoreSwitch.id;
+      if (!switchEndpointsMap.has(swId)) switchEndpointsMap.set(swId, []);
+      switchEndpointsMap.get(swId)!.push(ep);
+    } else {
+      let targetSwitch = accessSwitches[i % Math.max(1, accessSwitches.length)] || primaryCoreSwitch;
+      if (accessSwitches.length > 1) {
+        const epLoc = (ep.location || "").toLowerCase();
+        const epName = (ep.name || "").toLowerCase();
+        const matched = accessSwitches.find((sw) => {
+          const swLoc = (sw.location || "").toLowerCase();
+          const swName = (sw.name || "").toLowerCase();
+          return (
+            (epLoc && swLoc && (epLoc.includes(swLoc) || swLoc.includes(epLoc))) ||
+            (epName && swName && (epName.includes(swName) || swName.includes(epName)))
+          );
+        });
+        if (matched) targetSwitch = matched;
+      }
+      if (targetSwitch) {
+        if (!switchEndpointsMap.has(targetSwitch.id)) switchEndpointsMap.set(targetSwitch.id, []);
+        switchEndpointsMap.get(targetSwitch.id)!.push(ep);
+      }
+    }
   }
+
+  switchEndpointsMap.forEach((eps, switchId) => {
+    const sw = allNodesList.find((n) => n.id === switchId);
+    if (!sw) return;
+    const cols = 2;
+    const colSpacing = 240;
+    const rowSpacing = 160;
+    eps.forEach((ep, epIdx) => {
+      const col = epIdx % cols;
+      const row = Math.floor(epIdx / cols);
+      ep.x = Math.round(sw.x + (col - 0.5) * colSpacing);
+      ep.y = Math.round(sw.y + 200 + row * rowSpacing);
+    });
+  });
 
   // 6. Deteksi Jalur Kabel & Link Otomatis (Intelligent Link Discovery)
   const generatedEdges: TopologyEdge[] = [];
@@ -457,7 +489,8 @@ export async function autoDetectTopology(
   }
 
   // LINK 4: Access Switch / Core Switch <-> Endpoints (AP, NVR, Server)
-  for (const ep of endpoints) {
+  for (let i = 0; i < endpoints.length; i++) {
+    const ep = endpoints[i];
     // Jika endpoint adalah Server, sambungkan ke Core Switch
     if (ep.type === "server" && primaryCoreSwitch) {
       createEdge(
@@ -469,8 +502,24 @@ export async function autoDetectTopology(
         "Server Farm Link"
       );
     } else {
-      // Hubungkan ke switch akses terdekat (atau core switch jika tidak ada access switch)
-      const targetSwitch = accessSwitches[0] || primaryCoreSwitch;
+      // Hubungkan ke switch akses terdistribusi (atau berdasarkan kemiripan lokasi/gedung)
+      let targetSwitch = accessSwitches[i % Math.max(1, accessSwitches.length)] || primaryCoreSwitch;
+      if (accessSwitches.length > 1) {
+        const epLoc = (ep.location || "").toLowerCase();
+        const epName = (ep.name || "").toLowerCase();
+        const matched = accessSwitches.find((sw) => {
+          const swLoc = (sw.location || "").toLowerCase();
+          const swName = (sw.name || "").toLowerCase();
+          return (
+            (epLoc && swLoc && (epLoc.includes(swLoc) || swLoc.includes(epLoc))) ||
+            (epName && swName && (epName.includes(swName) || swName.includes(epName)))
+          );
+        });
+        if (matched) {
+          targetSwitch = matched;
+        }
+      }
+
       if (targetSwitch) {
         const isPoE = ep.type === "ap" || ep.type === "cctv";
         createEdge(

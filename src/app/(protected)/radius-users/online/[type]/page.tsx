@@ -358,7 +358,7 @@ export default function OnlineUserTable() {
                 <th className="w-12">#</th>
                 <th>Username</th>
                 <th>IP Address</th>
-                <th>Router (NAS)</th>
+                <th>Perangkat RADIUS</th>
                 <th>Durasi Online</th>
                 <th>Login Sejak</th>
                 <th>Last Logout</th>

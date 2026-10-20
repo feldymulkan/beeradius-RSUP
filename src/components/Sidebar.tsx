@@ -39,8 +39,8 @@ export default function Sidebar() {
   const isSuperAdmin = (session?.user as any)?.role === "superadmin";
 
   return (
-    <aside className="flex flex-col w-64 min-h-full bg-base-100/90 backdrop-blur-xl border-r border-primary/10 p-4 gap-6">
-      <div className="flex items-center gap-3 px-2 pt-1">
+    <aside className="flex flex-col w-64 h-screen max-h-screen sticky top-0 bg-base-100/90 backdrop-blur-xl border-r border-primary/10 p-4 gap-4 overflow-hidden">
+      <div className="flex items-center gap-3 px-2 pt-1 shrink-0">
         <div className="h-9 w-9 rounded-lg bg-linear-to-br from-primary to-secondary flex items-center justify-center text-white shadow-[0_0_16px_rgba(56,189,248,0.35)]">
           <FaNetworkWired className="h-4 w-4" />
         </div>
@@ -50,7 +50,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-6 overflow-y-auto">
+      <nav className="flex-1 space-y-5 overflow-y-auto pr-1">
         <Section title="Utama">
           <li><ActiveLink href="/"><FaHome className={icon} />Dashboard</ActiveLink></li>
           <li><ActiveLink href="/reports"><FaChartBar className={icon} />Laporan</ActiveLink></li>
@@ -71,9 +71,7 @@ export default function Sidebar() {
           <li><ActiveLink href="/radius-pools"><FaNetworkWired className={icon} />IP Pools</ActiveLink></li>
           <li><ActiveLink href="/devices"><FaNetworkWired className={icon} />Perangkat Jaringan</ActiveLink></li>
           <li><ActiveLink href="/topology"><FaProjectDiagram className={icon} />Topologi Jaringan</ActiveLink></li>
-          {isSuperAdmin && (
-            <li><ActiveLink href="/nas"><FaServer className={icon} />NAS (RADIUS Client)</ActiveLink></li>
-          )}
+          <li><ActiveLink href="/nas"><FaServer className={icon} />Perangkat RADIUS</ActiveLink></li>
           <li><ActiveLink href="/wifi"><FaWifi className={icon} />WiFi RSUD NTB</ActiveLink></li>
         </Section>
 
@@ -81,10 +79,10 @@ export default function Sidebar() {
           {isSuperAdmin && (
             <li><ActiveLink href="/audit-log"><FaHistory className={icon} />Audit Log</ActiveLink></li>
           )}
-          <li><ActiveLink href="/settings/admin"><FaCog className={icon} />Profil Admin</ActiveLink></li>
-          {isSuperAdmin && (
+          {/* Koneksi MikroTik via REST dinonaktifkan sementara */}
+          {/* {isSuperAdmin && (
             <li><ActiveLink href="/settings/mikrotik"><FaServer className={icon} />Koneksi MikroTik</ActiveLink></li>
-          )}
+          )} */}
           {isSuperAdmin && (
             <li><ActiveLink href="/settings/admin/manage"><FaUserShield className={icon} />Daftar Admin</ActiveLink></li>
           )}
@@ -92,7 +90,7 @@ export default function Sidebar() {
         </Section>
       </nav>
 
-      <div className="pt-3 border-t border-primary/10 flex items-center justify-between">
+      <div className="pt-3 pb-6 border-t border-primary/10 flex items-center justify-between shrink-0">
         <span className="text-[11px] font-mono text-slate-500 uppercase tracking-wider">Tampilan</span>
         <ThemeToggle />
       </div>

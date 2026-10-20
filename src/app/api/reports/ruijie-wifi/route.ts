@@ -54,10 +54,13 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    const hasPaginationParam = searchParams.has("page") || searchParams.has("pageSize");
     const totalItems = filteredClients.length;
     const totalPages = Math.ceil(totalItems / pageSize) || 1;
     const startIndex = (page - 1) * pageSize;
-    const paginatedClients = filteredClients.slice(startIndex, startIndex + pageSize);
+    const paginatedClients = hasPaginationParam
+      ? filteredClients.slice(startIndex, startIndex + pageSize)
+      : filteredClients;
 
     return NextResponse.json({
       summary: reportData.summary,

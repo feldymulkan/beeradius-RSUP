@@ -63,7 +63,7 @@ export default function NasClientWrapper({ nasList, page, pageSize, totalPages }
           <DeleteButton 
             itemId={nas.id.toString()} 
             itemName={nas.nasname} 
-            entityType="NAS" 
+            entityType="Perangkat RADIUS" 
             apiEndpoint="/api/radius/nas" 
           />
         </div>
@@ -102,9 +102,9 @@ export default function NasClientWrapper({ nasList, page, pageSize, totalPages }
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message || "Gagal menyimpan data NAS");
+        throw new Error(data.message || "Gagal menyimpan data perangkat RADIUS");
       }
-      toast.success(isEditing ? "NAS berhasil diperbarui" : "NAS berhasil ditambahkan");
+      toast.success(isEditing ? "Perangkat RADIUS berhasil diperbarui" : "Perangkat RADIUS berhasil ditambahkan");
       (document.getElementById('nas_modal') as any).close();
       router.refresh();
     } catch (err: any) {
@@ -122,21 +122,21 @@ export default function NasClientWrapper({ nasList, page, pageSize, totalPages }
           className="btn btn-primary" 
           onClick={handleAddClick}
         >
-          Tambah NAS Baru
+          + Tambah Perangkat RADIUS
         </button>
       </div>
 
       <DataTable 
         data={nasList} 
         columns={columns} 
-        page={page}
+        page={page} 
         pageSize={pageSize}
         totalPages={totalPages}
       />
 
       <dialog id="nas_modal" className="modal">
         <div className="modal-box">
-          <h3 className="font-bold text-lg">{isEditing ? "Edit Perangkat (NAS)" : "Tambah Perangkat Baru (NAS)"}</h3>
+          <h3 className="font-bold text-lg">{isEditing ? "Edit Perangkat RADIUS" : "Tambah Perangkat RADIUS"}</h3>
           <form onSubmit={handleSubmit} className="py-4 space-y-4">
             <div className="form-control">
               <label className="label"><span className="label-text">IP Address atau Hostname</span></label>

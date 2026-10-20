@@ -45,10 +45,10 @@ export default function NasStatusWidget() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="font-mono text-[10px] font-semibold tracking-[0.08em] uppercase text-slate-400">Infrastruktur Router</p>
-              <h3 className="text-base font-bold tracking-tight">Status Router &amp; NAS</h3>
+              <p className="font-mono text-[10px] font-semibold tracking-[0.08em] uppercase text-base-content/60">Infrastruktur Gateway</p>
+              <h3 className="text-base font-bold tracking-tight text-base-content">Status Perangkat RADIUS</h3>
             </div>
-            <span className="badge badge-sm badge-ghost font-mono text-[10px] text-slate-400">
+            <span className="badge badge-sm badge-ghost font-mono text-[10px] text-base-content/60">
               {onlineCount}/{total} Online
             </span>
           </div>
@@ -58,8 +58,8 @@ export default function NasStatusWidget() {
               <span className="loading loading-spinner loading-md text-primary"></span>
             </div>
           ) : healthData.length === 0 ? (
-            <div className="flex justify-center items-center h-[180px] text-slate-500 text-sm italic">
-              Belum ada perangkat NAS terdaftar
+            <div className="flex justify-center items-center h-[180px] text-base-content/50 text-sm italic">
+              Belum ada perangkat RADIUS terdaftar
             </div>
           ) : (
             <div className="space-y-2.5 my-2">

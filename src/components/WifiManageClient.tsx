@@ -34,6 +34,8 @@ export type RuijieProjectHierarchy = {
 
 export type RuijieWifiItem = {
   id: number;
+  wlanId?: number;
+  fowardType?: string;
   ssidName: string;
   password?: string;
   vlanId?: number;
@@ -419,48 +421,57 @@ export default function WifiManageClient() {
             <span className="badge badge-sm badge-neutral font-mono">{totalAll || totalItems}</span>
           </button>
 
-          {hierarchy.map((proj) => {
-            const isActive = selectedParentGroup === proj.name;
-            const ssidCount = groupStats[proj.name];
-            return (
-              <button
-                key={proj.groupId}
-                onClick={() => handleSelectParentGroup(proj.name)}
-                className={`btn btn-sm gap-2 whitespace-nowrap shrink-0 transition-all ${
-                  isActive
-                    ? "btn-primary shadow-sm"
-                    : "btn-ghost text-base-content/70 hover:bg-base-200"
-                }`}
-              >
-                <FiFolder className="w-3.5 h-3.5" />
-                {proj.name}
-                {ssidCount !== undefined && (
-                  <span className="badge badge-sm badge-ghost font-mono text-[10px]">
-                    {ssidCount} SSID
-                  </span>
-                )}
-                {proj.subGroups.length > 0 && (
-                  <span className="badge badge-sm badge-outline font-mono text-[10px]">
-                    {proj.subGroups.length} Sub
-                  </span>
-                )}
-              </button>
-            );
-          })}
+          {hierarchy.length === 0 && isLoading ? (
+            <>
+              <div className="skeleton h-8 w-44 rounded-lg shrink-0" />
+              <div className="skeleton h-8 w-36 rounded-lg shrink-0" />
+              <div className="skeleton h-8 w-36 rounded-lg shrink-0" />
+              <div className="skeleton h-8 w-40 rounded-lg shrink-0" />
+            </>
+          ) : (
+            hierarchy.map((proj) => {
+              const isActive = selectedParentGroup === proj.name;
+              const ssidCount = groupStats[proj.name];
+              return (
+                <button
+                  key={proj.groupId}
+                  onClick={() => handleSelectParentGroup(proj.name)}
+                  className={`btn btn-sm gap-2 whitespace-nowrap shrink-0 transition-all ${
+                    isActive
+                      ? "btn-primary shadow-sm"
+                      : "btn-ghost text-base-content/70 hover:bg-base-200"
+                  }`}
+                >
+                  <FiFolder className="w-3.5 h-3.5" />
+                  {proj.name}
+                  {ssidCount !== undefined && (
+                    <span className="badge badge-sm badge-ghost font-mono text-[10px]">
+                      {ssidCount} SSID
+                    </span>
+                  )}
+                  {proj.subGroups.length > 0 && (
+                    <span className="badge badge-sm badge-outline font-mono text-[10px]">
+                      {proj.subGroups.length} Sub
+                    </span>
+                  )}
+                </button>
+              );
+            })
+          )}
         </div>
       </div>
 
       {/* Filter Toolbar (Sub Group Selector & Search) */}
       <div className="flex flex-wrap items-center justify-between gap-4 bg-base-100 p-3.5 rounded-xl border border-base-300 shadow-sm">
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold text-base-content/70 flex items-center gap-1.5 whitespace-nowrap">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
+            <span className="text-xs font-semibold text-base-content/70 flex items-center gap-1.5 whitespace-nowrap shrink-0">
               <FiLayers className="w-4 h-4 text-primary" /> Sub Group:
             </span>
             <select
               value={selectedSubGroup}
               onChange={(e) => handleSelectSubGroup(e.target.value)}
-              className="select select-bordered select-sm w-64 font-medium text-xs bg-base-100 text-base-content focus:outline-primary"
+              className="select select-bordered select-sm w-full sm:w-64 max-w-full font-medium text-xs bg-base-100 text-base-content focus:outline-primary"
             >
               <option value="ALL">Semua Sub Group ({availableSubGroups.length} Unit)</option>
               {availableSubGroups.map((sg) => (
@@ -606,46 +617,55 @@ export default function WifiManageClient() {
 }
 
 function WifiSkeleton({ isSuperAdmin }: { isSuperAdmin: boolean }) {
-  const skeletonRows = Array.from({ length: 5 });
+  const skeletonRows = Array.from({ length: 8 });
   return (
-    <div className="p-4 space-y-4 animate-pulse">
+    <div className="space-y-4 animate-pulse">
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>
             <tr>
               <th className="w-12">#</th>
-              <th>SSID & NAMA JARINGAN</th>
-              <th>STRUKTUR GROUP & SUB GROUP</th>
+              <th>SSID &amp; NAMA JARINGAN</th>
+              <th>STRUKTUR GROUP &amp; SUB GROUP</th>
               <th>PASSWORD WIFI</th>
               <th className="text-center">VLAN</th>
-              <th>KEAMANAN & RADIO</th>
+              <th>KEAMANAN &amp; RADIO</th>
               <th className="text-center">STATUS SIARAN</th>
-              {isSuperAdmin && <th className="text-center">AKSI</th>}
+              {isSuperAdmin && <th className="text-center w-24">AKSI</th>}
             </tr>
           </thead>
           <tbody>
             {skeletonRows.map((_, idx) => (
-              <tr key={idx}>
-                <td><div className="skeleton h-4 w-4"></div></td>
+              <tr key={idx} className="border-b border-base-200">
+                <td><div className="skeleton h-4 w-4" /></td>
                 <td>
-                  <div className="skeleton h-5 w-44 mb-1"></div>
-                  <div className="skeleton h-3 w-28"></div>
+                  <div className="flex items-center gap-2.5">
+                    <div className="skeleton h-7 w-7 rounded-lg shrink-0" />
+                    <div className="space-y-1">
+                      <div className="skeleton h-4 w-40 rounded" />
+                      <div className="skeleton h-3 w-28 rounded" />
+                    </div>
+                  </div>
                 </td>
                 <td>
-                  <div className="skeleton h-4 w-40 mb-1"></div>
-                  <div className="skeleton h-4 w-28"></div>
+                  <div className="space-y-1.5 py-0.5">
+                    <div className="skeleton h-4 w-32 rounded" />
+                    <div className="skeleton h-3.5 w-24 rounded ml-4" />
+                  </div>
                 </td>
-                <td><div className="skeleton h-5 w-24"></div></td>
-                <td className="text-center"><div className="skeleton h-6 w-16 mx-auto rounded-md"></div></td>
+                <td><div className="skeleton h-5 w-24 rounded" /></td>
+                <td className="text-center"><div className="skeleton h-6 w-16 mx-auto rounded-md" /></td>
                 <td>
-                  <div className="skeleton h-4 w-28 mb-1"></div>
-                  <div className="skeleton h-3 w-36"></div>
+                  <div className="space-y-1">
+                    <div className="skeleton h-4 w-28 rounded" />
+                    <div className="skeleton h-3 w-20 rounded" />
+                  </div>
                 </td>
-                <td className="text-center"><div className="skeleton h-6 w-16 mx-auto rounded-full"></div></td>
+                <td className="text-center"><div className="skeleton h-6 w-16 mx-auto rounded-full" /></td>
                 {isSuperAdmin && (
                   <td>
                     <div className="flex justify-center">
-                      <div className="skeleton h-7 w-16 rounded-md"></div>
+                      <div className="skeleton h-7 w-16 rounded-md" />
                     </div>
                   </td>
                 )}
@@ -653,6 +673,12 @@ function WifiSkeleton({ isSuperAdmin }: { isSuperAdmin: boolean }) {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Pagination skeleton */}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4 px-4 py-3 bg-base-100/60 border-t border-base-300">
+        <div className="skeleton h-4 w-48 rounded" />
+        <div className="skeleton h-6 w-40 rounded" />
       </div>
     </div>
   );

@@ -94,9 +94,9 @@ export default function OverviewDashboard({ initialData }: { initialData: Server
             Monitoring telemetri &amp; infrastruktur RADIUS RSUD NTB secara real-time.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
           {lastRefreshed && (
-            <span className="font-mono text-xs text-slate-500 bg-base-100/60 border border-primary/10 px-3 py-1.5 rounded-lg">
+            <span className="font-mono text-xs text-slate-500 bg-base-100/60 border border-primary/10 px-3 py-1.5 rounded-lg shrink-0">
               Sinkron: {lastRefreshed}
             </span>
           )}
@@ -150,12 +150,12 @@ export default function OverviewDashboard({ initialData }: { initialData: Server
           </div>
         </div>
 
-        {/* Card 3: Router NAS Gateways */}
+        {/* Card 3: Perangkat RADIUS Gateways */}
         <div className="card relative overflow-hidden">
           <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-accent/50 to-transparent" />
           <div className="card-body p-5 gap-1.5">
             <div className="flex items-center justify-between">
-              <p className="font-mono text-[10px] font-semibold tracking-[0.08em] uppercase text-slate-400">Router NAS</p>
+              <p className="font-mono text-[10px] font-semibold tracking-[0.08em] uppercase text-slate-400">Perangkat RADIUS</p>
               <FaServer className="text-accent text-sm" />
             </div>
             <p className="font-mono text-4xl font-bold tracking-tight">{initialData.totalNas}</p>
@@ -229,7 +229,7 @@ export default function OverviewDashboard({ initialData }: { initialData: Server
                       <th>User</th>
                       <th>Waktu Login</th>
                       <th>Framed IP</th>
-                      <th>NAS IP</th>
+                      <th>IP Perangkat</th>
                     </tr>
                   </thead>
                   <tbody>

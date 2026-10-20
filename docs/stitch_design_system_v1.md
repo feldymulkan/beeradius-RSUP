@@ -104,9 +104,12 @@ Struktur drawer samping kanan (lebar `w-96` hingga `w-[420px]`):
 
 ## 5. Ringkasan Komponen UI & Lokasi File
 
-- **Kanvas Topologi**: [TopologyCanvas.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/topology/TopologyCanvas.tsx)
-- **Modal Diffing Sinkronisasi**: [SwitchSyncModal.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/topology/SwitchSyncModal.tsx)
-- **Drawer Detail Telemetri**: [DeviceDetailsDrawer.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/topology/DeviceDetailsDrawer.tsx)
-- **Katalog Perangkat Multi-Tipe**: [switches/page.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/app/(protected)/switches/page.tsx)
-- **Driver SNMP & MIB Parser**: [snmp.ts](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/lib/snmp.ts)
-- **Engine Sinkronisasi API**: [sync-switches/route.ts](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/app/api/network/topology/sync-switches/route.ts)
+- **Kanvas Topologi**: [TopologyCanvas.tsx](file:///d:/projek/beeradius-RSUP/src/components/topology/TopologyCanvas.tsx)
+- **Engine Deteksi Topologi Cerdas**: [topologyAutoDetect.ts](file:///d:/projek/beeradius-RSUP/src/lib/topologyAutoDetect.ts)
+- **Modal Diffing Sinkronisasi**: [SwitchSyncModal.tsx](file:///d:/projek/beeradius-RSUP/src/components/topology/SwitchSyncModal.tsx)
+- **Drawer Detail Telemetri**: [DeviceDetailsDrawer.tsx](file:///d:/projek/beeradius-RSUP/src/components/topology/DeviceDetailsDrawer.tsx)
+- **Katalog Perangkat Multi-Tipe**: [devices/page.tsx](file:///d:/projek/beeradius-RSUP/src/app/(protected)/devices/page.tsx)
+- **Skeleton Shimmer Universal**: [Skleton.tsx](file:///d:/projek/beeradius-RSUP/src/components/Skleton.tsx)
+- **Client Ruijie Cloud Northbound**: [ruijie.ts](file:///d:/projek/beeradius-RSUP/src/lib/ruijie.ts)
+- **Driver SNMP & MIB Parser**: [snmp.ts](file:///d:/projek/beeradius-RSUP/src/lib/snmp.ts)
+- **Engine Sinkronisasi API**: [sync-switches/route.ts](file:///d:/projek/beeradius-RSUP/src/app/api/network/topology/sync-switches/route.ts)

@@ -485,9 +485,28 @@ export async function getRuijieWifiReport(forceRefresh = false): Promise<RuijieW
   const projectResults = await Promise.all(
     hierarchy.map(async (proj) => {
       try {
-        const userRes = await fetchRuijie<{ code: number; totalCount?: number; list?: any[] }>(
-          `/service/api/open/v1/dev/user/current-user?group_id=${proj.groupId}&page_size=100&page_index=1`
-        ).catch(() => ({ code: -1, totalCount: 0, list: [] }));
+        // Tarik seluruh klien nirkabel aktif dengan paginasi penuh per-1000
+        const rawClients: any[] = [];
+        let clientPage = 1;
+        let reportedTotalClients = 0;
+        while (true) {
+          try {
+            const userRes = await fetchRuijie<{ code: number; totalCount?: number; list?: any[] }>(
+              `/service/api/open/v1/dev/user/current-user?group_id=${proj.groupId}&page_size=1000&page_index=${clientPage}`
+            ).catch(() => ({ code: -1, totalCount: 0, list: [] }));
+
+            if (userRes.totalCount) reportedTotalClients = userRes.totalCount;
+            const list = Array.isArray(userRes.list) ? userRes.list : [];
+            rawClients.push(...list);
+
+            if (list.length < 1000 || (reportedTotalClients && rawClients.length >= reportedTotalClients) || clientPage >= 10) {
+              break;
+            }
+            clientPage++;
+          } catch {
+            break;
+          }
+        }
 
         // Tarik seluruh perangkat nirkabel (AP & Home Router) dengan paginasi penuh
         const rawAps: any[] = [];
@@ -507,8 +526,6 @@ export async function getRuijieWifiReport(forceRefresh = false): Promise<RuijieW
             break;
           }
         }
-
-        const rawClients = Array.isArray(userRes.list) ? userRes.list : [];
 
         const clients: RuijieWifiClient[] = rawClients.map((c) => ({
           mac: c.mac || "-",
@@ -581,7 +598,7 @@ export async function getRuijieWifiReport(forceRefresh = false): Promise<RuijieW
         return {
           project: proj.name,
           groupId: proj.groupId,
-          totalClients: userRes.totalCount || clients.length,
+          totalClients: reportedTotalClients || clients.length,
           clients,
           totalAps: projApsCount,
           onlineAps: projOnlineApsCount,
@@ -673,9 +690,12 @@ export async function getRuijieWifiReport(forceRefresh = false): Promise<RuijieW
   const pct5G = Math.round((count5G / totalBands) * 100);
   const pct24G = 100 - pct5G;
 
-  // Top SSIDs sorted by client count
-  const totalSsidClients = Object.values(ssidMap).reduce((a, b) => a + b.clients, 0) || 1;
-  const topSsids = Object.entries(ssidMap)
+  // Top SSIDs sorted by client count (filter out Unknown, empty, or placeholder '-')
+  const validSsidEntries = Object.entries(ssidMap).filter(
+    ([ssid]) => ssid && ssid !== "Unknown" && ssid !== "-" && ssid.trim() !== ""
+  );
+  const totalSsidClients = validSsidEntries.reduce((a, b) => a + b[1].clients, 0) || 1;
+  const topSsids = validSsidEntries
     .map(([ssid, val]) => ({
       ssid,
       clients: val.clients,

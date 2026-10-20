@@ -52,10 +52,10 @@ export default function UserFilter({
     (currentNeverLogged ? 1 : 0);
 
   return (
-    <div className="flex flex-wrap gap-2 items-center">
+    <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
       {/* Filter Group */}
       <select
-        className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors ${
+        className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors flex-1 sm:flex-initial ${
           currentGroup ? "border-primary text-primary font-medium" : "border-base-300"
         } ${isPending ? "opacity-70 cursor-wait" : ""}`}
         value={currentGroup}
@@ -73,7 +73,7 @@ export default function UserFilter({
 
       {/* Filter Status (Online/Offline/Stale) */}
       <select
-        className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors ${
+        className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors flex-1 sm:flex-initial ${
           currentStatus ? "border-primary text-primary font-medium" : "border-base-300"
         } ${isPending ? "opacity-70 cursor-wait" : ""}`}
         value={currentStatus}
@@ -89,7 +89,7 @@ export default function UserFilter({
 
       {/* Filter Inaktivitas */}
       <select
-        className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors ${
+        className={`select select-sm bg-base-100 border text-xs rounded-lg focus:border-primary focus:outline-none transition-colors flex-1 sm:flex-initial ${
           currentNeverLogged ? "border-primary text-primary font-medium" : "border-base-300"
         } ${isPending ? "opacity-70 cursor-wait" : ""}`}
         value={currentNeverLogged}

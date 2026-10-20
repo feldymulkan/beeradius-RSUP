@@ -59,6 +59,7 @@ interface NetworkDevice {
   snmpContext?: string;
   brand: string;
   model: string;
+  serialNumber?: string;
   sysDescr?: string;
   location?: string;
   status: "online" | "offline" | "snmp_offline";
@@ -182,6 +183,59 @@ export default function DevicesPage() {
       return matchQuery && matchBrand && matchStatus && matchType && matchConnMethod;
     });
   }, [devices, searchQuery, selectedBrand, selectedStatus, selectedType, selectedConnMethod]);
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number | "all">(25);
+
+  // Reset page when filter inputs change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedBrand, selectedStatus, selectedType, selectedConnMethod]);
+
+  // Total pages calculation
+  const totalPages = useMemo(() => {
+    if (pageSize === "all") return 1;
+    return Math.max(1, Math.ceil(filteredDevices.length / pageSize));
+  }, [filteredDevices.length, pageSize]);
+
+  // Adjust current page if out of bounds after filtering
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
+
+  // Paginated devices
+  const paginatedDevices = useMemo(() => {
+    if (pageSize === "all") return filteredDevices;
+    const start = (currentPage - 1) * pageSize;
+    return filteredDevices.slice(start, start + pageSize);
+  }, [filteredDevices, currentPage, pageSize]);
+
+  const startIndex = pageSize === "all" ? 0 : (currentPage - 1) * pageSize;
+  const endIndex = pageSize === "all" ? filteredDevices.length : Math.min(startIndex + pageSize, filteredDevices.length);
+
+  // Helper page numbers calculation
+  const getPageNumbers = () => {
+    const pages: (number | "...")[] = [];
+    const maxVisible = 5;
+
+    if (totalPages <= maxVisible + 2) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("...");
+
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) pages.push(i);
+
+      if (currentPage < totalPages - 2) pages.push("...");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
 
   // Summary Metrics
   const metrics = useMemo(() => {
@@ -490,7 +544,7 @@ export default function DevicesPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="card p-4 flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs text-base-content/70 font-mono uppercase tracking-wider">Total Perangkat</span>
@@ -570,10 +624,10 @@ export default function DevicesPage() {
       </div>
 
       {/* Unified Toolbar */}
-      <div className="card p-3 flex flex-col md:flex-row items-center gap-3">
+      <div className="card p-3 flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="relative flex-1 w-full flex items-center gap-2"
+          className="relative flex-1 min-w-[280px] flex items-center gap-2"
         >
           <div className="relative flex-1">
             <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base-content/40 h-3.5 w-3.5" />
@@ -604,11 +658,11 @@ export default function DevicesPage() {
           </button>
         </form>
 
-        <div className="flex items-center gap-2 w-full md:w-auto flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0 overflow-x-auto">
           <select
             value={selectedBrand}
             onChange={(e) => setSelectedBrand(e.target.value)}
-            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg"
+            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg shrink-0"
           >
             <option value="all">Semua Brand</option>
             <option value="ruijie">Ruijie / Reyee</option>
@@ -622,7 +676,7 @@ export default function DevicesPage() {
           <select
             value={selectedConnMethod}
             onChange={(e) => setSelectedConnMethod(e.target.value)}
-            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg font-mono"
+            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg font-mono shrink-0"
           >
             <option value="all">Semua Koneksi</option>
             <option value="snmp">SNMP (v1/v2c/v3)</option>
@@ -635,7 +689,7 @@ export default function DevicesPage() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg"
+            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg shrink-0"
           >
             <option value="all">Semua Status</option>
             <option value="online">🟢 Online</option>
@@ -652,7 +706,7 @@ export default function DevicesPage() {
                 setSelectedType("all");
                 setSelectedConnMethod("all");
               }}
-              className="btn btn-sm btn-ghost text-xs gap-1 border border-base-300 hover:text-rose-400 cursor-pointer"
+              className="btn btn-sm btn-ghost text-xs gap-1 border border-base-300 hover:text-rose-400 shrink-0 cursor-pointer"
               title="Reset semua filter dan pencarian"
             >
               <FaTimes size={10} />
@@ -720,7 +774,7 @@ export default function DevicesPage() {
                   </td>
                 </tr>
               ) : (
-                filteredDevices.map((dev) => {
+                paginatedDevices.map((dev) => {
                   const isScanning = scanningId === dev.id;
                   const upCount = dev.ports?.filter((p) => p.status === "up").length || 0;
                   const totalCount = dev.ports?.length || 0;
@@ -728,43 +782,36 @@ export default function DevicesPage() {
 
                   return (
                     <tr key={dev.id} className="hover">
-                      <td>
+                      <td className="min-w-[240px]">
                         <div className="flex items-center gap-2.5">
-                          <span className="p-1.5 rounded-lg bg-base-200 border border-base-300 shadow-xs shrink-0">
+                          <span className="p-2 rounded-lg bg-base-200 border border-base-300 shadow-xs shrink-0">
                             {getDeviceIcon(dev.deviceType)}
                           </span>
-                          <div className="min-w-0">
-                            <div className="font-semibold text-sm text-base-content flex items-center gap-1.5 flex-wrap">
-                              <span className="truncate max-w-[200px]" title={dev.name}>{dev.name}</span>
-                              <span className="badge badge-xs badge-outline border-base-300 font-mono text-[8px] uppercase">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="font-semibold text-sm text-base-content truncate max-w-[170px] sm:max-w-[210px]" title={dev.name}>
+                                {dev.name}
+                              </span>
+                              <span className="badge badge-xs badge-outline border-base-300 font-mono text-[8px] uppercase shrink-0">
                                 {dev.deviceType || "SWITCH"}
                               </span>
+                            </div>
+                            <div className="text-xs font-mono text-primary flex items-center gap-1.5 mt-1 flex-wrap">
+                              <span className="font-semibold">{dev.ip}</span>
                               {isCloud ? (
-                                <span className="badge badge-xs bg-sky-500/10 text-sky-400 border border-sky-500/30 font-mono text-[9px] gap-1 px-1.5 py-0.5">
-                                  <FaCloud className="h-2 w-2" /> Ruijie Cloud
+                                <span className="badge badge-xs bg-sky-500/10 text-sky-400 border border-sky-500/30 font-mono text-[9px] gap-1 px-1.5 py-0.5 shrink-0">
+                                  <FaCloud className="h-2 w-2" /> Cloud
                                 </span>
                               ) : (
-                                <span className="badge badge-xs bg-primary/10 text-primary border border-primary/20 font-mono text-[8px] uppercase">
-                                  {dev.connMethod || "SNMP"}
+                                <span className="badge badge-xs bg-primary/10 text-primary border border-primary/20 font-mono text-[8px] uppercase shrink-0">
+                                  {dev.connMethod === "snmp" ? `SNMP v${dev.snmpVersion || "2c"}` : dev.connMethod}
                                 </span>
                               )}
-                            </div>
-                            <div className="text-xs font-mono text-primary flex items-center gap-1.5 mt-0.5 flex-wrap">
-                              <span>{dev.ip}</span>
-                              {dev.connMethod === "snmp" && (
-                                <span className="text-[10px] text-base-content/50">
-                                  :{dev.port}
+                              {dev.connMethod === "snmp" && dev.snmpVersion === "3" && (
+                                <span className="badge badge-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono text-[8px] shrink-0">
+                                  v3
                                 </span>
                               )}
-                              {dev.connMethod === "snmp" && dev.snmpVersion === "3" ? (
-                                <span className="badge badge-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono text-[9px] gap-1 px-1.5 py-1">
-                                  <FaShieldAlt className="h-2 w-2" /> v3 ({dev.snmpSecurityLevel || "authPriv"})
-                                </span>
-                              ) : dev.connMethod === "snmp" ? (
-                                <span className="text-[10px] text-base-content/60 font-mono">
-                                  (v{dev.snmpVersion})
-                                </span>
-                              ) : null}
                             </div>
                           </div>
                         </div>
@@ -807,10 +854,18 @@ export default function DevicesPage() {
                       </td>
                       <td>
                         {isCloud ? (
-                          <div className="text-xs font-mono text-base-content/70">
-                            <span className="badge badge-sm bg-base-200 border border-base-300 text-[10px] truncate max-w-[150px]">
-                              {dev.sysDescr ? dev.sysDescr.split("|")[0].replace("Ruijie Cloud AP - Project: ", "") : "Ruijie AP"}
+                          <div className="flex flex-col gap-1 items-start min-w-[130px]">
+                            <span className="badge badge-sm bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-mono shrink-0">
+                              ☁️ {dev.location ? dev.location.split(">")[0].trim() : "Ruijie Cloud"}
                             </span>
+                            {(() => {
+                              const sn = dev.serialNumber || (dev.sysDescr?.includes("SN:") ? dev.sysDescr.match(/SN:\s*([^\s-]+)/)?.[1] : undefined);
+                              return sn ? (
+                                <span className="text-[10px] text-base-content/60 font-mono truncate max-w-[150px]" title={`Serial Number: ${sn}`}>
+                                  SN: {sn}
+                                </span>
+                              ) : null;
+                            })()}
                           </div>
                         ) : (
                           <div className="flex flex-wrap gap-1 max-w-[220px]">
@@ -857,13 +912,13 @@ export default function DevicesPage() {
                           </div>
                         )}
                       </td>
-                      <td>
-                        <div className="text-xs text-base-content/80 flex items-center gap-1">
-                          <FaClock className="h-3 w-3 text-base-content/50" />
+                      <td className="min-w-[140px]">
+                        <div className="text-xs text-base-content/80 flex items-center gap-1.5">
+                          <FaClock className="h-3 w-3 text-base-content/50 shrink-0" />
                           <span className="font-mono">{dev.uptime || "-"}</span>
                         </div>
-                        <div className="text-[11px] text-base-content/60 flex items-center gap-1 mt-0.5">
-                          <FaMapMarkerAlt className="h-2.5 w-2.5 text-base-content/50" />
+                        <div className="text-[11px] text-base-content/60 flex items-center gap-1.5 mt-1">
+                          <FaMapMarkerAlt className="h-2.5 w-2.5 text-base-content/50 shrink-0" />
                           <span className="truncate max-w-[140px]" title={dev.location}>{dev.location || "RSUD NTB"}</span>
                         </div>
                       </td>
@@ -937,6 +992,116 @@ export default function DevicesPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Bar */}
+        {!loading && filteredDevices.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 bg-base-100/60 border-t border-base-300 text-xs">
+            {/* Info & Page Size */}
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className="text-base-content/70 font-mono">
+                Menampilkan <strong className="text-base-content font-bold">{startIndex + 1}</strong> - <strong className="text-base-content font-bold">{endIndex}</strong> dari <strong className="text-primary font-bold">{filteredDevices.length}</strong> perangkat
+                {filteredDevices.length !== devices.length && (
+                  <span className="text-base-content/50 ml-1">
+                    (difilter dari {devices.length} total)
+                  </span>
+                )}
+              </span>
+
+              <div className="flex items-center gap-1.5 ml-0 sm:ml-2">
+                <span className="text-[11px] text-base-content/60">Tampilkan:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    const val = e.target.value === "all" ? "all" : Number(e.target.value);
+                    setPageSize(val);
+                    setCurrentPage(1);
+                  }}
+                  className="select select-xs bg-base-200 border border-base-300 rounded font-mono text-xs focus:outline-hidden"
+                >
+                  <option value={10}>10 baris</option>
+                  <option value={25}>25 baris</option>
+                  <option value={50}>50 baris</option>
+                  <option value={100}>100 baris</option>
+                  <option value="all">Semua ({filteredDevices.length})</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center gap-2">
+                <div className="join">
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="join-item btn btn-xs border-base-300 disabled:opacity-30 cursor-pointer"
+                    title="Halaman Pertama"
+                  >
+                    ««
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="join-item btn btn-xs border-base-300 disabled:opacity-30 cursor-pointer"
+                    title="Halaman Sebelumnya"
+                  >
+                    «
+                  </button>
+
+                  {getPageNumbers().map((p, idx) =>
+                    p === "..." ? (
+                      <button
+                        key={`ellipsis-${idx}`}
+                        disabled
+                        className="join-item btn btn-xs border-base-300 pointer-events-none opacity-50"
+                      >
+                        …
+                      </button>
+                    ) : (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => setCurrentPage(p as number)}
+                        className={`join-item btn btn-xs font-mono cursor-pointer ${
+                          currentPage === p
+                            ? "btn-primary font-bold shadow-xs text-black"
+                            : "btn-ghost border-base-300 text-base-content/80 hover:text-base-content"
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="join-item btn btn-xs border-base-300 disabled:opacity-30 cursor-pointer"
+                    title="Halaman Selanjutnya"
+                  >
+                    »
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="join-item btn btn-xs border-base-300 disabled:opacity-30 cursor-pointer"
+                    title="Halaman Terakhir"
+                  >
+                    »»
+                  </button>
+                </div>
+
+                <span className="text-[11px] text-base-content/60 font-mono hidden md:inline ml-1">
+                  Hal {currentPage} / {totalPages}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* MODAL 1: Detail VLAN, Port Matrix, & System */}
@@ -1273,7 +1438,7 @@ export default function DevicesPage() {
             </p>
 
             <form onSubmit={handleSubmitForm} className="space-y-4 mt-4">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="form-control">
                   <label className="label text-xs font-semibold text-base-content/80">Jenis Perangkat</label>
                   <select
@@ -1326,7 +1491,7 @@ export default function DevicesPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="form-control">
                   <label className="label text-xs font-semibold text-base-content/80">IP Address Perangkat</label>
                   <input
@@ -1349,7 +1514,7 @@ export default function DevicesPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="form-control">
                   <label className="label text-xs font-semibold text-base-content/80">Brand / Vendor</label>
                   <input
@@ -1374,7 +1539,7 @@ export default function DevicesPage() {
 
               {formData.connMethod === "snmp" && (
                 <div className="space-y-3 bg-base-200/50 p-3.5 rounded-xl border border-base-300">
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="form-control">
                       <label className="label text-xs font-semibold text-base-content/80">SNMP Version</label>
                       <select
@@ -1420,7 +1585,7 @@ export default function DevicesPage() {
 
                   {formData.snmpVersion === "3" && (
                     <div className="space-y-3 pt-2 border-t border-base-300/60">
-                      <div className="grid grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="form-control">
                           <label className="label text-xs font-semibold text-base-content/80 flex items-center gap-1">
                             <FaLock className="text-sky-400 text-[10px]" /> USM Username / SecName
@@ -1449,7 +1614,7 @@ export default function DevicesPage() {
                       </div>
 
                       {formData.snmpSecurityLevel !== "noAuthNoPriv" && (
-                        <div className="grid grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
                           <div className="form-control">
                             <label className="label text-[11px] font-semibold text-base-content/80">
                               Auth Protocol
@@ -1497,7 +1662,7 @@ export default function DevicesPage() {
                       )}
 
                       {formData.snmpSecurityLevel === "authPriv" && (
-                        <div className="grid grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
                           <div className="form-control">
                             <label className="label text-[11px] font-semibold text-base-content/80">
                               Privacy Protocol
@@ -1620,7 +1785,7 @@ export default function DevicesPage() {
               </div>
 
               <div className="space-y-3 bg-base-200/50 p-3.5 rounded-xl border border-base-300">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="form-control">
                     <label className="label text-xs font-semibold text-base-content/80">SNMP Version</label>
                     <select
@@ -1666,7 +1831,7 @@ export default function DevicesPage() {
 
                 {probeForm.snmpVersion === "3" && (
                   <div className="space-y-3 pt-2 border-t border-base-300/60">
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="form-control">
                         <label className="label text-xs font-semibold text-base-content/80 flex items-center gap-1">
                           <FaLock className="text-sky-400 text-[10px]" /> USM Username / SecName
@@ -1695,7 +1860,7 @@ export default function DevicesPage() {
                     </div>
 
                     {probeForm.snmpSecurityLevel !== "noAuthNoPriv" && (
-                      <div className="grid grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
                         <div className="form-control">
                           <label className="label text-[11px] font-semibold text-base-content/80">
                             Auth Protocol
@@ -1743,7 +1908,7 @@ export default function DevicesPage() {
                     )}
 
                     {probeForm.snmpSecurityLevel === "authPriv" && (
-                      <div className="grid grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-2.5 rounded-lg bg-base-100/60 border border-base-300/70">
                         <div className="form-control">
                           <label className="label text-[11px] font-semibold text-base-content/80">
                             Privacy Protocol

@@ -77,9 +77,18 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - Preferensi disimpan di `localStorage` melalui [ThemeProvider.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/ThemeProvider.tsx).
   - Komponen [ThemeToggle.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/components/ThemeToggle.tsx) diletakkan di Navbar kanan atas dan bagian bawah Sidebar.
   - Script inline `ThemeLoaderScript` di [layout.tsx](file:///c:/Users/feldy/Downloads/Project/beeradius-RSUP/src/app/layout.tsx) mencegah *flash of unstyled content* (FOUC) saat halaman dimuat ulang.
+- **Penamaan Standar Modul NAS: "Perangkat RADIUS" (`/nas`)**:
+  - DILARANG menggunakan istilah "NAS" secara telanjang pada judul halaman, menu navigasi sidebar, breadcrumb, atau tombol aksi, karena istilah tersebut rancu bagi pengguna dan sering disalahartikan sebagai *Network Attached Storage* (penyimpanan server).
+  - Selalu gunakan nama resmi **"Perangkat RADIUS"** (misal: di menu sidebar, header halaman `/nas`, dan modal registrasi perangkat FreeRADIUS client).
 - **Halaman Manajemen Perangkat Jaringan (`/devices` & Redirect dari `/switches`)**:
   - Menggantikan endpoint `/switches` menjadi `/devices` untuk menampung seluruh infrastruktur multi-perangkat (switch, router, access point, NVR CCTV, server, dan firewall). Endpoint `/switches` otomatis melakukan redirect ke `/devices`.
   - Mendukung **Multi-Metode Koneksi**: `snmp` (v1/v2c/v3), `cloud` (Ruijie Cloud Northbound REST API), `ping` (ICMP Keepalive), `api` (REST / MikroTik API), dan `manual`.
+  - **Tata Letak Bebas Tumpang Tindih (Zero Overlap Table & Toolbar)**:
+    - **Single-Row Unified Toolbar**: Menggunakan `flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3`. Pada desktop/laptop, kotak pencarian di kiri dan ketiga filter dropdown (`Semua Brand`, `Semua Koneksi`, `Semua Status`) serta tombol `Reset` berjejer horizontal dalam satu baris (`sm:flex-nowrap shrink-0 overflow-x-auto`) tanpa *stacked clutter*.
+    - **Kolom Perangkat & IP**: Diberi batas lebar aman `min-w-[240px]`, nama perangkat dengan badge tipe di baris 1 (`truncate max-w-[170px] sm:max-w-[210px]`), serta IP address dan badge koneksi (`Cloud` / `SNMP v2c/v3`) tersusun rapi di baris 2 tanpa bertubrukan saat nama AP panjang.
+    - **Kolom VLAN / Info Cerdas**: Untuk perangkat cloud Ruijie AP, menampilkan badge Proyek Gedung (misal `RSUD-NTB-UTAMA` atau `MANAJEMEN`) dan Serial Number perangkat yang diekstrak secara otomatis dari `sysDescr`, menggantikan teks firmware yang terpotong.
+    - **Kolom Uptime & Lokasi**: Menggunakan ikon tetap (`shrink-0`) dan pemotongan teks rapi (`truncate max-w-[140px]`) dengan tooltip judul lengkap.
+    - **Sidebar Footer Spacing**: Menambahkan `pb-6` pada footer sidebar untuk menjamin tombol *Tampilan* dan *ThemeToggle* tidak bertabrakan dengan indikator Next.js dev overlay di sudut kiri bawah layar.
   - **Integrasi Ruijie Cloud Northbound API**: Menarik dan menyinkronkan seluruh Access Point (~304 AP) dan Home Router (6 unit Reyee EW1200G-PRO) dari Ruijie Cloud ke database lokal BeeRadius secara otomatis (via tombol toolbar `☁️ Sinkron Ruijie Cloud` dan endpoint `POST /api/network/devices/sync-ruijie`). Perangkat cloud ditandai dengan badge khusus `Ruijie Cloud` dan status online/offline live.
   - **Pencegahan Duplikasi & Unique Constraint IP**: Menggunakan fallback IP lokal riil, CPE IP, atau serial number (`ruijie-${dev.serialNumber}`) untuk perangkat cloud tanpa IP LAN terdeteksi guna menjamin integritas *unique constraint* tabel `SwitchDevice`.
   - Deteksi otomatis brand & model perangkat (Ruijie Networks, ZTE, TP-Link, Cisco Systems, Huawei, MikroTik) berdasarkan `sysObjectID` (Enterprise PEN) dan regex `sysDescr`.
@@ -107,8 +116,10 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
 - **Halaman Pemetaan Topologi Jaringan & Deteksi Otomatis (`/topology`)**:
   - **⚡ Engine Deteksi Otomatis Bentuk Topologi (`src/lib/topologyAutoDetect.ts` & `/api/network/topology/auto-detect`)**:
     - **One-Click Auto-Discovery**: Tombol *⚡ Deteksi Bentuk* pada toolbar kanvas yang menganalisis seluruh perangkat aktif di database, mengklasifikasikan perannya ke dalam arsitektur hierarkis 3-Tier/4-Tier rumah sakit (Tier 1: Core Router/Firewall -> Tier 2: Core Switch -> Tier 3: Access Switch -> Tier 4: Endpoints).
+    - **Zero-Crossing Hierarchical Cluster Sub-Grid**: Endpoints (AP Ruijie, NVR CCTV) dikelompokkan langsung tepat di bawah parent switch masing-masing dalam sub-grid 2-kolom (`sw.x ± 120`, `sw.y + 200 + row * 160`), menghapus total garis kuning oranye pekat yang saling menyilang secara horizontal.
     - **Auto-Wiring Jalur Kabel Cerdas**: Otomatis mendeteksi dan menghubungkan kabel fiber optik 10G antar Core Router dan Core Switch, VLAN Trunk 802.1Q antar switch, dan PoE ke perangkat edge menggunakan port fisik riil (`sfp-sfpplus1`, `Gi0/24`, `gigabitEthernet 1/0/28`).
-    - **Zero Overlap Tree Layout**: Menata koordinat X & Y secara simetris, rapi, dan seimbang tanpa saling menimpa.
+    - **Garis Kabel & Badge Culling Halus**: Kabel endpoint digambar dengan transparansi lembut (`strokeWidth: 1.2`, `opacity: 0.45`), otomatis membesar (`strokeWidth: 4`, `opacity: 1`) saat dihover atau dipilih. Badge kabel pada link padat otomatis disembunyikan saat di-zoom-out (`zoom < 1.25`) untuk menjaga kanvas tetap bersih.
+    - **Mini Legend Pill**: Legend tipe kabel dapat di-minimize/collapse agar tidak menghalangi kanvas topologi di layar kecil.
   - **Tata Letak Anti-Tumpang Tindih (Zero Overlap Canvas)**:
     - Toolbar kanvas menggunakan tata letak adaptif `min-h-14 py-2 px-4 flex flex-wrap xl:flex-nowrap items-center justify-between gap-3`.
     - Title block perangkat diisolasi dengan `shrink-0 min-w-[200px]`, filter tipe perangkat berkemampuan horizontal scroll / wrap responsif, serta tombol aksi yang tertata rapi di kanan tanpa menimpa judul atau kanvas.
@@ -118,6 +129,12 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - **API Engine (`/api/network/topology/sync-switches`)**: Melakukan mapping port fisik riil (`SwitchPortInfo`), status OperStatus `up`/`down`, PVID, serta konfigurasi tagged/untagged VLAN ke node topologi tanpa memutuskan kabel yang sudah ada.
   - **Node Switch & Telemetry SNMP**: Menampilkan chip badge `SNMP SYNC`, status port riil (e.g. `18 UP / 24 Port`), counter VLAN aktif, serta drawer detail multi-tab (*Ringkasan & Kabel*, *Port Matrix SNMP*, dan *VLAN Discovered*) dengan tautan langsung ke halaman `/devices`.
   - **Kabel Interaktif & Legend**: Menampilkan 4 tipe kabel berstandar rumah sakit (Fiber Optic 10G, UTP Cat6 Gigabit 1G, PoE NVR CCTV/AP, VLAN Trunk 802.1Q) lengkap dengan tooltip port dan penghapusan kabel interaktif.
+- **Standar Skeleton Loading State Terpadu (`src/components/Skleton.tsx`)**:
+  - DILARANG menggunakan spinner mentah yang berkedip mendadak saat memuat halaman data berat.
+  - Selalu gunakan komponen modular `Skleton.tsx` yang mendukung varian adaptif (`dashboard`, `wifi`, `reports`, `devices`, `topology`, `card`, `table`, `chart`) dengan animasi shimmer DaisyUI berlatar netral `bg-base-200/50` dan aksen border `border-primary/10`.
+- **Standar Visualisasi Grafik Recharts Bebas Terpotong**:
+  - Hindari penggunaan nilai negatif pada `margin={{ left: ... }}` di dalam `<ResponsiveContainer>` Recharts (seperti `-20` atau `-10`), karena akan memotong angka label pada sumbu Y (*Y-Axis*).
+  - Selalu tetapkan margin kiri non-negatif (`left: 0` atau `left: 5`), atur lebar sumbu Y secara eksplisit (`width={40}` atau `width={48}`), dan tambahkan `domain={[0, 'auto']}` pada `YAxis` untuk mencegah nilai negatif sintetis.
 
 ### 5. Keamanan, Validasi & Best Practices
 - **Middleware**: Middleware di `src/middleware.ts` melindungi semua rute kecuali `/login`, `/api` (beberapa API endpoint melakukan pengecekan session secara internal), dan file statis.

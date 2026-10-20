@@ -244,7 +244,7 @@ export default function DataTable<T extends { [key: string]: any }>({
         </div>
 
         {totalPages > 1 && (
-          <div className="join">
+          <div className="join overflow-x-auto max-w-full">
             <Link
               href={createPageURL(page - 1)}
               className={`join-item btn btn-xs px-3 ${page <= 1 ? "btn-disabled" : ""}`}

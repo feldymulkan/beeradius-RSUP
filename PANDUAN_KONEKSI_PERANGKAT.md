@@ -74,15 +74,15 @@ Masuk ke Web GUI TP-Link:
 
 ### Langkah 2.2: Input Switch ke BeeRadius
 
-1. Buka dashboard BeeRadius, pilih menu **Perangkat Jaringan** pada sidebar (`/switches`).
+1. Buka dashboard BeeRadius, pilih menu **Perangkat Jaringan** pada sidebar (`/devices`). *(Catatan: endpoint `/switches` otomatis dialihkan ke `/devices`)*.
 2. Klik tombol **"+ Tambah Perangkat"** di pojok kanan atas.
 3. Isi formulir pendaftaran:
    - **Tipe Perangkat**: Pilih `Switch Managed`.
-   - **Metode Koneksi**: Pilih `SNMP (v1/v2c)`.
+   - **Metode Koneksi**: Pilih `SNMP (v1/v2c)` atau `SNMP v3`.
    - **Nama Perangkat**: Contoh `Switch-Core-IGD` atau `SW-Lantai2-Bedah`.
    - **Alamat IP**: Masukkan IP Management Switch (contoh: `10.1.8.2`).
    - **SNMP Port**: `161` (default).
-   - **SNMP Version**: `v2c`.
+   - **SNMP Version**: `2c` atau `3` (dilengkapi autentikasi USM MD5/SHA dan privasi DES/AES).
    - **SNMP Community**: Masukkan community string yang telah disetting (contoh: `rsudntb`).
    - **Brand & Model**: Masukkan brand (Ruijie/Cisco/TP-Link) atau kosongkan untuk auto-detect.
    - **Lokasi / Rack**: Contoh `Ruang Server Gedung IGD Lt. 1, Rack A`.
@@ -93,7 +93,7 @@ Masuk ke Web GUI TP-Link:
 
 ## 3. Menghubungkan Router Gateway MikroTik
 
-Router MikroTik dapat dipantau statusnya via SNMP untuk link status dan interface bandwidth.
+Router MikroTik (Cloud Core CCR, RouterBOARD RB, CRS, hEX, dll) dapat dipantau statusnya via SNMP untuk link status dan interface bandwidth.
 
 ### Langkah 3.1: Konfigurasi SNMP di MikroTik RouterOS
 Buka **WinBox** atau terminal SSH MikroTik:
@@ -106,7 +106,7 @@ set enabled=yes contact="NOC RSUD NTB" location="Data Center" trap-version=2
 ```
 
 ### Langkah 3.2: Daftarkan di BeeRadius
-1. Buka menu **Perangkat Jaringan** > **"+ Tambah Perangkat"**.
+1. Buka menu **Perangkat Jaringan** (`/devices`) > **"+ Tambah Perangkat"**.
 2. Pilih Tipe Perangkat: **Router Gateway**.
 3. Pilih Metode Koneksi: **SNMP** atau **API**.
 4. Masukkan IP Router (contoh: `10.1.8.1`), Port `161`, dan Community `rsudntb`.
@@ -118,7 +118,7 @@ set enabled=yes contact="NOC RSUD NTB" location="Data Center" trap-version=2
 
 Sistem BeeRadius v1.0.0 mendukung pemantauan NVR (Network Video Recorder) dan IP CCTV untuk monitoring keamanan RSUD NTB.
 
-1. Buka menu **Perangkat Jaringan** > **"+ Tambah Perangkat"**.
+1. Buka menu **Perangkat Jaringan** (`/devices`) > **"+ Tambah Perangkat"**.
 2. Pilih Tipe Perangkat: **NVR (CCTV)** atau **IP Camera CCTV**.
 3. Pilih Metode Koneksi:
    - Pilih **PING (ICMP Keepalive)** jika NVR tidak mengaktifkan SNMP.
@@ -131,7 +131,7 @@ Sistem BeeRadius v1.0.0 mendukung pemantauan NVR (Network Video Recorder) dan IP
 
 ## 5. Menghubungkan Server SIMRS & Database
 
-1. Buka menu **Perangkat Jaringan** > **"+ Tambah Perangkat"**.
+1. Buka menu **Perangkat Jaringan** (`/devices`) > **"+ Tambah Perangkat"**.
 2. Pilih Tipe Perangkat: **Server Aplikasi / Database**.
 3. Pilih Metode Koneksi: **SNMP** atau **PING (ICMP)**.
 4. Masukkan IP Server SIMRS (contoh: `10.1.10.5`).
@@ -140,12 +140,21 @@ Sistem BeeRadius v1.0.0 mendukung pemantauan NVR (Network Video Recorder) dan IP
 
 ---
 
-## 6. Menghubungkan Access Point (AP) & Wireless Controller
+## 6. Menghubungkan Access Point (AP) & Wireless Ruijie Cloud
 
-1. Buka menu **Perangkat Jaringan** > **"+ Tambah Perangkat"**.
+Untuk Access Point dan Home Router nirkabel RSUD NTB, BeeRadius menyediakan dua cara:
+
+### Cara A: Sinkronisasi Otomatis Massal (Rekomendasi)
+Jika perangkat nirkabel terdaftar di **Ruijie Cloud**, Anda tidak perlu mendaftarkan 300+ AP satu per satu:
+1. Buka halaman **Perangkat Jaringan** (`/devices`).
+2. Klik tombol **"☁️ Sinkron Ruijie Cloud"** di toolbar kanan atas.
+3. Sistem BeeRadius akan menghubungi Ruijie Cloud Northbound API secara otomatis, menarik seluruh 304+ Access Point dan 6 unit Home Router Reyee EW Series, mengindeks IP/SN/Lokasi gedung, serta memantau status online/offline secara live!
+
+### Cara B: Pendaftaran Manual Perangkat Standalone
+1. Buka menu **Perangkat Jaringan** (`/devices`) > **"+ Tambah Perangkat"**.
 2. Pilih Tipe Perangkat: **Access Point (AP)**.
 3. Masukkan IP AP atau IP Wireless Controller (contoh: `10.1.30.2`).
-4. Pilih Metode Koneksi: **SNMP** atau **PING**.
+4. Pilih Metode Koneksi: **SNMP**, **PING**, atau **Cloud**.
 5. Masukkan Lokasi: Contoh `Poli Rawat Jalan Lt. 1`.
 6. Klik **"Simpan Perangkat"**.
 
@@ -153,19 +162,21 @@ Sistem BeeRadius v1.0.0 mendukung pemantauan NVR (Network Video Recorder) dan IP
 
 ## 7. Melakukan Sinkronisasi ke Kanvas Topologi Jaringan
 
-Setelah semua perangkat terdaftar pada menu Perangkat Jaringan, langkah selanjutnya adalah memunculkannya ke diagram interaktif Topologi Jaringan:
+Setelah semua perangkat terdaftar pada menu Perangkat Jaringan, Anda dapat menampilkannya di diagram interaktif Topologi Jaringan (`/topology`):
 
-1. Buka menu **Topologi Jaringan** pada sidebar (`/topology`).
-2. Perhatikan tombol **"🔄 Sinkron Perangkat"** di toolbar kanan atas:
-   - Jika terdapat switch atau perangkat baru, tombol akan menampilkan badge angka (misal: `[+2 Baru]`).
-3. Klik tombol **"🔄 Sinkron Perangkat"**.
-4. Modal **Sinkronisasi Perangkat Jaringan** akan terbuka:
-   - Anda dapat melihat tab filter: **Semua**, **Perlu Ditambahkan (Baru)**, **Perlu Update**, dan **Tersinkron**.
-   - Setiap switch menampilkan detail: Nama, IP, Brand/Model, jumlah port fisik riil, dan status koneksi saat ini.
-   - Pastikan opsi **"Pertahankan kabel koneksi yang sudah digambar (Preserve Existing Edges)"** tercentang.
-5. Klik **"Pilih Semua"** atau centang perangkat yang diinginkan.
-6. Klik tombol **"Sinkronkan (N) Perangkat Terpilih"**.
-7. Kanvas topologi akan otomatis memuat perangkat baru dengan posisi kartu rapi di kanvas!
+### ⚡ Opsi 1: Deteksi Bentuk Otomatis (*One-Click Auto-Discovery*)
+1. Buka menu **Topologi Jaringan** (`/topology`).
+2. Klik tombol **"⚡ Deteksi Bentuk"** di toolbar kanvas.
+3. Sistem secara cerdas akan:
+   - Mengelompokkan seluruh perangkat ke dalam arsitektur hierarkis 3-Tier/4-Tier RSUD NTB (Tier 1: Core Router -> Tier 2: Core Switch -> Tier 3: Access Switch -> Tier 4: Endpoints AP/CCTV).
+   - Menata posisi kartu dalam sub-grid simetris bebas tumpang tindih (*zero-overlap layout*).
+   - Menghubungkan kabel fiber optik 10G antar-Core, kabel Trunk 802.1Q antar-switch, dan kabel PoE ke Access Point secara otomatis!
+
+### 🔄 Opsi 2: Sinkronisasi Perangkat Manual / Terpilih
+1. Klik tombol **"🔄 Sinkron Perangkat"** di toolbar kanan atas topologi.
+2. Modal **Sinkronisasi Perangkat Jaringan** akan menampilkan perangkat Baru, Perlu Update, dan Tersinkron.
+3. Pastikan opsi **"Pertahankan kabel koneksi yang sudah digambar (Preserve Existing Edges)"** tercentang jika Anda ingin mempertahankan konfigurasi kabel sebelumnya.
+4. Klik **"Pilih Semua"** lalu klik **"Sinkronkan Perangkat Terpilih"**.
 
 ---
 

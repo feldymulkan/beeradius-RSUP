@@ -87,6 +87,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
 
   // Selected edge state for quick inspection/deletion
   const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
+  const [isLegendOpen, setIsLegendOpen] = useState(false);
 
   // Viewport Pan & Zoom state
   const [zoom, setZoom] = useState(initialTopology.viewport?.zoom || 1);
@@ -577,6 +578,16 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
     }
   };
 
+  const formatPortBadge = (port?: string) => {
+    if (!port) return '-';
+    return port
+      .replace(/gigabitEthernet\s*/i, 'Gi')
+      .replace(/tenGigabitEthernet\s*/i, 'Te')
+      .replace(/fastEthernet\s*/i, 'Fa')
+      .replace(/ethernet\s*/i, 'Eth')
+      .trim();
+  };
+
   // Card dimensions for port center calculating
   const NODE_WIDTH = 220;
   const NODE_HEIGHT = 100;
@@ -883,10 +894,9 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
               const strokeColor = getLinkColor(edge.linkType);
               const isSelected = selectedEdgeId === edge.id;
 
-              // Distance-aware badge placement:
-              // If distance >= 220px, show dedicated end port badges near devices.
-              // If distance < 220px, suppress end badges to prevent badge overlap and show combined ports in center badge.
-              const showEndBadges = dist >= 220;
+              // Distance & Zoom-aware badge placement:
+              // Only show end port badges when the edge is selected OR zoom is >= 1.15 to avoid massive badge overlap
+              const showEndBadges = (isSelected || zoom >= 1.15) && dist >= 220;
 
               return (
                 <g key={edge.id} className="pointer-events-auto">
@@ -909,19 +919,20 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
                     d={`M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`}
                     fill="none"
                     stroke={strokeColor}
-                    strokeWidth={isSelected ? 4 : edge.linkType === 'fiber' ? 3 : 2.5}
+                    strokeWidth={isSelected ? 4 : edge.linkType === 'fiber' ? 3 : ['poe', 'copper'].includes(edge.linkType) ? 1.2 : 2.5}
+                    strokeOpacity={isSelected ? 1 : ['poe', 'copper'].includes(edge.linkType) ? 0.45 : 0.9}
                     strokeDasharray={edge.status === 'down' ? '6 4' : undefined}
                     filter={edge.linkType === 'fiber' ? 'url(#glow-fiber)' : undefined}
                     className="transition-all duration-150"
                   />
 
-                  {/* Port Label Source Badge - only when distance is safe */}
+                  {/* Port Label Source Badge - only when distance is safe and selected or zoomed in */}
                   {showEndBadges && (
                     <g transform={`translate(${x1 + dx * 0.14}, ${y1 + dy * 0.14})`}>
                       <rect
-                        x="-32"
+                        x="-30"
                         y="-9"
-                        width="64"
+                        width="60"
                         height="18"
                         rx="4"
                         fill="var(--topo-cable-bg)"
@@ -938,18 +949,18 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
                         fontFamily="monospace"
                         fontWeight="600"
                       >
-                        {edge.sourcePort.split(' ')[0]}
+                        {formatPortBadge(edge.sourcePort)}
                       </text>
                     </g>
                   )}
 
-                  {/* Port Label Target Badge - only when distance is safe */}
+                  {/* Port Label Target Badge - only when distance is safe and selected or zoomed in */}
                   {showEndBadges && (
                     <g transform={`translate(${x2 - dx * 0.14}, ${y2 - dy * 0.14})`}>
                       <rect
-                        x="-32"
+                        x="-30"
                         y="-9"
-                        width="64"
+                        width="60"
                         height="18"
                         rx="4"
                         fill="var(--topo-cable-bg)"
@@ -966,69 +977,71 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
                         fontFamily="monospace"
                         fontWeight="600"
                       >
-                        {edge.targetPort.split(' ')[0]}
+                        {formatPortBadge(edge.targetPort)}
                       </text>
                     </g>
                   )}
 
                   {/* Center Cable Info Badge */}
-                  <g
-                    transform={`translate(${midX}, ${midY})`}
-                    className="cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedEdgeId(edge.id);
-                    }}
-                  >
-                    <rect
-                      x={showEndBadges ? "-55" : "-70"}
-                      y={showEndBadges ? "-12" : "-14"}
-                      width={showEndBadges ? "110" : "140"}
-                      height={showEndBadges ? "24" : "28"}
-                      rx="6"
-                      fill="var(--topo-cable-bg)"
-                      stroke={isSelected ? '#38bdf8' : strokeColor}
-                      strokeWidth={isSelected ? '2' : '1'}
-                      opacity="0.96"
-                    />
-                    {showEndBadges ? (
-                      <text
-                        x="0"
-                        y="4"
-                        textAnchor="middle"
-                        fill={isSelected ? '#38bdf8' : 'var(--topo-cable-text)'}
-                        fontSize="10"
-                        fontFamily="monospace"
-                        fontWeight="bold"
-                      >
-                        {edge.speed} {edge.vlan ? `· ${edge.vlan.split(' ')[0]}` : ''}
-                      </text>
-                    ) : (
-                      <>
+                  {(isSelected || (!['poe', 'copper'].includes(edge.linkType) && zoom >= 0.7) || zoom >= 1.25) && (
+                    <g
+                      transform={`translate(${midX}, ${midY})`}
+                      className="cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedEdgeId(edge.id);
+                      }}
+                    >
+                      <rect
+                        x={showEndBadges ? "-55" : "-70"}
+                        y={showEndBadges ? "-12" : "-14"}
+                        width={showEndBadges ? "110" : "140"}
+                        height={showEndBadges ? "24" : "28"}
+                        rx="6"
+                        fill="var(--topo-cable-bg)"
+                        stroke={isSelected ? '#38bdf8' : strokeColor}
+                        strokeWidth={isSelected ? '2' : '1'}
+                        opacity="0.96"
+                      />
+                      {showEndBadges ? (
                         <text
                           x="0"
-                          y="-2"
+                          y="4"
                           textAnchor="middle"
-                          fill="var(--topo-cable-text)"
-                          fontSize="9"
+                          fill={isSelected ? '#38bdf8' : 'var(--topo-cable-text)'}
+                          fontSize="10"
                           fontFamily="monospace"
                           fontWeight="bold"
                         >
-                          {edge.sourcePort.split(' ')[0]} ⇄ {edge.targetPort.split(' ')[0]}
-                        </text>
-                        <text
-                          x="0"
-                          y="8"
-                          textAnchor="middle"
-                          fill="#38bdf8"
-                          fontSize="8"
-                          fontFamily="monospace"
-                        >
                           {edge.speed} {edge.vlan ? `· ${edge.vlan.split(' ')[0]}` : ''}
                         </text>
-                      </>
-                    )}
-                  </g>
+                      ) : (
+                        <>
+                          <text
+                            x="0"
+                            y="-2"
+                            textAnchor="middle"
+                            fill="var(--topo-cable-text)"
+                            fontSize="9"
+                            fontFamily="monospace"
+                            fontWeight="bold"
+                          >
+                            {formatPortBadge(edge.sourcePort)} ⇄ {formatPortBadge(edge.targetPort)}
+                          </text>
+                          <text
+                            x="0"
+                            y="8"
+                            textAnchor="middle"
+                            fill="#38bdf8"
+                            fontSize="8"
+                            fontFamily="monospace"
+                          >
+                            {edge.speed} {edge.vlan ? `· ${edge.vlan.split(' ')[0]}` : ''}
+                          </text>
+                        </>
+                      )}
+                    </g>
+                  )}
                 </g>
               );
             })}
@@ -1231,25 +1244,48 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
           onDisconnectEdge={handleDisconnectEdge}
         />
 
-        {/* Mini Legend on Bottom Left */}
-        <div className="absolute bottom-4 left-4 z-20 bg-base-100/90 backdrop-blur-md border border-base-300 p-2.5 rounded-xl shadow-xl text-[10px] font-mono space-y-1.5 pointer-events-none hidden sm:block">
-          <p className="font-bold text-base-content/70 uppercase tracking-wider text-[9px] mb-1">Keterangan Kabel:</p>
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-5 rounded-full bg-sky-400 shadow-[0_0_6px_#38bdf8]"></span>
-            <span className="text-base-content font-medium">Fiber Optic SFP+ (10G)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981]"></span>
-            <span className="text-base-content font-medium">UTP Cat6 Gigabit (1G)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-5 rounded-full bg-amber-400"></span>
-            <span className="text-base-content font-medium">PoE (NVR CCTV / Access Point)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-5 rounded-full bg-purple-400"></span>
-            <span className="text-base-content font-medium">VLAN Trunk 802.1Q</span>
-          </div>
+        {/* Collapsible Mini Legend on Bottom Left (Does not obscure canvas nodes) */}
+        <div className="absolute bottom-4 left-4 z-20 pointer-events-auto">
+          {isLegendOpen ? (
+            <div className="bg-base-100/95 backdrop-blur-md border border-base-300 p-3 rounded-xl shadow-2xl text-[10px] font-mono space-y-1.5 animate-fadeIn">
+              <div className="flex items-center justify-between gap-4 border-b border-base-300/60 pb-1.5 mb-1.5">
+                <p className="font-bold text-base-content/70 uppercase tracking-wider text-[9px]">Keterangan Kabel</p>
+                <button
+                  type="button"
+                  onClick={() => setIsLegendOpen(false)}
+                  className="btn btn-ghost btn-xs text-xs px-1 h-4 min-h-0 text-base-content/60 hover:text-base-content"
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-5 rounded-full bg-sky-400 shadow-[0_0_6px_#38bdf8]"></span>
+                <span className="text-base-content font-medium">Fiber Optic SFP+ (10G)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-5 rounded-full bg-emerald-400 shadow-[0_0_6px_#10b981]"></span>
+                <span className="text-base-content font-medium">UTP Cat6 Gigabit (1G)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-5 rounded-full bg-amber-400"></span>
+                <span className="text-base-content font-medium">PoE (NVR CCTV / Access Point)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-5 rounded-full bg-purple-400"></span>
+                <span className="text-base-content font-medium">VLAN Trunk 802.1Q</span>
+              </div>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsLegendOpen(true)}
+              className="btn btn-xs bg-base-100/90 backdrop-blur-md border border-base-300 font-mono text-[10px] gap-1.5 shadow-lg hover:bg-base-200 cursor-pointer text-base-content/80"
+              title="Tampilkan Keterangan Kabel"
+            >
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              Keterangan Kabel
+            </button>
+          )}
         </div>
       </div>
 
