@@ -17,6 +17,7 @@ import {
   FaMapMarkerAlt,
   FaTimes,
   FaRoute,
+  FaHome,
   FaVideo,
   FaWifi,
   FaShieldAlt,
@@ -252,6 +253,7 @@ export default function DevicesPage() {
     );
     const switchesCount = devices.filter((s) => (s.deviceType || "switch") === "switch").length;
     const routersCount = devices.filter((s) => s.deviceType === "router").length;
+    const homeRoutersCount = devices.filter((s) => s.deviceType === "home_router").length;
     const serversCount = devices.filter((s) => s.deviceType === "server").length;
     const nvrsCount = devices.filter((s) => s.deviceType === "nvr" || s.deviceType === "cctv").length;
     const apsCount = devices.filter((s) => s.deviceType === "ap").length;
@@ -268,6 +270,7 @@ export default function DevicesPage() {
       upPorts,
       switchesCount,
       routersCount,
+      homeRoutersCount,
       serversCount,
       nvrsCount,
       apsCount,
@@ -437,6 +440,7 @@ export default function DevicesPage() {
   const getDeviceIcon = (t?: string) => {
     switch (t) {
       case "router": return <FaRoute className="h-4 w-4 text-sky-400" />;
+      case "home_router": return <FaHome className="h-4 w-4 text-teal-400" />;
       case "switch": return <FaNetworkWired className="h-4 w-4 text-emerald-400" />;
       case "nvr": case "cctv": return <FaVideo className="h-4 w-4 text-amber-400" />;
       case "ap": return <FaWifi className="h-4 w-4 text-purple-400" />;
@@ -555,7 +559,7 @@ export default function DevicesPage() {
           <div className="mt-2">
             <p className="text-2xl font-bold font-mono text-base-content">{metrics.total}</p>
             <p className="text-[11px] text-base-content/60 mt-0.5">
-              {metrics.switchesCount} Switch, {metrics.routersCount} Router, {metrics.apsCount} AP
+              {metrics.switchesCount} Switch, {metrics.routersCount} Router, {metrics.homeRoutersCount > 0 ? `${metrics.homeRoutersCount} Home Router, ` : ""}{metrics.apsCount} AP
             </p>
           </div>
         </div>
@@ -623,136 +627,165 @@ export default function DevicesPage() {
         </div>
       </div>
 
-      {/* Unified Toolbar */}
-      <div className="card p-3 flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3">
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className="relative flex-1 min-w-[280px] flex items-center gap-2"
-        >
-          <div className="relative flex-1">
-            <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base-content/40 h-3.5 w-3.5" />
-            <input
-              type="text"
-              placeholder="Cari berdasarkan IP, Nama, Brand, Model, Serial, atau Lokasi Gedung..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="input input-sm w-full pl-9 pr-8 text-xs bg-base-100 border border-base-300 rounded-lg focus:border-primary focus:outline-none"
-            />
-            {searchQuery && (
+      {/* Unified Filter & Search Hub */}
+      <div className="card p-4 space-y-3.5 bg-base-100 border border-base-300 shadow-xs">
+        {/* Row 1: Search Bar & Primary Filter Controls */}
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+          {/* Search Input Box */}
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="relative flex-1 flex items-center gap-2"
+          >
+            <div className="relative flex-1">
+              <FaSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base-content/40 h-3.5 w-3.5" />
+              <input
+                type="text"
+                placeholder="Cari IP, nama, brand, model, serial, lokasi..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="input input-sm w-full pl-9 pr-8 text-xs bg-base-200/50 border border-base-300 rounded-lg focus:border-primary focus:bg-base-100 focus:outline-none transition-colors"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-base-content/40 hover:text-error cursor-pointer"
+                  title="Hapus pencarian"
+                >
+                  <FaTimes size={12} />
+                </button>
+              )}
+            </div>
+            <button
+              type="submit"
+              className="btn btn-sm btn-primary text-xs px-3.5 gap-1.5 shadow-xs shrink-0 cursor-pointer"
+            >
+              <FaSearch size={11} />
+              <span>Cari</span>
+            </button>
+          </form>
+
+          {/* Dropdown Filters (Brand, Connection, Status) */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <select
+              value={selectedBrand}
+              onChange={(e) => setSelectedBrand(e.target.value)}
+              className="select select-sm text-xs bg-base-200/50 border border-base-300 rounded-lg shrink-0 cursor-pointer focus:border-primary"
+            >
+              <option value="all">🏷️ Semua Brand</option>
+              <option value="ruijie">Ruijie / Reyee</option>
+              <option value="mikrotik">MikroTik</option>
+              <option value="zte">ZTE</option>
+              <option value="tp-link">TP-Link</option>
+              <option value="cisco">Cisco</option>
+              <option value="huawei">Huawei</option>
+            </select>
+
+            <select
+              value={selectedConnMethod}
+              onChange={(e) => setSelectedConnMethod(e.target.value)}
+              className="select select-sm text-xs bg-base-200/50 border border-base-300 rounded-lg font-mono shrink-0 cursor-pointer focus:border-primary"
+            >
+              <option value="all">🔌 Semua Koneksi</option>
+              <option value="snmp">SNMP (v1/v2c/v3)</option>
+              <option value="cloud">☁️ Ruijie Cloud</option>
+              <option value="ping">ICMP Ping</option>
+              <option value="api">RouterOS / API</option>
+              <option value="manual">Manual</option>
+            </select>
+
+            <select
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="select select-sm text-xs bg-base-200/50 border border-base-300 rounded-lg shrink-0 cursor-pointer focus:border-primary"
+            >
+              <option value="all">⚡ Semua Status</option>
+              <option value="online">🟢 Online</option>
+              <option value="snmp_offline">🟡 Offline SNMP</option>
+              <option value="offline">🔴 Offline Host</option>
+            </select>
+
+            {(searchQuery || selectedBrand !== "all" || selectedStatus !== "all" || selectedType !== "all" || selectedConnMethod !== "all") && (
               <button
-                type="button"
-                onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-base-content/40 hover:text-error cursor-pointer"
-                title="Hapus pencarian"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedBrand("all");
+                  setSelectedStatus("all");
+                  setSelectedType("all");
+                  setSelectedConnMethod("all");
+                }}
+                className="btn btn-sm btn-ghost text-xs gap-1 border border-rose-500/30 text-rose-400 hover:bg-rose-500/10 shrink-0 cursor-pointer"
+                title="Reset semua filter dan pencarian"
               >
-                <FaTimes size={12} />
+                <FaTimes size={10} />
+                <span>Reset</span>
               </button>
             )}
           </div>
-          <button
-            type="submit"
-            className="btn btn-sm btn-primary text-xs px-3 gap-1.5 shadow-xs shrink-0 cursor-pointer"
-          >
-            <FaSearch size={11} />
-            <span>Cari</span>
-          </button>
-        </form>
-
-        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0 overflow-x-auto">
-          <select
-            value={selectedBrand}
-            onChange={(e) => setSelectedBrand(e.target.value)}
-            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg shrink-0"
-          >
-            <option value="all">Semua Brand</option>
-            <option value="ruijie">Ruijie / Reyee</option>
-            <option value="mikrotik">MikroTik</option>
-            <option value="zte">ZTE</option>
-            <option value="tp-link">TP-Link</option>
-            <option value="cisco">Cisco</option>
-            <option value="huawei">Huawei</option>
-          </select>
-
-          <select
-            value={selectedConnMethod}
-            onChange={(e) => setSelectedConnMethod(e.target.value)}
-            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg font-mono shrink-0"
-          >
-            <option value="all">Semua Koneksi</option>
-            <option value="snmp">SNMP (v1/v2c/v3)</option>
-            <option value="cloud">☁️ Ruijie Cloud</option>
-            <option value="ping">ICMP Ping</option>
-            <option value="api">RouterOS / API</option>
-            <option value="manual">Manual</option>
-          </select>
-
-          <select
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="select select-sm text-xs bg-base-100 border border-base-300 rounded-lg shrink-0"
-          >
-            <option value="all">Semua Status</option>
-            <option value="online">🟢 Online</option>
-            <option value="snmp_offline">🟡 Offline SNMP (Ping OK)</option>
-            <option value="offline">🔴 Offline (Host Down)</option>
-          </select>
-
-          {(searchQuery || selectedBrand !== "all" || selectedStatus !== "all" || selectedType !== "all" || selectedConnMethod !== "all") && (
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedBrand("all");
-                setSelectedStatus("all");
-                setSelectedType("all");
-                setSelectedConnMethod("all");
-              }}
-              className="btn btn-sm btn-ghost text-xs gap-1 border border-base-300 hover:text-rose-400 shrink-0 cursor-pointer"
-              title="Reset semua filter dan pencarian"
-            >
-              <FaTimes size={10} />
-              <span>Reset</span>
-            </button>
-          )}
         </div>
-      </div>
 
-      {/* Sub-bar Filter Jenis Perangkat */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-mono">
-        {[
-          { id: "all", label: `Semua (${metrics.total})` },
-          { id: "switch", label: `Switch (${metrics.switchesCount})` },
-          { id: "router", label: `Router (${metrics.routersCount})` },
-          { id: "ap", label: `Access Point (${metrics.apsCount})` },
-          { id: "server", label: `Server (${metrics.serversCount})` },
-          { id: "nvr", label: `NVR & CCTV (${metrics.nvrsCount})` },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setSelectedType(tab.id)}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-              selectedType === tab.id
-                ? "bg-primary text-black border-primary font-bold shadow-xs"
-                : "bg-base-200/50 border-base-300 text-base-content/60 hover:text-base-content"
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
+        {/* Row 2: Device Type Segmented Pills & Matching Results Counter */}
+        <div className="pt-2.5 border-t border-base-200 flex flex-col md:flex-row md:items-center justify-between gap-2.5">
+          {/* Segmented Pills for Device Types */}
+          <div className="flex items-center gap-1.5 flex-wrap text-xs">
+            {[
+              { id: "all", label: "Semua", count: metrics.total, icon: FaNetworkWired },
+              { id: "switch", label: "Switch", count: metrics.switchesCount, icon: FaNetworkWired },
+              { id: "router", label: "Router Core", count: metrics.routersCount, icon: FaRoute },
+              { id: "home_router", label: "Home Router", count: metrics.homeRoutersCount, icon: FaHome },
+              { id: "ap", label: "Access Point", count: metrics.apsCount, icon: FaWifi },
+              { id: "server", label: "Server", count: metrics.serversCount, icon: FaServer },
+              { id: "nvr", label: "NVR & CCTV", count: metrics.nvrsCount, icon: FaVideo },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = selectedType === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setSelectedType(tab.id)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                    isActive
+                      ? "bg-primary text-primary-content font-semibold shadow-xs"
+                      : "bg-base-200/60 hover:bg-base-200 text-base-content/70 hover:text-base-content border border-transparent"
+                  }`}
+                >
+                  <Icon className={`h-3 w-3 ${isActive ? "text-primary-content" : "text-base-content/50"}`} />
+                  <span>{tab.label}</span>
+                  <span
+                    className={`ml-0.5 px-1.5 py-0.2 rounded-full text-[10px] font-mono ${
+                      isActive ? "bg-black/20 text-primary-content" : "bg-base-300 text-base-content/70"
+                    }`}
+                  >
+                    {tab.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Results Summary Counter */}
+          <div className="flex items-center gap-2 text-xs text-base-content/60 font-mono shrink-0">
+            <span>
+              Menampilkan <span className="font-semibold text-base-content">{filteredDevices.length}</span> dari{" "}
+              <span className="font-semibold text-base-content">{devices.length}</span> perangkat
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Devices Table */}
       <div className="card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="table w-full">
+          <table className="table w-full [&_td]:py-3.5 [&_th]:py-3">
             <thead>
-              <tr>
-                <th>Perangkat &amp; IP</th>
-                <th>Brand &amp; Model</th>
-                <th>Status</th>
-                <th>VLAN / Info</th>
-                <th>Port (Up / Total)</th>
-                <th>Uptime &amp; Lokasi</th>
-                <th className="text-right">Aksi</th>
+              <tr className="border-b border-base-300 text-xs font-semibold text-base-content/70">
+                <th className="min-w-[240px] whitespace-nowrap">Perangkat &amp; IP</th>
+                <th className="min-w-[170px] whitespace-nowrap">Brand &amp; Model</th>
+                <th className="min-w-[140px] whitespace-nowrap">Status</th>
+                <th className="min-w-[190px] whitespace-nowrap">VLAN / Info</th>
+                <th className="min-w-[130px] whitespace-nowrap">Port (Up / Total)</th>
+                <th className="min-w-[190px] whitespace-nowrap">Uptime &amp; Lokasi</th>
+                <th className="min-w-[130px] text-right whitespace-nowrap">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -792,23 +825,29 @@ export default function DevicesPage() {
                               <span className="font-semibold text-sm text-base-content truncate max-w-[170px] sm:max-w-[210px]" title={dev.name}>
                                 {dev.name}
                               </span>
-                              <span className="badge badge-xs badge-outline border-base-300 font-mono text-[8px] uppercase shrink-0">
-                                {dev.deviceType || "SWITCH"}
+                              <span className={`badge badge-xs badge-outline font-mono text-[8px] uppercase shrink-0 whitespace-nowrap ${
+                                dev.deviceType === "home_router"
+                                    ? "border-teal-500/40 text-teal-400 bg-teal-500/10"
+                                    : dev.deviceType === "router"
+                                    ? "border-sky-500/40 text-sky-400 bg-sky-500/10"
+                                    : "border-base-300"
+                              }`}>
+                                {dev.deviceType === "home_router" ? "HOME ROUTER" : (dev.deviceType || "SWITCH")}
                               </span>
                             </div>
                             <div className="text-xs font-mono text-primary flex items-center gap-1.5 mt-1 flex-wrap">
-                              <span className="font-semibold">{dev.ip}</span>
+                              <span className="font-semibold whitespace-nowrap">{dev.ip}</span>
                               {isCloud ? (
-                                <span className="badge badge-xs bg-sky-500/10 text-sky-400 border border-sky-500/30 font-mono text-[9px] gap-1 px-1.5 py-0.5 shrink-0">
+                                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-mono bg-sky-500/10 text-sky-400 border border-sky-500/30 shrink-0 whitespace-nowrap">
                                   <FaCloud className="h-2 w-2" /> Cloud
                                 </span>
                               ) : (
-                                <span className="badge badge-xs bg-primary/10 text-primary border border-primary/20 font-mono text-[8px] uppercase shrink-0">
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-mono bg-primary/10 text-primary border border-primary/20 uppercase shrink-0 whitespace-nowrap">
                                   {dev.connMethod === "snmp" ? `SNMP v${dev.snmpVersion || "2c"}` : dev.connMethod}
                                 </span>
                               )}
                               {dev.connMethod === "snmp" && dev.snmpVersion === "3" && (
-                                <span className="badge badge-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono text-[8px] shrink-0">
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shrink-0 whitespace-nowrap">
                                   v3
                                 </span>
                               )}
@@ -816,59 +855,65 @@ export default function DevicesPage() {
                           </div>
                         </div>
                       </td>
-                      <td>
+                      <td className="min-w-[170px]">
                         <div className="flex flex-col gap-1 items-start">
-                          <span className={`badge badge-sm font-medium border ${getBrandBadge(dev.brand)}`}>
+                          <span className={`inline-flex items-center whitespace-nowrap px-2 py-0.5 rounded text-[11px] font-semibold border ${getBrandBadge(dev.brand)}`}>
                             {dev.brand || "Unknown"}
                           </span>
-                          <span className="text-xs text-base-content/70 font-mono truncate max-w-[180px]" title={dev.model}>
+                          <span className="text-xs text-base-content/70 font-mono truncate max-w-[170px] block" title={dev.model}>
                             {dev.model || "-"}
                           </span>
                         </div>
                       </td>
-                      <td>
-                        {dev.status === "online" ? (
-                          <div className="flex items-center gap-1.5 text-xs text-emerald-400 font-mono" title="Perangkat Online">
-                            <span className="status-dot" />
-                            <span>Online</span>
-                          </div>
-                        ) : dev.status === "snmp_offline" ? (
-                          <div className="flex items-center gap-1.5 text-xs text-amber-400 font-mono" title="Ping OK, namun SNMP Timeout">
-                            <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse shadow-[0_0_6px_#f59e0b]" />
-                            <span className="font-semibold">Offline SNMP</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-1.5 text-xs text-rose-400 font-mono" title="Perangkat Offline">
-                            <span className="h-2 w-2 rounded-full bg-rose-500 shadow-[0_0_6px_#ef4444]" />
-                            <span className="font-semibold">Offline</span>
-                          </div>
-                        )}
-                        {dev.lastPolled && (
-                          <p className="text-[10px] text-base-content/50 mt-0.5 font-mono">
-                            {new Date(dev.lastPolled).toLocaleTimeString("id-ID", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        )}
+                      <td className="min-w-[140px] whitespace-nowrap">
+                        <div className="flex flex-col gap-0.5">
+                          {dev.status === "online" ? (
+                            <div className="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-mono font-semibold" title="Perangkat Online">
+                              <span className="status-dot shrink-0" />
+                              <span>Online</span>
+                            </div>
+                          ) : dev.status === "snmp_offline" ? (
+                            <div className="inline-flex items-center gap-1.5 text-xs text-amber-400 font-mono font-semibold" title="Ping OK, namun SNMP Timeout">
+                              <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse shadow-[0_0_6px_#f59e0b] shrink-0" />
+                              <span>Offline SNMP</span>
+                            </div>
+                          ) : (
+                            <div className="inline-flex items-center gap-1.5 text-xs text-rose-400 font-mono font-semibold" title="Perangkat Offline">
+                              <span className="h-2 w-2 rounded-full bg-rose-500 shadow-[0_0_6px_#ef4444] shrink-0" />
+                              <span>Offline</span>
+                            </div>
+                          )}
+                          {dev.lastPolled && (
+                            <span className="text-[10px] text-base-content/50 font-mono pl-3.5">
+                              {new Date(dev.lastPolled).toLocaleTimeString("id-ID", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                          )}
+                        </div>
                       </td>
-                      <td>
+                      <td className="min-w-[190px]">
                         {isCloud ? (
-                          <div className="flex flex-col gap-1 items-start min-w-[130px]">
-                            <span className="badge badge-sm bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-mono shrink-0">
-                              ☁️ {dev.location ? dev.location.split(">")[0].trim() : "Ruijie Cloud"}
+                          <div className="flex flex-col gap-1 items-start">
+                            <span
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-sky-500/10 text-sky-400 border border-sky-500/20 whitespace-nowrap max-w-[180px] truncate"
+                              title={dev.location ? dev.location.split(">")[0].trim() : "Ruijie Cloud"}
+                            >
+                              <FaCloud className="h-2.5 w-2.5 shrink-0" />
+                              <span className="truncate">{dev.location ? dev.location.split(">")[0].trim() : "Ruijie Cloud"}</span>
                             </span>
                             {(() => {
                               const sn = dev.serialNumber || (dev.sysDescr?.includes("SN:") ? dev.sysDescr.match(/SN:\s*([^\s-]+)/)?.[1] : undefined);
                               return sn ? (
-                                <span className="text-[10px] text-base-content/60 font-mono truncate max-w-[150px]" title={`Serial Number: ${sn}`}>
+                                <span className="text-[10px] text-base-content/60 font-mono truncate max-w-[180px] block" title={`Serial Number: ${sn}`}>
                                   SN: {sn}
                                 </span>
                               ) : null;
                             })()}
                           </div>
                         ) : (
-                          <div className="flex flex-wrap gap-1 max-w-[220px]">
+                          <div className="flex flex-wrap gap-1 max-w-[200px]">
                             {dev.vlans && dev.vlans.length > 0 ? (
                               dev.vlans.slice(0, 4).map((v) => (
                                 <span
@@ -890,19 +935,21 @@ export default function DevicesPage() {
                           </div>
                         )}
                       </td>
-                      <td>
+                      <td className="min-w-[130px] whitespace-nowrap">
                         {isCloud ? (
                           <div className="text-xs font-mono text-base-content/60">
-                            <span>AP Wireless</span>
+                            <span className="px-2 py-0.5 rounded bg-base-200 text-base-content/70 border border-base-300 text-[11px]">
+                              {dev.deviceType === "home_router" ? "Home Router" : "AP Wireless"}
+                            </span>
                           </div>
                         ) : (
                           <div>
                             <div className="text-xs font-mono">
                               <span className="text-emerald-400 font-semibold">{upCount}</span>
-                              <span className="text-base-content/50"> / {totalCount}</span>
+                              <span className="text-base-content/50"> / {totalCount} port</span>
                             </div>
                             {totalCount > 0 && (
-                              <div className="w-20 bg-base-300 h-1 rounded-full mt-1.5 overflow-hidden">
+                              <div className="w-20 bg-base-300 h-1.5 rounded-full mt-1.5 overflow-hidden">
                                 <div
                                   className="bg-emerald-500 h-full rounded-full"
                                   style={{ width: `${(upCount / totalCount) * 100}%` }}
@@ -912,17 +959,17 @@ export default function DevicesPage() {
                           </div>
                         )}
                       </td>
-                      <td className="min-w-[140px]">
-                        <div className="text-xs text-base-content/80 flex items-center gap-1.5">
+                      <td className="min-w-[190px]">
+                        <div className="text-xs text-base-content/80 flex items-center gap-1.5 whitespace-nowrap">
                           <FaClock className="h-3 w-3 text-base-content/50 shrink-0" />
                           <span className="font-mono">{dev.uptime || "-"}</span>
                         </div>
                         <div className="text-[11px] text-base-content/60 flex items-center gap-1.5 mt-1">
                           <FaMapMarkerAlt className="h-2.5 w-2.5 text-base-content/50 shrink-0" />
-                          <span className="truncate max-w-[140px]" title={dev.location}>{dev.location || "RSUD NTB"}</span>
+                          <span className="truncate max-w-[180px] block" title={dev.location}>{dev.location || "RSUD NTB"}</span>
                         </div>
                       </td>
-                      <td className="text-right">
+                      <td className="min-w-[130px] text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => {
@@ -1392,7 +1439,9 @@ export default function DevicesPage() {
                     ) : (
                       <div className="p-3 rounded-lg bg-base-300/20 border border-base-300 text-xs space-y-1 col-span-1 md:col-span-2">
                         <p className="text-base-content/70">Kategori Perangkat</p>
-                        <p className="font-mono text-sky-400 font-bold capitalize">{detailDevice.deviceType || "AP"}</p>
+                        <p className="font-mono text-sky-400 font-bold capitalize">
+                          {detailDevice.deviceType === "home_router" ? "Home Router" : (detailDevice.deviceType || "AP")}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -1448,6 +1497,7 @@ export default function DevicesPage() {
                   >
                     <option value="switch">Switch Managed</option>
                     <option value="router">Router Core / Gateway</option>
+                    <option value="home_router">Home Router / Wi-Fi Router</option>
                     <option value="ap">Access Point Wi-Fi</option>
                     <option value="nvr">NVR / CCTV Storage</option>
                     <option value="server">Server (SIMRS / DB)</option>
@@ -1481,8 +1531,12 @@ export default function DevicesPage() {
                   onChange={(e) => {
                     const newName = e.target.value;
                     let newType = formData.deviceType;
-                    if (newType === "switch" && (/router|gateway|ccr|rb[0-9]|^r-/i.test(newName))) {
-                      newType = "router";
+                    if (newType === "switch") {
+                      if (/home\s*router|reyee\s*ew|ew[0-9]/i.test(newName)) {
+                        newType = "home_router";
+                      } else if (/router|gateway|ccr|rb[0-9]|^r-/i.test(newName)) {
+                        newType = "router";
+                      }
                     }
                     setFormData({ ...formData, name: newName, deviceType: newType });
                   }}

@@ -1,5 +1,6 @@
 export type DeviceType =
   | 'router'
+  | 'home_router'
   | 'switch'
   | 'nvr'
   | 'cctv'
@@ -96,6 +97,14 @@ export function generateDefaultPorts(type: DeviceType, portCount: number = 24): 
         { id: 'p5', name: 'ether5', type: 'rj45', speed: '1G' },
         { id: 'sfp1', name: 'sfp-sfpplus1', type: 'sfp', speed: '10G' },
         { id: 'sfp2', name: 'sfp-sfpplus2', type: 'sfp', speed: '10G' },
+      ];
+    case 'home_router':
+      return [
+        { id: 'wan', name: 'WAN', type: 'rj45', speed: '1G' },
+        { id: 'lan1', name: 'LAN 1', type: 'rj45', speed: '1G' },
+        { id: 'lan2', name: 'LAN 2', type: 'rj45', speed: '1G' },
+        { id: 'lan3', name: 'LAN 3', type: 'rj45', speed: '1G' },
+        { id: 'lan4', name: 'LAN 4', type: 'rj45', speed: '1G' },
       ];
     case 'switch': {
       const ports: DevicePort[] = [];

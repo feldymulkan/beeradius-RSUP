@@ -15,6 +15,7 @@ import DeviceDetailsDrawer from './DeviceDetailsDrawer';
 import SwitchSyncModal from './SwitchSyncModal';
 import {
   FaRoute,
+  FaHome,
   FaNetworkWired,
   FaVideo,
   FaWifi,
@@ -557,6 +558,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
   const getDeviceIcon = (t: DeviceType) => {
     switch (t) {
       case 'router': return <FaRoute className="h-4 w-4 text-sky-400" />;
+      case 'home_router': return <FaHome className="h-4 w-4 text-teal-400" />;
       case 'switch': return <FaNetworkWired className="h-4 w-4 text-emerald-400" />;
       case 'nvr': return <FaVideo className="h-4 w-4 text-amber-400" />;
       case 'ap': return <FaWifi className="h-4 w-4 text-purple-400" />;
@@ -635,7 +637,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
 
         {/* Center: Device Type Filter Badges (Compact & Scrollable) */}
         <div className="hidden md:flex items-center gap-0.5 bg-base-200/70 p-1 rounded-xl border border-base-300 text-xs shrink-0 max-w-full overflow-x-auto no-scrollbar">
-          {['all', 'router', 'switch', 'nvr', 'ap', 'server', 'cctv'].map((ft) => (
+          {['all', 'router', 'home_router', 'switch', 'nvr', 'ap', 'server', 'cctv'].map((ft) => (
             <button
               key={ft}
               onClick={() => setFilterType(ft)}
@@ -645,7 +647,7 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
                   : 'text-base-content/70 hover:text-base-content hover:bg-base-300/50'
               }`}
             >
-              {ft === 'all' ? 'Semua' : ft.toUpperCase()}
+              {ft === 'all' ? 'Semua' : ft === 'home_router' ? 'HOME ROUTER' : ft.toUpperCase()}
             </button>
           ))}
         </div>

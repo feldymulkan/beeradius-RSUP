@@ -201,7 +201,7 @@ export default function WifiManageClient() {
       toast.success("Konfigurasi WiFi berhasil disinkronkan ke Ruijie Cloud");
       const modal = document.getElementById("wifi_modal") as HTMLDialogElement;
       if (modal) modal.close();
-      fetchWifiList(true);
+      fetchWifiList(false);
     } catch (err: any) {
       toast.error(err.message);
     } finally {

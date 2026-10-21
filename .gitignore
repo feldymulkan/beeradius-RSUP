@@ -48,5 +48,6 @@ next-env.d.ts
 .vscode
 /src/generated/prisma
 *.tmp*
+.ruijie_*.json
 
 /Ruijie

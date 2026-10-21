@@ -7,6 +7,7 @@ import {
   FaSyncAlt,
   FaNetworkWired,
   FaRoute,
+  FaHome,
   FaVideo,
   FaServer,
   FaWifi,
@@ -302,6 +303,7 @@ export default function SwitchSyncModal({
                             {(() => {
                               switch (sw.deviceType) {
                                 case 'router': return <FaRoute className="h-3.5 w-3.5 text-sky-400" />;
+                                case 'home_router': return <FaHome className="h-3.5 w-3.5 text-teal-400" />;
                                 case 'switch': return <FaNetworkWired className="h-3.5 w-3.5 text-emerald-400" />;
                                 case 'nvr': case 'cctv': return <FaVideo className="h-3.5 w-3.5 text-amber-400" />;
                                 case 'ap': return <FaWifi className="h-3.5 w-3.5 text-purple-400" />;

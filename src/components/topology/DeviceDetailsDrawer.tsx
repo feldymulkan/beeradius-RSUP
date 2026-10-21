@@ -10,6 +10,7 @@ import {
   FaTrash,
   FaNetworkWired,
   FaRoute,
+  FaHome,
   FaVideo,
   FaWifi,
   FaServer,
@@ -58,6 +59,7 @@ export default function DeviceDetailsDrawer({
   const getDeviceIcon = (t: string) => {
     switch (t) {
       case 'router': return <FaRoute className="h-4 w-4 text-sky-400" />;
+      case 'home_router': return <FaHome className="h-4 w-4 text-teal-400" />;
       case 'switch': return <FaNetworkWired className="h-4 w-4 text-emerald-400" />;
       case 'nvr': return <FaVideo className="h-4 w-4 text-amber-400" />;
       case 'ap': return <FaWifi className="h-4 w-4 text-purple-400" />;

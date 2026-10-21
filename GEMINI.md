@@ -68,7 +68,18 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
     - **Pemisahan Kategori Perangkat Nirkabel**: Membedakan Access Point murni (304 unit: 294 online, 10 offline) dan Home Router Wi-Fi Reyee EW Series (6 unit: 6 online di Poli Anak, IBS, RM, TB DOTS, Diklat Onkologi, dan Lab).
     - **Grafik Analitik 4-Grid Recharts**: (1) Kepadatan Klien per Gedung/Proyek, (2) Top 8 SSID Paling Padat Klien, (3) Proporsi Spektrum Radio Donut Chart (5G Cyan vs 2.4G Amber), dan (4) Top 6 Access Point Paling Padat Pengguna (AP Load).
     - **Tabel Klien Wi-Fi Real-time**: Menampilkan daftar klien terhubung (Hostname/Model, MAC, IP, SSID, Lokasi AP & Gedung, Band 5G/2.4G, Sinyal RSSI dBm, Volume Unduh/Unggah/Total, dan Durasi Aktif) dilengkapi filter dropdown proyek gedung, pencarian instan, dan paginasi data.
-    - **Integrasi API (`/api/reports/ruijie-wifi`)**: Mengonsumsi `getRuijieWifiReport` di [src/lib/ruijie.ts](file:///d:/projek/beeradius-RSUP/src/lib/ruijie.ts) dengan in-memory cache 2 menit dan dukungan tombol reaktif *Sinkronkan Live Ruijie*.
+    - **Halaman Manajemen SSID & Password WiFi (`/wifi`) & Arsitektur Anti-Rate-Limit**:
+    - **Penyebab Masalah Rate Limit Ruijie Cloud**: Mengambil seluruh SSID dari ~70 grup gedung/sub-grup di Ruijie Cloud Northbound API membutuhkan 70 panggilan HTTP berturut-turut. Panggilan burst paralel tanpa jeda memicu proteksi gateway Ruijie (*HTTP 429 / API frequency is too high*).
+    - **Arsitektur Enterprise Anti-Rate-Limit Ruijie Cloud (`src/lib/ruijie.ts`)**:
+      1. **Global Request Pacer (`waitRuijiePacing`)**: Membatasi laju panggilan global ke Ruijie Cloud (antrian promise dengan interval minimal 150ms per request, ~6.6 req/s) dilengkapi deteksi rate-limit (HTTP 429 / code 429 / message busy) dan auto-backoff eksponensial (2.000ms & 4.000ms) di tingkat `fetchRuijie`.
+      2. **True Stale-While-Revalidate (SWR) di Background**: Begitu data ada di cache, respons dikembalikan instan (~1-12 ms). Jika data telah melewati batas TTL, revalidasi live berjalan di latar belakang tanpa menahan waktu loading pengguna (menghapus freeze 22 detik di halaman `/reports`).
+      3. **Single-Flight Mutex Promise Lintas Modul (`globalThis.__ruijieState`)**: Mencegah *Thundering Herd / Cache Stampede*. Mutex (`hierarchyPromise`, `wifiFetchPromise`, `wifiReportPromise`, `syncDevicesPromise`) disimpan di `globalThis` sehingga tetap tunggal saat HMR dev reload maupun pemanggilan simultan antar-route.
+      4. **Persistent Disk Cache Triple-Layer**:
+         - `.ruijie_hierarchy_cache.json` (TTL 15 menit): Hierarki gedung & sub-grup.
+         - `.ruijie_wifi_cache.json` (TTL 15 menit): Seluruh 221 SSID & password Wi-Fi.
+         - `.ruijie_wifi_report_cache.json` (TTL 5 menit): Telemetri 3.500+ klien Wi-Fi live & AP load.
+      5. **Partial Fallback & Anti-Cache-Corruption**: Jika sebagian grup atau proyek gagal diambil saat crawling, sistem tidak menimpa data menjadi 0 klien atau 0 AP, melainkan menggabungkan data yang berhasil dengan snapshot cache sebelumnya (*partial merge*).
+      6. **Single-Group Precision Update**: Saat superadmin mengedit SSID/password, sistem hanya memanggil 1 request untuk grup terkait (`fetchGroupSsidsRaw(groupId)`), tanpa re-crawl 70 grup secara masif.
 - **Sistem Tema Dark & Light Mode (Release v1.0.0 Standard)**:
   - Menggunakan DaisyUI v5 dengan tema `beeradius` (*Telemetry Dark Glass*) dan `beeradius-light` (*Clinical NOC Precision*).
   - **Aturan Kontras Ketat**: DILARANG menggunakan `text-white`, `text-slate-100`, `text-slate-200`, atau `text-slate-300` secara telanjang pada judul halaman, tabel, atau kartu umum, karena teks tersebut menjadi tidak terlihat (*invisible*) pada tema terang (`beeradius-light`).
@@ -83,8 +94,8 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
 - **Halaman Manajemen Perangkat Jaringan (`/devices` & Redirect dari `/switches`)**:
   - Menggantikan endpoint `/switches` menjadi `/devices` untuk menampung seluruh infrastruktur multi-perangkat (switch, router, access point, NVR CCTV, server, dan firewall). Endpoint `/switches` otomatis melakukan redirect ke `/devices`.
   - Mendukung **Multi-Metode Koneksi**: `snmp` (v1/v2c/v3), `cloud` (Ruijie Cloud Northbound REST API), `ping` (ICMP Keepalive), `api` (REST / MikroTik API), dan `manual`.
-  - **Tata Letak Bebas Tumpang Tindih (Zero Overlap Table & Toolbar)**:
-    - **Single-Row Unified Toolbar**: Menggunakan `flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-3`. Pada desktop/laptop, kotak pencarian di kiri dan ketiga filter dropdown (`Semua Brand`, `Semua Koneksi`, `Semua Status`) serta tombol `Reset` berjejer horizontal dalam satu baris (`sm:flex-nowrap shrink-0 overflow-x-auto`) tanpa *stacked clutter*.
+  - **Tata Letak Bebas Tumpang Tindih & Unified Filter Hub (Zero Overlap Table & Toolbar)**:
+    - **Unified Filter & Search Hub (2-Row Responsive Panel)**: Mengintegrasikan kotak pencarian IP/nama/brand, dropdown filter (`🏷️ Brand`, `🔌 Koneksi`, `⚡ Status`), tombol reset, segmented pills kategori perangkat (`Semua`, `Switch`, `Router Core`, `Home Router`, `AP`, `Server`, `NVR & CCTV`) dengan count badge, serta counter hasil pencarian ("Menampilkan X dari Y perangkat") dalam satu kartu terpadu tanpa *scrollbar* horizontal mini yang memotong elemen.
     - **Kolom Perangkat & IP**: Diberi batas lebar aman `min-w-[240px]`, nama perangkat dengan badge tipe di baris 1 (`truncate max-w-[170px] sm:max-w-[210px]`), serta IP address dan badge koneksi (`Cloud` / `SNMP v2c/v3`) tersusun rapi di baris 2 tanpa bertubrukan saat nama AP panjang.
     - **Kolom VLAN / Info Cerdas**: Untuk perangkat cloud Ruijie AP, menampilkan badge Proyek Gedung (misal `RSUD-NTB-UTAMA` atau `MANAJEMEN`) dan Serial Number perangkat yang diekstrak secara otomatis dari `sysDescr`, menggantikan teks firmware yang terpotong.
     - **Kolom Uptime & Lokasi**: Menggunakan ikon tetap (`shrink-0`) dan pemotongan teks rapi (`truncate max-w-[140px]`) dengan tooltip judul lengkap.
@@ -96,11 +107,14 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
     - **Standar RFC 2674 (Q-BRIDGE-MIB)** via algoritma dekode bitmask port (`decodePortBitmap` di [snmp.ts](file:///d:/projek/beeradius-RSUP/src/lib/snmp.ts)).
     - **TP-Link JetStream Private MIB (`TPLINK-DOT1Q-VLAN-MIB` OID `1.3.6.1.4.1.11863.6.14.1.2.1.1`)** dengan normalisasi nomor port fisik dan parsing range port (`1/0/1-12`).
     - **Cisco Catalyst VTP & VMPS MIB (`CISCO-VTP-MIB` & `CISCO-VLAN-MEMBERSHIP-MIB`)**.
-  - **Deteksi Cerdas Perangkat Jaringan (Router vs Switch vs AP vs NVR)**:
+  - **Deteksi Cerdas Perangkat Jaringan (Router Core vs Home Router vs Switch vs AP vs NVR)**:
+    - Memisahkan secara tegas kategori **Router Core** (`router`) dan **Home Router** (`home_router`):
+      - `router`: Gateway / Core Router enterprise (seperti MikroTik CCR1009/CCR2004, Cisco ISR/ASR).
+      - `home_router`: Wi-Fi Home Router kamar/ruangan (seperti Ruijie Reyee EW1200G-PRO series di Poli Anak, IBS, RM, TB DOTS, Diklat Onkologi, dan Lab, serta TP-Link Archer).
     - Mendeteksi Router MikroTik (Cloud Core Router CCR1009/CCR1036/CCR2004, RouterBOARD RB750/RB1100/RB4011/RB5009, hEX, hAP, CHR) secara otomatis sebagai tipe `router`, memisahkannya dari switch MikroTik (CRS/CSS).
     - Auto-inference tipe perangkat pada API `/api/network/devices`, modal probe, background worker `devicePolling.ts`, dan sinkronisasi topologi.
-    - Modal Add/Edit Device dan Uji Cepat Probe SNMP dilengkapi input USM Username, Security Level, serta toggle reveal/hide password Auth & Privacy.
-    - Terintegrasi langsung dengan background status poller 5 menit (`src/lib/devicePolling.ts`), API Route Handlers, dan tabel MySQL `SwitchDevice`.
+    - Sinkronisasi Ruijie Cloud otomatis memetakan perangkat dengan `commonType === 'WR'` menjadi `home_router`.
+    - Modal Add/Edit Device, filter bar perangkat jaringan, dan tabel inventaris dilengkapi tab filter independen, KPI count terpisah, serta ikon visual khusus (`FaHome` teal untuk Home Router vs `FaRoute` sky untuk Core Router).
   - **Sistem Pemantauan Status Otomatis 5 Menit (Device Status Poller)**:
     - **Engine Core (`src/lib/devicePolling.ts`)**: Memeriksa status setiap perangkat terdaftar di tabel `SwitchDevice` secara konkuren (SNMP probe dengan fallback ICMP ping aman cross-platform).
     - **Penanganan Khusus Perangkat Cloud (`connMethod === 'cloud'`)**: Memeriksa IP lokal AP via ping jika reachable; jika timeout (karena isolasi subnet/VLAN berbeda), status live tetap dipertahankan dari Ruijie Cloud tanpa menghasilkan error SNMP timeout palsu (*false-positive*).

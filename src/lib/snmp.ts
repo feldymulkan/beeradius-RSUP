@@ -155,12 +155,13 @@ export function detectBrandAndModel(
   // 1. Ruijie / Reyee
   if (oid.includes(".1.3.6.1.4.1.4881.") || /ruijie|reyee|rg-s/i.test(desc)) {
     const isAP = /RG-AP|Reyee\s*AP|Access\s*Point/i.test(desc);
+    const isHomeRouter = /RG-EW|Reyee\s*EW|EW[0-9]|Home\s*Router/i.test(desc);
     const isRouter = /RG-EG|Reyee\s*EG|Gateway|Router/i.test(desc);
-    const modelMatch = desc.match(/(RG-[A-Z0-9_-]+|NBS[A-Z0-9_-]+|Reyee\s+[A-Z0-9_-]+)/i);
+    const modelMatch = desc.match(/(RG-[A-Z0-9_-]+|NBS[A-Z0-9_-]+|Reyee\s+[A-Z0-9_-]+|EW[0-9]{4}[A-Za-z0-9_-]*)/i);
     return {
       brand: "Ruijie Networks",
-      model: modelMatch ? modelMatch[0] : isAP ? "Reyee Access Point" : isRouter ? "Ruijie Enterprise Gateway" : "Ruijie Switch",
-      deviceType: isAP ? "ap" : isRouter ? "router" : "switch",
+      model: modelMatch ? modelMatch[0] : isAP ? "Reyee Access Point" : isHomeRouter ? "Reyee Home Router" : isRouter ? "Ruijie Enterprise Gateway" : "Ruijie Switch",
+      deviceType: isAP ? "ap" : isHomeRouter ? "home_router" : isRouter ? "router" : "switch",
     };
   }
 
@@ -178,12 +179,13 @@ export function detectBrandAndModel(
   // 3. TP-Link
   if (oid.includes(".1.3.6.1.4.1.11863.") || /tp-link|jetstream|tl-sg|sg[0-9]/i.test(desc)) {
     const isAP = /EAP[0-9]|Omada\s*AP/i.test(desc);
+    const isHomeRouter = /Archer|TL-WR|Deco|Home\s*Router/i.test(desc);
     const isRouter = /ER[0-9]|Omada\s*Router|SafeStream/i.test(desc);
-    const modelMatch = desc.match(/(TL-[A-Z0-9_-]+|SG[0-9]+[A-Z0-9_-]*|JetStream[A-Za-z0-9\s-]+|ER[0-9]{3,4}[A-Za-z0-9_-]*|EAP[0-9]{3,4}[A-Za-z0-9_-]*)/i);
+    const modelMatch = desc.match(/(TL-[A-Z0-9_-]+|SG[0-9]+[A-Z0-9_-]*|JetStream[A-Za-z0-9\s-]+|ER[0-9]{3,4}[A-Za-z0-9_-]*|EAP[0-9]{3,4}[A-Za-z0-9_-]*|Archer\s+[A-Za-z0-9_-]+)/i);
     return {
       brand: "TP-Link",
-      model: modelMatch ? modelMatch[0].trim() : isAP ? "Omada Access Point" : isRouter ? "SafeStream / Omada Router" : "JetStream Switch",
-      deviceType: isAP ? "ap" : isRouter ? "router" : "switch",
+      model: modelMatch ? modelMatch[0].trim() : isAP ? "Omada Access Point" : isHomeRouter ? "TP-Link Home Router" : isRouter ? "SafeStream / Omada Router" : "JetStream Switch",
+      deviceType: isAP ? "ap" : isHomeRouter ? "home_router" : isRouter ? "router" : "switch",
     };
   }
 
@@ -270,7 +272,9 @@ export function detectBrandAndModel(
   }
 
   // Fallback
-  const fallbackType: DeviceType = /router|gateway/i.test(desc)
+  const fallbackType: DeviceType = /home\s*router/i.test(desc)
+    ? "home_router"
+    : /router|gateway/i.test(desc)
     ? "router"
     : /ap|access\s*point|wifi/i.test(desc)
     ? "ap"
@@ -281,8 +285,8 @@ export function detectBrandAndModel(
     : "switch";
 
   return {
-    brand: fallbackType === "router" ? "Generic Router" : "Generic Switch",
-    model: desc.slice(0, 40) || (fallbackType === "router" ? "Core Router" : "Managed Switch"),
+    brand: fallbackType === "home_router" ? "Generic Home Router" : fallbackType === "router" ? "Generic Router" : "Generic Switch",
+    model: desc.slice(0, 40) || (fallbackType === "home_router" ? "Home Router" : fallbackType === "router" ? "Core Router" : "Managed Switch"),
     deviceType: fallbackType,
   };
 }

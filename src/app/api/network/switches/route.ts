@@ -47,6 +47,7 @@ export async function GET(req: NextRequest) {
     let totalPorts = 0;
     let totalSwitches = 0;
     let totalRouters = 0;
+    let totalHomeRouters = 0;
     let totalServers = 0;
     let totalNvrs = 0;
     let totalAps = 0;
@@ -71,6 +72,7 @@ export async function GET(req: NextRequest) {
       const dtype = sw.deviceType || "switch";
       if (dtype === "switch") totalSwitches++;
       else if (dtype === "router") totalRouters++;
+      else if (dtype === "home_router") totalHomeRouters++;
       else if (dtype === "server") totalServers++;
       else if (dtype === "nvr" || dtype === "cctv") totalNvrs++;
       else if (dtype === "ap") totalAps++;
@@ -91,6 +93,7 @@ export async function GET(req: NextRequest) {
         totalDevices: switches.length,
         totalSwitches,
         totalRouters,
+        totalHomeRouters,
         totalServers,
         totalNvrs,
         totalAps,
@@ -211,7 +214,9 @@ export async function POST(req: NextRequest) {
 
     // Heuristik nama/model jika deviceType masih 'switch'
     if (deviceType === "switch") {
-      if (/router|gateway|ccr|rb[0-9]/i.test(name) || /router|gateway|ccr/i.test(finalModel)) {
+      if (/home\s*router|reyee\s*ew|ew[0-9]{4}/i.test(name) || /home\s*router|ew[0-9]{4}/i.test(finalModel)) {
+        deviceType = "home_router";
+      } else if (/router|gateway|ccr|rb[0-9]/i.test(name) || /router|gateway|ccr/i.test(finalModel)) {
         deviceType = "router";
       } else if (/ap|access\s*point|wifi/i.test(name) || /access\s*point|ap/i.test(finalModel)) {
         deviceType = "ap";
@@ -234,7 +239,8 @@ export async function POST(req: NextRequest) {
     }
 
     if (!brand) {
-      if (deviceType === "router") finalBrand = "MikroTik RouterOS";
+      if (deviceType === "home_router") finalBrand = "Ruijie Reyee";
+      else if (deviceType === "router") finalBrand = "MikroTik RouterOS";
       else if (deviceType === "nvr") finalBrand = "Hikvision / Dahua NVR";
       else if (deviceType === "server") finalBrand = "Dell / HP Enterprise";
       else if (deviceType === "ap") finalBrand = "Ruijie / Ubiquiti AP";
@@ -242,7 +248,8 @@ export async function POST(req: NextRequest) {
     }
 
     if (!model) {
-      if (deviceType === "router") finalModel = "Core Gateway Router";
+      if (deviceType === "home_router") finalModel = "Reyee EW Series Wi-Fi Router";
+      else if (deviceType === "router") finalModel = "Core Gateway Router";
       else if (deviceType === "nvr") finalModel = "Network Video Recorder";
       else if (deviceType === "server") finalModel = "Rackmount Server";
       else if (deviceType === "ap") finalModel = "Dual-Band Wi-Fi 6 AP";

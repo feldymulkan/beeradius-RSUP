@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { DeviceType, DevicePort, TopologyNode, generateDefaultPorts } from '@/types/topology';
 import {
   FaRoute,
+  FaHome,
   FaNetworkWired,
   FaVideo,
   FaWifi,
@@ -24,6 +25,7 @@ interface DeviceModalProps {
 
 const DEVICE_TYPES: { type: DeviceType; label: string; icon: any; color: string; desc: string }[] = [
   { type: 'router', label: 'Router', icon: FaRoute, color: 'text-sky-400 bg-sky-500/10 border-sky-500/30', desc: 'Core / Gateway MikroTik / Cisco' },
+  { type: 'home_router', label: 'Home Router', icon: FaHome, color: 'text-teal-400 bg-teal-500/10 border-teal-500/30', desc: 'Wi-Fi Home Router (Reyee EW / TP-Link)' },
   { type: 'switch', label: 'Switch', icon: FaNetworkWired, color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30', desc: 'Managed / Unmanaged Switch' },
   { type: 'nvr', label: 'NVR', icon: FaVideo, color: 'text-amber-400 bg-amber-500/10 border-amber-500/30', desc: 'Network Video Recorder CCTV' },
   { type: 'ap', label: 'Access Point', icon: FaWifi, color: 'text-purple-400 bg-purple-500/10 border-purple-500/30', desc: 'WiFi Hotspot Ruang Pasien / Staf' },
@@ -78,6 +80,10 @@ export default function DeviceModal({ isOpen, onClose, onSave, initialDevice }: 
         setName('R-CORE-01');
         setBrand('MikroTik');
         setModel('CCR2004-1G-12S+2XS');
+      } else if (newType === 'home_router') {
+        setName('HR-POLI-01');
+        setBrand('Ruijie Reyee');
+        setModel('EW1200G-PRO');
       } else if (newType === 'switch') {
         setName('SW-DIST-01');
         setBrand('TP-Link');
