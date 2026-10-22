@@ -312,7 +312,23 @@ export async function pollVpnEvents(): Promise<void> {
     console.log(
       `[VpnMonitor] Inisialisasi selesai. Terpantau ${state.radiusSessions.size} sesi RADIUS dan ${state.wireguardPeers.size} peer WireGuard aktif.`
     );
+  } else {
+    console.log(
+      `[VpnMonitor] Siklus pemindaian selesai (${new Date().toLocaleTimeString('id-ID')} WITA): ${state.radiusSessions.size} RADIUS aktif, ${state.wireguardPeers.size} WireGuard aktif.`
+    );
   }
+}
+
+export function getVpnMonitorStatus() {
+  return {
+    started: Boolean((globalThis as any).__vpnMonitorWorkerStarted),
+    initialized: state.initialized,
+    radiusCount: state.radiusSessions.size,
+    wireguardCount: state.wireguardPeers.size,
+    radiusSessions: Array.from(state.radiusSessions.values()),
+    wireguardPeers: Array.from(state.wireguardPeers.values()),
+    lastPolled: new Date().toISOString(),
+  };
 }
 
 /**

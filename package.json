@@ -12,7 +12,9 @@
     "test:e2e:headed": "playwright test --headed",
     "test:codegen": "playwright codegen http://localhost:3000",
     "screenshots": "playwright test e2e/screenshots.spec.ts",
-    "poll:devices": "node scripts/poll-devices.js"
+    "poll:devices": "node scripts/poll-devices.js",
+    "poll:vpn": "node scripts/poll-vpn.js",
+    "worker:vpn": "node scripts/vpn-daemon.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

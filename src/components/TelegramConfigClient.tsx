@@ -18,6 +18,7 @@ import {
   FaUserCheck,
   FaUserTimes,
   FaSearch,
+  FaSync,
 } from "react-icons/fa";
 
 interface TelegramConfigData {
@@ -53,10 +54,45 @@ export default function TelegramConfigClient() {
   } | null>(null);
 
   const [previewTab, setPreviewTab] = useState<"device_down" | "device_up" | "vpn_online" | "vpn_offline">("device_down");
+  const [vpnWorkerStatus, setVpnWorkerStatus] = useState<{
+    started?: boolean;
+    radiusCount?: number;
+    wireguardCount?: number;
+  }>({ started: true, radiusCount: 0, wireguardCount: 0 });
+  const [isScanningVpn, setIsScanningVpn] = useState(false);
 
   useEffect(() => {
     fetchConfig();
+    fetchVpnStatus();
   }, []);
+
+  const fetchVpnStatus = async () => {
+    try {
+      const res = await fetch("/api/vpn/monitor/poll");
+      const data = await res.json();
+      if (data.success && data.status) {
+        setVpnWorkerStatus(data.status);
+      }
+    } catch {}
+  };
+
+  const handleManualScanVpn = async () => {
+    try {
+      setIsScanningVpn(true);
+      const res = await fetch("/api/vpn/monitor/poll", { method: "POST" });
+      const data = await res.json();
+      if (data.success && data.status) {
+        setVpnWorkerStatus(data.status);
+        toast.success(
+          `Pemindaian VPN selesai: ${data.status.wireguardCount || 0} WireGuard aktif, ${data.status.radiusCount || 0} RADIUS aktif.`
+        );
+      }
+    } catch (err: any) {
+      toast.error("Gagal memindai sesi VPN: " + err.message);
+    } finally {
+      setIsScanningVpn(false);
+    }
+  };
 
   const fetchConfig = async () => {
     try {
@@ -233,7 +269,17 @@ export default function TelegramConfigClient() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={handleManualScanVpn}
+              disabled={isScanningVpn}
+              className="btn btn-outline btn-sm gap-2 border-emerald-500/30 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+              title="Pindai live sesi WireGuard dan RADIUS sekarang"
+            >
+              <FaSync className={`text-xs ${isScanningVpn ? "animate-spin" : ""}`} />
+              Cek Sesi VPN ({vpnWorkerStatus.wireguardCount || 0} WG / {vpnWorkerStatus.radiusCount || 0} RADIUS)
+            </button>
             <button
               type="button"
               onClick={handleTestNotification}
