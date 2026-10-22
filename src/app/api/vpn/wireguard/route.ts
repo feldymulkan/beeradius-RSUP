@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { mikrotikRequest, getWireguardPeers } from "@/lib/mikrotik";
+import { mikrotikRequest, getWireguardPeers, generateWireguardKeys } from "@/lib/mikrotik";
 import { logAudit } from '@/lib/audit';
 
 export async function GET() {
@@ -51,33 +51,63 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { mikrotikId, name, allowedIps, interfaceName, comment } = body;
+    const { mikrotikId, name, allowedIps, interfaceName, comment, endpoint } = body;
+
+    if (!mikrotikId || !name || !allowedIps) {
+      return NextResponse.json({ message: "Router MikroTik, Nama, dan IP Client wajib diisi." }, { status: 400 });
+    }
 
     const mkConfig = await prisma.mikrotikConfig.findUnique({
       where: { id: parseInt(mikrotikId) }
     });
 
-    if (!mkConfig) throw new Error("Mikrotik config not found");
+    if (!mkConfig) throw new Error("Konfigurasi MikroTik tidak ditemukan");
+
+    // Pastikan IP memiliki subnet mask (default /32 untuk host single)
+    const formattedAllowedIps = allowedIps.includes('/') ? allowedIps.trim() : `${allowedIps.trim()}/32`;
+
+    // Generate Keypair X25519 WireGuard secara lokal
+    const keyPair = generateWireguardKeys();
 
     console.log(`[WireGuard] Creating peer on ${mkConfig.name} (${mkConfig.host})`);
-    console.log(`[WireGuard] Payload:`, { interfaceName, allowedIps, name });
+    console.log(`[WireGuard] Payload:`, { interfaceName, formattedAllowedIps, name, publicKey: keyPair.publicKey });
 
-    // Standard POST to create a peer
-    // Mikrotik REST API for WG Peer uses 'allowed-address' (not allowed-ips)
-    const mkPeer = await mikrotikRequest(mkConfig as any, "/interface/wireguard/peers", "POST", {
+    // MikroTik REST API menggunakan PUT untuk menambah item baru di /interface/wireguard/peers
+    const mkPeer = await mikrotikRequest(mkConfig as any, "/interface/wireguard/peers", "PUT", {
       interface: interfaceName || "wireguard1",
-      "allowed-address": allowedIps,
+      "allowed-address": formattedAllowedIps,
       comment: name || comment || `Created by BeeRadius`,
-      "private-key": "auto"
+      "public-key": keyPair.publicKey,
     }) as any;
 
-    await logAudit('CREATE_WG_PEER', 'wireguard', name || comment || 'Unnamed Peer', { mikrotikId, interfaceName, allowedIps });
+    // Simpan privateKey dan metadata peer ke database lokal untuk keperluan QR Code & Config
+    try {
+      await prisma.wireguardPeer.create({
+        data: {
+          mikrotikId: mkConfig.id,
+          mikrotikPeerId: mkPeer?.[".id"] || null,
+          name: name || comment || "Unnamed Peer",
+          publicKey: keyPair.publicKey,
+          privateKey: keyPair.privateKey,
+          allowedIps: formattedAllowedIps,
+          interface: interfaceName || "wireguard1",
+          endpoint: endpoint || null,
+          comment: name || comment || null,
+        }
+      });
+    } catch (dbErr: any) {
+      console.warn("[WireGuard] Gagal menyimpan privateKey ke DB lokal:", dbErr.message);
+    }
+
+    await logAudit('CREATE_WG_PEER', 'wireguard', name || comment || 'Unnamed Peer', { mikrotikId, interfaceName, allowedIps: formattedAllowedIps });
     return NextResponse.json(mkPeer);
   } catch (error: any) {
     console.error("Failed to create Wireguard peer:", error.message);
     let userMessage = error.message;
-    if (error.message.includes("no such command") || error.message.includes("404")) {
-      userMessage = `Mikrotik ${error.message.includes("no such command") ? "tidak mendukung perintah WireGuard" : "mengembalikan error 404"}. Pastikan RouterOS sudah versi 7.1 ke atas dan fitur WireGuard tersedia.`;
+    if (error.message.includes("already have peer with such public key")) {
+      userMessage = "Public Key ini sudah terdaftar pada router MikroTik.";
+    } else if (error.message.includes("missing =interface=")) {
+      userMessage = "Interface WireGuard tidak ditemukan di router MikroTik. Pastikan interface wireguard1 sudah aktif.";
     }
     return NextResponse.json({ message: userMessage }, { status: 500 });
   }

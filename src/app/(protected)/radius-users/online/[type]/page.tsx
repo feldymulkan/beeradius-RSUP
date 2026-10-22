@@ -2,8 +2,19 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import toast from "react-hot-toast";
-import { FaSync, FaTrashAlt, FaWifi, FaUserClock, FaNetworkWired, FaSearch, FaTimes } from "react-icons/fa";
+import { 
+  FaSync, 
+  FaTrashAlt, 
+  FaWifi, 
+  FaUserClock, 
+  FaNetworkWired, 
+  FaSearch, 
+  FaTimes, 
+  FaShieldAlt,
+  FaExternalLinkAlt 
+} from "react-icons/fa";
 import { formatDate } from "@/lib/utils";
 import DisconnectButton from "@/components/DisconnectButton";
 
@@ -16,6 +27,14 @@ type OnlineUser = {
   acctupdatetime: string | null;
   isStale: boolean;
   lastLogout: string | null;
+  protocol?: "radius" | "wireguard";
+  endpoint?: string | null;
+  lastHandshake?: string | null;
+  rx?: string | number | null;
+  tx?: string | number | null;
+  mikrotikId?: number;
+  mikrotikName?: string;
+  peerId?: string;
 };
 
 type ApiResponse = {
@@ -24,6 +43,8 @@ type ApiResponse = {
   totalPages: number;
   currentPage: number;
   totalStaleCount: number;
+  totalRadiusCount?: number;
+  totalWgCount?: number;
 };
 
 const POLLING_INTERVAL = 15000;
@@ -41,13 +62,22 @@ export default function OnlineUserTable() {
   const [searchInput, setSearchInput] = useState("");
   const [appliedQuery, setAppliedQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("active");
+  const [protocolFilter, setProtocolFilter] = useState("all"); // all | radius | wireguard
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [totalStaleCount, setTotalStaleCount] = useState(0);
+  const [totalRadiusCount, setTotalRadiusCount] = useState(0);
+  const [totalWgCount, setTotalWgCount] = useState(0);
 
-  const fetchOnlineUsers = useCallback(async (pageNum: number, query: string, limitNum: number, status: string) => {
+  const fetchOnlineUsers = useCallback(async (
+    pageNum: number, 
+    query: string, 
+    limitNum: number, 
+    status: string,
+    protocol: string
+  ) => {
     setIsLoading(true);
     try {
       const queryParams = new URLSearchParams({
@@ -59,6 +89,9 @@ export default function OnlineUserTable() {
       if (status !== "all") {
         queryParams.set("status", status);
       }
+      if (type === "vpn" && protocol !== "all") {
+        queryParams.set("protocol", protocol);
+      }
 
       const res = await fetch(`/api/radius/users/online-users/list?${queryParams.toString()}`);
       if (!res.ok) throw new Error("Gagal mengambil data");
@@ -69,6 +102,8 @@ export default function OnlineUserTable() {
       setTotalPages(data.totalPages || 1);
       setTotalRecords(data.total || 0);
       setTotalStaleCount(data.totalStaleCount || 0);
+      setTotalRadiusCount(data.totalRadiusCount || 0);
+      setTotalWgCount(data.totalWgCount || 0);
     } catch (error) {
       console.error("Error fetching users:", error);
     } finally {
@@ -78,8 +113,8 @@ export default function OnlineUserTable() {
 
   // Initial load and refetch on state change
   useEffect(() => {
-    fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter);
-  }, [page, appliedQuery, pageSize, statusFilter, fetchOnlineUsers]);
+    fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter, protocolFilter);
+  }, [page, appliedQuery, pageSize, statusFilter, protocolFilter, fetchOnlineUsers]);
 
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -99,6 +134,11 @@ export default function OnlineUserTable() {
     setPage(1);
   };
 
+  const handleProtocolFilterChange = (newProtocol: string) => {
+    setProtocolFilter(newProtocol);
+    setPage(1);
+  };
+
   const handlePageSizeChange = (newSize: number) => {
     setPageSize(newSize);
     setPage(1);
@@ -107,10 +147,10 @@ export default function OnlineUserTable() {
   // Polling interval uses appliedQuery
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter);
+      fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter, protocolFilter);
     }, POLLING_INTERVAL);
     return () => clearInterval(interval);
-  }, [page, appliedQuery, pageSize, statusFilter, fetchOnlineUsers]);
+  }, [page, appliedQuery, pageSize, statusFilter, protocolFilter, fetchOnlineUsers]);
 
   // Realtime clock tick for duration counter
   useEffect(() => {
@@ -153,7 +193,7 @@ export default function OnlineUserTable() {
       const data = await res.json();
       if (res.ok) {
         toast.success(data.message);
-        fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter);
+        fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter, protocolFilter);
       } else {
         throw new Error(data.message);
       }
@@ -164,8 +204,6 @@ export default function OnlineUserTable() {
     }
   };
 
-  // staleCount di halaman ini untuk badge per halaman, totalStaleCount untuk tombol clear
-
   const typeLabel = type === "vpn" ? "VPN" : "Hotspot";
 
   return (
@@ -174,7 +212,7 @@ export default function OnlineUserTable() {
       <div className="bg-primary/5 px-6 py-4 border-b border-base-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center gap-3">
           <div className="bg-primary p-2.5 rounded-lg text-primary-content shadow-xs">
-            <FaWifi size={20} />
+            {type === "vpn" ? <FaShieldAlt size={20} /> : <FaWifi size={20} />}
           </div>
           <div>
             <h2 className="text-lg font-bold flex items-center gap-2">
@@ -188,15 +226,29 @@ export default function OnlineUserTable() {
               )}
             </h2>
             <p className="text-xs opacity-60 uppercase tracking-widest font-bold">
-              Monitor Koneksi Realtime
+              {type === "vpn" 
+                ? "Monitor Koneksi Realtime RADIUS (L2TP/SSTP) & WireGuard MikroTik" 
+                : "Monitor Koneksi Realtime Hotspot"}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 self-end sm:self-auto">
+          {/* LINK KE MANAJEMEN WIREGUARD KHUSUS VPN */}
+          {type === "vpn" && (
+            <Link
+              href="/vpn-wireguard"
+              className="btn btn-sm btn-outline btn-info gap-1.5 text-xs"
+              title="Buka Halaman Manajemen WireGuard"
+            >
+              <FaShieldAlt />
+              <span>Kelola WireGuard</span>
+            </Link>
+          )}
+
           {/* REFRESH */}
           <button
-            onClick={() => fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter)}
+            onClick={() => fetchOnlineUsers(page, appliedQuery, pageSize, statusFilter, protocolFilter)}
             className="btn btn-sm btn-ghost border border-base-300 gap-1.5"
             title="Refresh data"
           >
@@ -210,7 +262,7 @@ export default function OnlineUserTable() {
               onClick={clearStaleSessions}
               disabled={isClearing}
               className={`btn btn-sm btn-error gap-1.5 ${isClearing ? "loading" : ""}`}
-              title="Bersihkan semua sesi gantung"
+              title="Bersihkan semua sesi RADIUS yang gantung"
             >
               {!isClearing && <FaTrashAlt />}
               <span>Clear {totalStaleCount} Stale</span>
@@ -221,14 +273,49 @@ export default function OnlineUserTable() {
 
       {/* 2. UNIFIED FILTER & SEARCH TOOLBAR */}
       <div className="bg-base-200/50 px-6 py-3 border-b border-base-200 flex flex-col md:flex-row md:items-center justify-between gap-3">
-        {/* Left: Status Filter Segmented & Page Size */}
+        {/* Left: Protocol Filter (Khusus VPN), Status Filter Segmented & Page Size */}
         <div className="flex flex-wrap items-center gap-2.5">
+          {/* TAB 1: PROTOCOL FILTER PILLS KHUSUS VPN */}
+          {type === "vpn" && (
+            <div className="flex gap-1 bg-base-100 p-1 rounded-lg border border-base-300">
+              <button
+                onClick={() => handleProtocolFilterChange("all")}
+                className={`btn btn-xs gap-1 ${
+                  protocolFilter === "all" ? "btn-primary font-semibold" : "btn-ghost text-base-content/60"
+                }`}
+              >
+                <span>Semua VPN</span>
+                <span className="badge badge-xs font-mono">{totalRecords}</span>
+              </button>
+              <button
+                onClick={() => handleProtocolFilterChange("radius")}
+                className={`btn btn-xs gap-1 ${
+                  protocolFilter === "radius" ? "btn-primary font-semibold" : "btn-ghost text-base-content/60"
+                }`}
+              >
+                <span>RADIUS</span>
+                <span className="badge badge-xs font-mono">{totalRadiusCount}</span>
+              </button>
+              <button
+                onClick={() => handleProtocolFilterChange("wireguard")}
+                className={`btn btn-xs gap-1 ${
+                  protocolFilter === "wireguard" ? "btn-info text-info-content font-semibold" : "btn-ghost text-base-content/60"
+                }`}
+              >
+                <FaShieldAlt size={9} />
+                <span>WireGuard</span>
+                <span className="badge badge-xs font-mono">{totalWgCount}</span>
+              </button>
+            </div>
+          )}
+
+          {/* STATUS FILTER: Semua | Aktif | Gantung */}
           <div className="flex gap-1 bg-base-100 p-1 rounded-lg border border-base-300">
             <button
               onClick={() => handleStatusFilterChange("all")}
               className={`btn btn-xs ${statusFilter === "all" ? "btn-primary font-semibold" : "btn-ghost text-slate-400"}`}
             >
-              Semua
+              Semua Sesi
             </button>
             <button
               onClick={() => handleStatusFilterChange("active")}
@@ -347,7 +434,7 @@ export default function OnlineUserTable() {
           <div className="flex justify-center items-center h-48">
             <div className="flex flex-col items-center gap-2">
               <span className="loading loading-spinner loading-lg text-primary"></span>
-              <p className="text-sm opacity-50">Menghubungkan ke RADIUS...</p>
+              <p className="text-sm opacity-50">Menghubungkan ke layanan VPN...</p>
             </div>
           </div>
         ) : users.length > 0 ? (
@@ -356,12 +443,12 @@ export default function OnlineUserTable() {
             <thead className="bg-base-200/50">
               <tr>
                 <th className="w-12">#</th>
-                <th>Username</th>
+                <th>Username / Klien</th>
+                {type === "vpn" && <th>Protokol</th>}
                 <th>IP Address</th>
-                <th>Perangkat RADIUS</th>
+                <th>Router / Gateway</th>
                 <th>Durasi Online</th>
-                <th>Login Sejak</th>
-                <th>Last Logout</th>
+                <th>Aktivitas Terakhir</th>
                 <th>Status</th>
                 <th className="text-center">Aksi</th>
               </tr>
@@ -369,24 +456,58 @@ export default function OnlineUserTable() {
             <tbody>
               {users.map((user, index) => {
                 const rowNumber = (page - 1) * pageSize + index + 1;
+                const isWireguard = user.protocol === "wireguard";
+
                 return (
                   <tr key={user.radacctid} className="hover group">
                     <td className="opacity-50 text-xs">{rowNumber}</td>
                     <td>
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-base-300 flex items-center justify-center font-bold text-xs">
-                          {user.username.charAt(0).toUpperCase()}
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${
+                          isWireguard 
+                            ? "bg-info/10 text-info border border-info/30" 
+                            : "bg-base-300 text-base-content"
+                        }`}>
+                          {isWireguard ? <FaShieldAlt size={12} /> : user.username.charAt(0).toUpperCase()}
                         </div>
-                        <span className="font-bold text-primary">{user.username}</span>
+                        <div>
+                          <span className={`font-bold ${isWireguard ? "text-info" : "text-primary"}`}>
+                            {user.username}
+                          </span>
+                          {isWireguard && user.endpoint && (
+                            <div className="text-[10px] text-base-content/50 font-mono">
+                              Endpoint: {user.endpoint}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
+
+                    {/* KOLOM PROTOKOL KHUSUS VPN */}
+                    {type === "vpn" && (
+                      <td>
+                        {isWireguard ? (
+                          <span className="badge badge-info badge-sm font-mono gap-1 text-[11px] font-semibold">
+                            <FaShieldAlt size={9} />
+                            WireGuard
+                          </span>
+                        ) : (
+                          <span className="badge badge-neutral badge-sm font-mono gap-1 text-[11px] font-semibold opacity-80">
+                            RADIUS
+                          </span>
+                        )}
+                      </td>
+                    )}
+
                     <td>
                       <div className="flex items-center gap-2 text-xs font-mono">
                         <FaNetworkWired className="opacity-30" />
                         {user.framedipaddress || "N/A"}
                       </div>
                     </td>
-                    <td className="text-gray-500 text-sm">{user.nasipaddress}</td>
+                    <td className="text-base-content/70 text-sm">
+                      {user.nasipaddress}
+                    </td>
                     <td>
                       <div className={`flex items-center gap-2 font-mono font-bold px-2 py-1 rounded w-fit ${
                         user.isStale 
@@ -398,14 +519,24 @@ export default function OnlineUserTable() {
                       </div>
                     </td>
                     <td>
-                      <span className="text-xs opacity-70">
-                        {user.acctstarttime ? formatDate(user.acctstarttime, "dd MMM, HH:mm") : "-"}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="text-xs opacity-70 italic">
-                        {user.lastLogout ? formatDate(user.lastLogout, "dd MMM, HH:mm") : "Belum logout"}
-                      </span>
+                      {isWireguard ? (
+                        <div className="text-xs">
+                          <span className="text-success font-mono font-medium">
+                            Handshake: {user.lastHandshake || "Baru saja"}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="text-xs space-y-0.5">
+                          <div className="opacity-70">
+                            Login: {user.acctstarttime ? formatDate(user.acctstarttime, "dd MMM, HH:mm") : "-"}
+                          </div>
+                          {user.lastLogout && (
+                            <div className="text-[10px] opacity-50 italic">
+                              Prev: {formatDate(user.lastLogout, "dd MMM, HH:mm")}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </td>
                     <td>
                       {user.isStale ? (
@@ -415,14 +546,25 @@ export default function OnlineUserTable() {
                           </span>
                         </div>
                       ) : (
-                        <span className="badge badge-success badge-sm gap-1">
+                        <span className="badge badge-success badge-sm gap-1 font-medium">
                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                           Terhubung
                         </span>
                       )}
                     </td>
                     <td className="text-center">
-                      <DisconnectButton username={user.username} />
+                      {isWireguard ? (
+                        <Link
+                          href="/vpn-wireguard"
+                          className="btn btn-xs btn-outline btn-info gap-1 cursor-pointer"
+                          title="Buka detail peer di Manajemen WireGuard"
+                        >
+                          <FaExternalLinkAlt size={10} />
+                          <span>WireGuard</span>
+                        </Link>
+                      ) : (
+                        <DisconnectButton username={user.username} />
+                      )}
                     </td>
                   </tr>
                 );

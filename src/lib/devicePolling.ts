@@ -3,6 +3,7 @@ import { promisify } from 'util';
 import prisma from '@/lib/prisma';
 import { probeSwitch } from '@/lib/snmp';
 import { revalidatePath } from 'next/cache';
+import { sendDeviceStatusNotification } from '@/lib/telegram';
 
 const execAsync = promisify(exec);
 
@@ -223,6 +224,28 @@ export async function pollSingleDevice(sw: any): Promise<PollResult> {
       lastPolled: now,
     },
   });
+
+  // Kirim notifikasi Telegram jika terjadi transisi perubahan status perangkat
+  if (sw.status && sw.status !== finalStatus) {
+    try {
+      sendDeviceStatusNotification({
+        name: sw.name,
+        ip: sw.ip,
+        deviceType: updatedDeviceType,
+        brand,
+        model,
+        location: sw.location || '',
+        previousStatus: sw.status,
+        newStatus: finalStatus,
+        uptime,
+        error: errorMsg,
+      }).catch((notifErr) => {
+        console.error(`[DevicePoller] Error kirim notif Telegram ${sw.name}:`, notifErr.message);
+      });
+    } catch (notifErr: any) {
+      console.error(`[DevicePoller] Gagal memicu notif Telegram ${sw.name}:`, notifErr.message);
+    }
+  }
 
   return {
     id: sw.id,

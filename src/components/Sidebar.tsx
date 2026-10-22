@@ -15,9 +15,9 @@ import {
   FaChartBar,
   FaHistory,
   FaQuestionCircle,
-  FaCog,
   FaUserShield,
   FaProjectDiagram,
+  FaTelegramPlane,
 } from "react-icons/fa";
 import type { ReactNode } from "react";
 
@@ -59,6 +59,7 @@ export default function Sidebar() {
         <Section title="Pengguna">
           <li><ActiveLink href="/radius-users/type/hotspot"><FaWifi className={icon} />User Hotspot</ActiveLink></li>
           <li><ActiveLink href="/radius-users/type/vpn"><FaShieldAlt className={icon} />User VPN</ActiveLink></li>
+          <li><ActiveLink href="/vpn-wireguard"><FaShieldAlt className={icon} />VPN WireGuard</ActiveLink></li>
           <li><ActiveLink href="/radius-users/online/hotspot"><FaUsers className={icon} />Online Hotspot</ActiveLink></li>
           <li><ActiveLink href="/radius-users/online/vpn"><FaUsers className={icon} />Online VPN</ActiveLink></li>
           <li><ActiveLink href="/radius-users/create/hotspot"><FaUserPlus className={icon} />Tambah Hotspot</ActiveLink></li>
@@ -79,13 +80,13 @@ export default function Sidebar() {
           {isSuperAdmin && (
             <li><ActiveLink href="/audit-log"><FaHistory className={icon} />Audit Log</ActiveLink></li>
           )}
-          {/* Koneksi MikroTik via REST dinonaktifkan sementara */}
-          {/* {isSuperAdmin && (
+          {isSuperAdmin && (
             <li><ActiveLink href="/settings/mikrotik"><FaServer className={icon} />Koneksi MikroTik</ActiveLink></li>
-          )} */}
+          )}
           {isSuperAdmin && (
             <li><ActiveLink href="/settings/admin/manage"><FaUserShield className={icon} />Daftar Admin</ActiveLink></li>
           )}
+          <li><ActiveLink href="/settings/telegram"><FaTelegramPlane className={icon} />Notifikasi Telegram</ActiveLink></li>
           <li><ActiveLink href="/help"><FaQuestionCircle className={icon} />Bantuan</ActiveLink></li>
         </Section>
       </nav>

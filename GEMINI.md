@@ -43,7 +43,9 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
 - **DataTable**: Gunakan komponen `src/components/DataTable.tsx` untuk menampilkan data dalam bentuk tabel guna menjaga konsistensi fitur paginasi dan tampilan.
 - **VPN Manual Guide**: Konfigurasi VPN menggunakan panduan langkah-langkah manual untuk Windows, macOS, dan Linux yang tersedia di halaman detail user. Ini menggantikan penggunaan script otomatis untuk stabilitas yang lebih baik.
 - **Redireksi Pasca-Create**: Pembuatan user VPN akan langsung mengarahkan (redirect) admin ke halaman detail user agar informasi konfigurasi manual segera tersedia.
-- **Halaman Online User (`/radius-users/online/[type]`)**: Mengintegrasikan fitur pemantauan durasi online secara real-time, status badge (*Terhubung* / *Stale Session*), filter status sesi (*Semua*, *Aktif*, *Gantung*), serta tombol *Clear Stale Sessions* untuk pembersihan massal sesi gantung (sesi tanpa *interim-update* >15 menit). Komponen `OnlineUserList.tsx` yang sebelumnya terpisah kini telah dihapus karena fungsinya disatukan langsung ke dalam halaman ini.
+- **Halaman Online User (`/radius-users/online/[type]`)**: Mengintegrasikan fitur pemantauan durasi online secara real-time, status badge (*Terhubung* / *Stale Session*), filter status sesi (*Semua*, *Aktif*, *Gantung*), serta tombol *Clear Stale Sessions* untuk pembersihan massal sesi gantung (sesi tanpa *interim-update* >15 menit). Khusus tipe VPN (`/radius-users/online/vpn`), halaman ini menyatukan pemantauan sesi **RADIUS (SSTP/L2TP/IKEv2)** dan sesi aktif **WireGuard (MikroTik Live Handshake <3m)** ke dalam satu tabel terpadu lengkap dengan tab filter protokol (`Semua VPN`, `RADIUS`, `WireGuard`).
+- **Halaman Manajemen WireGuard (`/vpn-wireguard`)**: Terhubung langsung ke MikroTik REST API (`/interface/wireguard/peers`), mendukung pembuatan peer, penampilan QR Code interaktif, tombol *Salin Konfigurasi*, tombol *Download .conf*, dan penghapusan peer secara live di router MikroTik tanpa dependensi database lokal.
+- **Halaman Koneksi MikroTik (`/settings/mikrotik`)**: Manajemen kredensial router MikroTik REST API yang dilindungi hak akses `superadmin`, dilengkapi fitur *Cek Koneksi* real-time (menampilkan Board Name, versi RouterOS, dan Uptime) serta penentuan IP publik / hostname endpoint WAN untuk klien WireGuard.
 - **Halaman Manajemen Pengguna (`/radius-users` & `/radius-users/type/[type]`)**: 
   - Menggunakan tata letak **Single-Row Unified Dark Glass Toolbar** (`#131b2e` border `primary/10`) yang menyatukan `SearchInput` dan `UserFilter` tanpa *stacked clutter*.
   - Menghapus pembungkus `prose` Tailwind agar hierarki margin dan tombol aksi tetap rapi.
@@ -143,6 +145,21 @@ Dokumen ini berisi konvensi tim, panduan arsitektur, dan alur kerja untuk pengem
   - **API Engine (`/api/network/topology/sync-switches`)**: Melakukan mapping port fisik riil (`SwitchPortInfo`), status OperStatus `up`/`down`, PVID, serta konfigurasi tagged/untagged VLAN ke node topologi tanpa memutuskan kabel yang sudah ada.
   - **Node Switch & Telemetry SNMP**: Menampilkan chip badge `SNMP SYNC`, status port riil (e.g. `18 UP / 24 Port`), counter VLAN aktif, serta drawer detail multi-tab (*Ringkasan & Kabel*, *Port Matrix SNMP*, dan *VLAN Discovered*) dengan tautan langsung ke halaman `/devices`.
   - **Kabel Interaktif & Legend**: Menampilkan 4 tipe kabel berstandar rumah sakit (Fiber Optic 10G, UTP Cat6 Gigabit 1G, PoE NVR CCTV/AP, VLAN Trunk 802.1Q) lengkap dengan tooltip port dan penghapusan kabel interaktif.
+- **Sistem Notifikasi Telegram NOC RSUD NTB (`/settings/telegram`)**:
+  - **Arsitektur Bot & Notifier Core (`src/lib/telegram.ts`)**: Terintegrasi langsung dengan Telegram Bot API (HTML parse mode) dengan konfigurasi yang disimpan di tabel database `TelegramConfig` (mendukung fallback ke `.env` `TELEGRAM_BOT_TOKEN` & `TELEGRAM_CHAT_ID`). Dilengkapi fitur *Kirim Pesan Tes* untuk verifikasi langsung dari UI.
+  - **Deteksi Perangkat Jaringan Mati / Down & Pulih**:
+    - Terintegrasi langsung di dalam `pollSingleDevice` (`src/lib/devicePolling.ts`).
+    - Menggunakan deteksi transisi status presisi (`previousStatus !== newStatus`):
+      - 🚨 **Down / Offline**: Terpicu saat perangkat berubah dari `online` / `snmp_offline` menjadi `offline` (ICMP Ping & SNMP timeout / unreachable).
+      - ✅ **Pulih / Recovered**: Terpicu saat perangkat kembali menjadi `online`, menampilkan durasi uptime dan IP.
+      - ⚠️ **SNMP Timeout / Partial Down**: Terpicu saat Ping hidup tetapi agen SNMP port 161 tidak merespon.
+    - Zero spam: Transisi status awal saat startup server diisolasi sehingga tidak menimbulkan *flood notification*.
+  - **Deteksi Pengguna VPN Terhubung (Online) & Terputus (Offline) (`src/lib/vpnMonitor.ts`)**:
+    - **Background Daemon Worker**: Berjalan secara non-blocking setiap 30 detik (`startVpnMonitorWorker` di `src/instrumentation.ts`).
+    - **RADIUS VPN (SSTP/L2TP/IKEv2)**: Memantau perubahan sesi di tabel `radacct` (`acctstoptime === null` untuk deteksi online, dan transisi ke `acctstoptime !== null` untuk deteksi offline lengkap dengan durasi sesi, byte Rx/Tx, dan `acctterminatecause`).
+    - **WireGuard VPN**: Memantau transisi `last-handshake` peer MikroTik secara live (handshake `<= 180s` = online; idle `> 900s` = offline).
+    - Menampilkan informasi lengkap: username, nama lengkap & unit ruangan (dari `userinfo`), IP VPN yang dialokasikan, router gateway, client endpoint, durasi online, dan timestamp berstandar WITA.
+  - **Halaman Pengaturan UI (`/settings/telegram`)**: Terletak di menu *Sistem -> Notifikasi Telegram*, dilengkapi toggle master switch, preferensi trigger terpisah (Perangkat, VPN Online, VPN Offline), form input aman dengan reveal toggle, panduan interaktif pembuatan bot @BotFather, serta simulasi visual bubble Telegram interaktif.
 - **Standar Skeleton Loading State Terpadu (`src/components/Skleton.tsx`)**:
   - DILARANG menggunakan spinner mentah yang berkedip mendadak saat memuat halaman data berat.
   - Selalu gunakan komponen modular `Skleton.tsx` yang mendukung varian adaptif (`dashboard`, `wifi`, `reports`, `devices`, `topology`, `card`, `table`, `chart`) dengan animasi shimmer DaisyUI berlatar netral `bg-base-200/50` dan aksen border `border-primary/10`.

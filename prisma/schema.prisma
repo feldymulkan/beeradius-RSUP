@@ -288,3 +288,14 @@ model NetworkTopology {
   @@index([name])
 }
 
+model TelegramConfig {
+  id               Int      @id @default(autoincrement())
+  botToken         String   @db.VarChar(255)
+  chatId           String   @db.VarChar(64)
+  enabled          Boolean  @default(true)
+  notifyDevice     Boolean  @default(true)
+  notifyVpnOnline  Boolean  @default(true)
+  notifyVpnOffline Boolean  @default(true)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}

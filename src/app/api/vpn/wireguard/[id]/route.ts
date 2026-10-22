@@ -49,6 +49,24 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
     // ROS 7.12+ supports private-key in .proplist if permission is correct
     const peer = await mikrotikRequest(config as any, `/interface/wireguard/peers/${peerId}?.proplist=.id,interface,public-key,private-key,preshared-key,allowed-address,comment,endpoint-address,endpoint-port,listen-port`) as any;
 
+    // Ambil privateKey dari database jika RouterOS mengembalikan nilai kosong
+    let privateKey = peer["private-key"] || "";
+    if (!privateKey) {
+      const dbPeer = await prisma.wireguardPeer.findFirst({
+        where: {
+          mikrotikId: parseInt(mikrotikId),
+          OR: [
+            { mikrotikPeerId: peerId },
+            { publicKey: peer["public-key"] },
+            { name: peer.comment || "" }
+          ]
+        }
+      });
+      if (dbPeer?.privateKey) {
+        privateKey = dbPeer.privateKey;
+      }
+    }
+
     return NextResponse.json({
         ...peer,
         id: compositeId,
@@ -56,7 +74,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
         name: peer.comment || "Unnamed Peer",
         allowedIps: peer["allowed-address"],
         publicKey: peer["public-key"],
-        privateKey: peer["private-key"],
+        privateKey,
         presharedKey: peer["preshared-key"],
         listenPort: peer["listen-port"],
         interface: peer.interface

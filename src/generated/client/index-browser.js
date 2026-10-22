@@ -346,6 +346,18 @@ exports.Prisma.NetworkTopologyScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TelegramConfigScalarFieldEnum = {
+  id: 'id',
+  botToken: 'botToken',
+  chatId: 'chatId',
+  enabled: 'enabled',
+  notifyDevice: 'notifyDevice',
+  notifyVpnOnline: 'notifyVpnOnline',
+  notifyVpnOffline: 'notifyVpnOffline',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -535,6 +547,11 @@ exports.Prisma.NetworkTopologyOrderByRelevanceFieldEnum = {
   viewport: 'viewport'
 };
 
+exports.Prisma.TelegramConfigOrderByRelevanceFieldEnum = {
+  botToken: 'botToken',
+  chatId: 'chatId'
+};
+
 
 exports.Prisma.ModelName = {
   nas: 'nas',
@@ -556,7 +573,8 @@ exports.Prisma.ModelName = {
   Wifi: 'Wifi',
   AuditLog: 'AuditLog',
   SwitchDevice: 'SwitchDevice',
-  NetworkTopology: 'NetworkTopology'
+  NetworkTopology: 'NetworkTopology',
+  TelegramConfig: 'TelegramConfig'
 };
 
 /**

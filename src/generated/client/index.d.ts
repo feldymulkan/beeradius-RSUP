@@ -113,6 +113,11 @@ export type SwitchDevice = $Result.DefaultSelection<Prisma.$SwitchDevicePayload>
  * 
  */
 export type NetworkTopology = $Result.DefaultSelection<Prisma.$NetworkTopologyPayload>
+/**
+ * Model TelegramConfig
+ * 
+ */
+export type TelegramConfig = $Result.DefaultSelection<Prisma.$TelegramConfigPayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -431,6 +436,16 @@ export class PrismaClient<
     * ```
     */
   get networkTopology(): Prisma.NetworkTopologyDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.telegramConfig`: Exposes CRUD operations for the **TelegramConfig** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TelegramConfigs
+    * const telegramConfigs = await prisma.telegramConfig.findMany()
+    * ```
+    */
+  get telegramConfig(): Prisma.TelegramConfigDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -890,7 +905,8 @@ export namespace Prisma {
     Wifi: 'Wifi',
     AuditLog: 'AuditLog',
     SwitchDevice: 'SwitchDevice',
-    NetworkTopology: 'NetworkTopology'
+    NetworkTopology: 'NetworkTopology',
+    TelegramConfig: 'TelegramConfig'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -909,7 +925,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "nas" | "nasreload" | "radacct" | "radcheck" | "radgroupcheck" | "radgroupreply" | "radpostauth" | "radreply" | "radusergroup" | "userinfo" | "admin" | "groupMetadata" | "radiusPool" | "radippool" | "mikrotikConfig" | "wireguardPeer" | "wifi" | "auditLog" | "switchDevice" | "networkTopology"
+      modelProps: "nas" | "nasreload" | "radacct" | "radcheck" | "radgroupcheck" | "radgroupreply" | "radpostauth" | "radreply" | "radusergroup" | "userinfo" | "admin" | "groupMetadata" | "radiusPool" | "radippool" | "mikrotikConfig" | "wireguardPeer" | "wifi" | "auditLog" | "switchDevice" | "networkTopology" | "telegramConfig"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2233,6 +2249,72 @@ export namespace Prisma {
           }
         }
       }
+      TelegramConfig: {
+        payload: Prisma.$TelegramConfigPayload<ExtArgs>
+        fields: Prisma.TelegramConfigFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TelegramConfigFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TelegramConfigFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload>
+          }
+          findFirst: {
+            args: Prisma.TelegramConfigFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TelegramConfigFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload>
+          }
+          findMany: {
+            args: Prisma.TelegramConfigFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload>[]
+          }
+          create: {
+            args: Prisma.TelegramConfigCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload>
+          }
+          createMany: {
+            args: Prisma.TelegramConfigCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.TelegramConfigDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload>
+          }
+          update: {
+            args: Prisma.TelegramConfigUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload>
+          }
+          deleteMany: {
+            args: Prisma.TelegramConfigDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TelegramConfigUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.TelegramConfigUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TelegramConfigPayload>
+          }
+          aggregate: {
+            args: Prisma.TelegramConfigAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTelegramConfig>
+          }
+          groupBy: {
+            args: Prisma.TelegramConfigGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TelegramConfigGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TelegramConfigCountArgs<ExtArgs>
+            result: $Utils.Optional<TelegramConfigCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2349,6 +2431,7 @@ export namespace Prisma {
     auditLog?: AuditLogOmit
     switchDevice?: SwitchDeviceOmit
     networkTopology?: NetworkTopologyOmit
+    telegramConfig?: TelegramConfigOmit
   }
 
   /* Types for Logging */
@@ -21768,6 +21851,966 @@ export namespace Prisma {
 
 
   /**
+   * Model TelegramConfig
+   */
+
+  export type AggregateTelegramConfig = {
+    _count: TelegramConfigCountAggregateOutputType | null
+    _avg: TelegramConfigAvgAggregateOutputType | null
+    _sum: TelegramConfigSumAggregateOutputType | null
+    _min: TelegramConfigMinAggregateOutputType | null
+    _max: TelegramConfigMaxAggregateOutputType | null
+  }
+
+  export type TelegramConfigAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type TelegramConfigSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type TelegramConfigMinAggregateOutputType = {
+    id: number | null
+    botToken: string | null
+    chatId: string | null
+    enabled: boolean | null
+    notifyDevice: boolean | null
+    notifyVpnOnline: boolean | null
+    notifyVpnOffline: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TelegramConfigMaxAggregateOutputType = {
+    id: number | null
+    botToken: string | null
+    chatId: string | null
+    enabled: boolean | null
+    notifyDevice: boolean | null
+    notifyVpnOnline: boolean | null
+    notifyVpnOffline: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type TelegramConfigCountAggregateOutputType = {
+    id: number
+    botToken: number
+    chatId: number
+    enabled: number
+    notifyDevice: number
+    notifyVpnOnline: number
+    notifyVpnOffline: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type TelegramConfigAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type TelegramConfigSumAggregateInputType = {
+    id?: true
+  }
+
+  export type TelegramConfigMinAggregateInputType = {
+    id?: true
+    botToken?: true
+    chatId?: true
+    enabled?: true
+    notifyDevice?: true
+    notifyVpnOnline?: true
+    notifyVpnOffline?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TelegramConfigMaxAggregateInputType = {
+    id?: true
+    botToken?: true
+    chatId?: true
+    enabled?: true
+    notifyDevice?: true
+    notifyVpnOnline?: true
+    notifyVpnOffline?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type TelegramConfigCountAggregateInputType = {
+    id?: true
+    botToken?: true
+    chatId?: true
+    enabled?: true
+    notifyDevice?: true
+    notifyVpnOnline?: true
+    notifyVpnOffline?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type TelegramConfigAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TelegramConfig to aggregate.
+     */
+    where?: TelegramConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TelegramConfigs to fetch.
+     */
+    orderBy?: TelegramConfigOrderByWithRelationInput | TelegramConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TelegramConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TelegramConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TelegramConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TelegramConfigs
+    **/
+    _count?: true | TelegramConfigCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TelegramConfigAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TelegramConfigSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TelegramConfigMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TelegramConfigMaxAggregateInputType
+  }
+
+  export type GetTelegramConfigAggregateType<T extends TelegramConfigAggregateArgs> = {
+        [P in keyof T & keyof AggregateTelegramConfig]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTelegramConfig[P]>
+      : GetScalarType<T[P], AggregateTelegramConfig[P]>
+  }
+
+
+
+
+  export type TelegramConfigGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TelegramConfigWhereInput
+    orderBy?: TelegramConfigOrderByWithAggregationInput | TelegramConfigOrderByWithAggregationInput[]
+    by: TelegramConfigScalarFieldEnum[] | TelegramConfigScalarFieldEnum
+    having?: TelegramConfigScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TelegramConfigCountAggregateInputType | true
+    _avg?: TelegramConfigAvgAggregateInputType
+    _sum?: TelegramConfigSumAggregateInputType
+    _min?: TelegramConfigMinAggregateInputType
+    _max?: TelegramConfigMaxAggregateInputType
+  }
+
+  export type TelegramConfigGroupByOutputType = {
+    id: number
+    botToken: string
+    chatId: string
+    enabled: boolean
+    notifyDevice: boolean
+    notifyVpnOnline: boolean
+    notifyVpnOffline: boolean
+    createdAt: Date
+    updatedAt: Date
+    _count: TelegramConfigCountAggregateOutputType | null
+    _avg: TelegramConfigAvgAggregateOutputType | null
+    _sum: TelegramConfigSumAggregateOutputType | null
+    _min: TelegramConfigMinAggregateOutputType | null
+    _max: TelegramConfigMaxAggregateOutputType | null
+  }
+
+  type GetTelegramConfigGroupByPayload<T extends TelegramConfigGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TelegramConfigGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TelegramConfigGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TelegramConfigGroupByOutputType[P]>
+            : GetScalarType<T[P], TelegramConfigGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TelegramConfigSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    botToken?: boolean
+    chatId?: boolean
+    enabled?: boolean
+    notifyDevice?: boolean
+    notifyVpnOnline?: boolean
+    notifyVpnOffline?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["telegramConfig"]>
+
+
+
+  export type TelegramConfigSelectScalar = {
+    id?: boolean
+    botToken?: boolean
+    chatId?: boolean
+    enabled?: boolean
+    notifyDevice?: boolean
+    notifyVpnOnline?: boolean
+    notifyVpnOffline?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type TelegramConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "botToken" | "chatId" | "enabled" | "notifyDevice" | "notifyVpnOnline" | "notifyVpnOffline" | "createdAt" | "updatedAt", ExtArgs["result"]["telegramConfig"]>
+
+  export type $TelegramConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TelegramConfig"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      botToken: string
+      chatId: string
+      enabled: boolean
+      notifyDevice: boolean
+      notifyVpnOnline: boolean
+      notifyVpnOffline: boolean
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["telegramConfig"]>
+    composites: {}
+  }
+
+  type TelegramConfigGetPayload<S extends boolean | null | undefined | TelegramConfigDefaultArgs> = $Result.GetResult<Prisma.$TelegramConfigPayload, S>
+
+  type TelegramConfigCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TelegramConfigFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TelegramConfigCountAggregateInputType | true
+    }
+
+  export interface TelegramConfigDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TelegramConfig'], meta: { name: 'TelegramConfig' } }
+    /**
+     * Find zero or one TelegramConfig that matches the filter.
+     * @param {TelegramConfigFindUniqueArgs} args - Arguments to find a TelegramConfig
+     * @example
+     * // Get one TelegramConfig
+     * const telegramConfig = await prisma.telegramConfig.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TelegramConfigFindUniqueArgs>(args: SelectSubset<T, TelegramConfigFindUniqueArgs<ExtArgs>>): Prisma__TelegramConfigClient<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TelegramConfig that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TelegramConfigFindUniqueOrThrowArgs} args - Arguments to find a TelegramConfig
+     * @example
+     * // Get one TelegramConfig
+     * const telegramConfig = await prisma.telegramConfig.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TelegramConfigFindUniqueOrThrowArgs>(args: SelectSubset<T, TelegramConfigFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TelegramConfigClient<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TelegramConfig that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TelegramConfigFindFirstArgs} args - Arguments to find a TelegramConfig
+     * @example
+     * // Get one TelegramConfig
+     * const telegramConfig = await prisma.telegramConfig.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TelegramConfigFindFirstArgs>(args?: SelectSubset<T, TelegramConfigFindFirstArgs<ExtArgs>>): Prisma__TelegramConfigClient<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TelegramConfig that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TelegramConfigFindFirstOrThrowArgs} args - Arguments to find a TelegramConfig
+     * @example
+     * // Get one TelegramConfig
+     * const telegramConfig = await prisma.telegramConfig.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TelegramConfigFindFirstOrThrowArgs>(args?: SelectSubset<T, TelegramConfigFindFirstOrThrowArgs<ExtArgs>>): Prisma__TelegramConfigClient<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TelegramConfigs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TelegramConfigFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TelegramConfigs
+     * const telegramConfigs = await prisma.telegramConfig.findMany()
+     * 
+     * // Get first 10 TelegramConfigs
+     * const telegramConfigs = await prisma.telegramConfig.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const telegramConfigWithIdOnly = await prisma.telegramConfig.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TelegramConfigFindManyArgs>(args?: SelectSubset<T, TelegramConfigFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TelegramConfig.
+     * @param {TelegramConfigCreateArgs} args - Arguments to create a TelegramConfig.
+     * @example
+     * // Create one TelegramConfig
+     * const TelegramConfig = await prisma.telegramConfig.create({
+     *   data: {
+     *     // ... data to create a TelegramConfig
+     *   }
+     * })
+     * 
+     */
+    create<T extends TelegramConfigCreateArgs>(args: SelectSubset<T, TelegramConfigCreateArgs<ExtArgs>>): Prisma__TelegramConfigClient<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TelegramConfigs.
+     * @param {TelegramConfigCreateManyArgs} args - Arguments to create many TelegramConfigs.
+     * @example
+     * // Create many TelegramConfigs
+     * const telegramConfig = await prisma.telegramConfig.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TelegramConfigCreateManyArgs>(args?: SelectSubset<T, TelegramConfigCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a TelegramConfig.
+     * @param {TelegramConfigDeleteArgs} args - Arguments to delete one TelegramConfig.
+     * @example
+     * // Delete one TelegramConfig
+     * const TelegramConfig = await prisma.telegramConfig.delete({
+     *   where: {
+     *     // ... filter to delete one TelegramConfig
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TelegramConfigDeleteArgs>(args: SelectSubset<T, TelegramConfigDeleteArgs<ExtArgs>>): Prisma__TelegramConfigClient<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TelegramConfig.
+     * @param {TelegramConfigUpdateArgs} args - Arguments to update one TelegramConfig.
+     * @example
+     * // Update one TelegramConfig
+     * const telegramConfig = await prisma.telegramConfig.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TelegramConfigUpdateArgs>(args: SelectSubset<T, TelegramConfigUpdateArgs<ExtArgs>>): Prisma__TelegramConfigClient<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TelegramConfigs.
+     * @param {TelegramConfigDeleteManyArgs} args - Arguments to filter TelegramConfigs to delete.
+     * @example
+     * // Delete a few TelegramConfigs
+     * const { count } = await prisma.telegramConfig.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TelegramConfigDeleteManyArgs>(args?: SelectSubset<T, TelegramConfigDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TelegramConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TelegramConfigUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TelegramConfigs
+     * const telegramConfig = await prisma.telegramConfig.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TelegramConfigUpdateManyArgs>(args: SelectSubset<T, TelegramConfigUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one TelegramConfig.
+     * @param {TelegramConfigUpsertArgs} args - Arguments to update or create a TelegramConfig.
+     * @example
+     * // Update or create a TelegramConfig
+     * const telegramConfig = await prisma.telegramConfig.upsert({
+     *   create: {
+     *     // ... data to create a TelegramConfig
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TelegramConfig we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TelegramConfigUpsertArgs>(args: SelectSubset<T, TelegramConfigUpsertArgs<ExtArgs>>): Prisma__TelegramConfigClient<$Result.GetResult<Prisma.$TelegramConfigPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TelegramConfigs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TelegramConfigCountArgs} args - Arguments to filter TelegramConfigs to count.
+     * @example
+     * // Count the number of TelegramConfigs
+     * const count = await prisma.telegramConfig.count({
+     *   where: {
+     *     // ... the filter for the TelegramConfigs we want to count
+     *   }
+     * })
+    **/
+    count<T extends TelegramConfigCountArgs>(
+      args?: Subset<T, TelegramConfigCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TelegramConfigCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TelegramConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TelegramConfigAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TelegramConfigAggregateArgs>(args: Subset<T, TelegramConfigAggregateArgs>): Prisma.PrismaPromise<GetTelegramConfigAggregateType<T>>
+
+    /**
+     * Group by TelegramConfig.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TelegramConfigGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TelegramConfigGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TelegramConfigGroupByArgs['orderBy'] }
+        : { orderBy?: TelegramConfigGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TelegramConfigGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTelegramConfigGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TelegramConfig model
+   */
+  readonly fields: TelegramConfigFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TelegramConfig.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TelegramConfigClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TelegramConfig model
+   */
+  interface TelegramConfigFieldRefs {
+    readonly id: FieldRef<"TelegramConfig", 'Int'>
+    readonly botToken: FieldRef<"TelegramConfig", 'String'>
+    readonly chatId: FieldRef<"TelegramConfig", 'String'>
+    readonly enabled: FieldRef<"TelegramConfig", 'Boolean'>
+    readonly notifyDevice: FieldRef<"TelegramConfig", 'Boolean'>
+    readonly notifyVpnOnline: FieldRef<"TelegramConfig", 'Boolean'>
+    readonly notifyVpnOffline: FieldRef<"TelegramConfig", 'Boolean'>
+    readonly createdAt: FieldRef<"TelegramConfig", 'DateTime'>
+    readonly updatedAt: FieldRef<"TelegramConfig", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TelegramConfig findUnique
+   */
+  export type TelegramConfigFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which TelegramConfig to fetch.
+     */
+    where: TelegramConfigWhereUniqueInput
+  }
+
+  /**
+   * TelegramConfig findUniqueOrThrow
+   */
+  export type TelegramConfigFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which TelegramConfig to fetch.
+     */
+    where: TelegramConfigWhereUniqueInput
+  }
+
+  /**
+   * TelegramConfig findFirst
+   */
+  export type TelegramConfigFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which TelegramConfig to fetch.
+     */
+    where?: TelegramConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TelegramConfigs to fetch.
+     */
+    orderBy?: TelegramConfigOrderByWithRelationInput | TelegramConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TelegramConfigs.
+     */
+    cursor?: TelegramConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TelegramConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TelegramConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TelegramConfigs.
+     */
+    distinct?: TelegramConfigScalarFieldEnum | TelegramConfigScalarFieldEnum[]
+  }
+
+  /**
+   * TelegramConfig findFirstOrThrow
+   */
+  export type TelegramConfigFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which TelegramConfig to fetch.
+     */
+    where?: TelegramConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TelegramConfigs to fetch.
+     */
+    orderBy?: TelegramConfigOrderByWithRelationInput | TelegramConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TelegramConfigs.
+     */
+    cursor?: TelegramConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TelegramConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TelegramConfigs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TelegramConfigs.
+     */
+    distinct?: TelegramConfigScalarFieldEnum | TelegramConfigScalarFieldEnum[]
+  }
+
+  /**
+   * TelegramConfig findMany
+   */
+  export type TelegramConfigFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * Filter, which TelegramConfigs to fetch.
+     */
+    where?: TelegramConfigWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TelegramConfigs to fetch.
+     */
+    orderBy?: TelegramConfigOrderByWithRelationInput | TelegramConfigOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TelegramConfigs.
+     */
+    cursor?: TelegramConfigWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TelegramConfigs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TelegramConfigs.
+     */
+    skip?: number
+    distinct?: TelegramConfigScalarFieldEnum | TelegramConfigScalarFieldEnum[]
+  }
+
+  /**
+   * TelegramConfig create
+   */
+  export type TelegramConfigCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TelegramConfig.
+     */
+    data: XOR<TelegramConfigCreateInput, TelegramConfigUncheckedCreateInput>
+  }
+
+  /**
+   * TelegramConfig createMany
+   */
+  export type TelegramConfigCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TelegramConfigs.
+     */
+    data: TelegramConfigCreateManyInput | TelegramConfigCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TelegramConfig update
+   */
+  export type TelegramConfigUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TelegramConfig.
+     */
+    data: XOR<TelegramConfigUpdateInput, TelegramConfigUncheckedUpdateInput>
+    /**
+     * Choose, which TelegramConfig to update.
+     */
+    where: TelegramConfigWhereUniqueInput
+  }
+
+  /**
+   * TelegramConfig updateMany
+   */
+  export type TelegramConfigUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TelegramConfigs.
+     */
+    data: XOR<TelegramConfigUpdateManyMutationInput, TelegramConfigUncheckedUpdateManyInput>
+    /**
+     * Filter which TelegramConfigs to update
+     */
+    where?: TelegramConfigWhereInput
+    /**
+     * Limit how many TelegramConfigs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TelegramConfig upsert
+   */
+  export type TelegramConfigUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TelegramConfig to update in case it exists.
+     */
+    where: TelegramConfigWhereUniqueInput
+    /**
+     * In case the TelegramConfig found by the `where` argument doesn't exist, create a new TelegramConfig with this data.
+     */
+    create: XOR<TelegramConfigCreateInput, TelegramConfigUncheckedCreateInput>
+    /**
+     * In case the TelegramConfig was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TelegramConfigUpdateInput, TelegramConfigUncheckedUpdateInput>
+  }
+
+  /**
+   * TelegramConfig delete
+   */
+  export type TelegramConfigDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+    /**
+     * Filter which TelegramConfig to delete.
+     */
+    where: TelegramConfigWhereUniqueInput
+  }
+
+  /**
+   * TelegramConfig deleteMany
+   */
+  export type TelegramConfigDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TelegramConfigs to delete
+     */
+    where?: TelegramConfigWhereInput
+    /**
+     * Limit how many TelegramConfigs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TelegramConfig without action
+   */
+  export type TelegramConfigDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TelegramConfig
+     */
+    select?: TelegramConfigSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TelegramConfig
+     */
+    omit?: TelegramConfigOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -22067,6 +23110,21 @@ export namespace Prisma {
   export type NetworkTopologyScalarFieldEnum = (typeof NetworkTopologyScalarFieldEnum)[keyof typeof NetworkTopologyScalarFieldEnum]
 
 
+  export const TelegramConfigScalarFieldEnum: {
+    id: 'id',
+    botToken: 'botToken',
+    chatId: 'chatId',
+    enabled: 'enabled',
+    notifyDevice: 'notifyDevice',
+    notifyVpnOnline: 'notifyVpnOnline',
+    notifyVpnOffline: 'notifyVpnOffline',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type TelegramConfigScalarFieldEnum = (typeof TelegramConfigScalarFieldEnum)[keyof typeof TelegramConfigScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -22320,6 +23378,14 @@ export namespace Prisma {
   };
 
   export type NetworkTopologyOrderByRelevanceFieldEnum = (typeof NetworkTopologyOrderByRelevanceFieldEnum)[keyof typeof NetworkTopologyOrderByRelevanceFieldEnum]
+
+
+  export const TelegramConfigOrderByRelevanceFieldEnum: {
+    botToken: 'botToken',
+    chatId: 'chatId'
+  };
+
+  export type TelegramConfigOrderByRelevanceFieldEnum = (typeof TelegramConfigOrderByRelevanceFieldEnum)[keyof typeof TelegramConfigOrderByRelevanceFieldEnum]
 
 
   /**
@@ -23809,6 +24875,81 @@ export namespace Prisma {
     viewport?: StringNullableWithAggregatesFilter<"NetworkTopology"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"NetworkTopology"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"NetworkTopology"> | Date | string
+  }
+
+  export type TelegramConfigWhereInput = {
+    AND?: TelegramConfigWhereInput | TelegramConfigWhereInput[]
+    OR?: TelegramConfigWhereInput[]
+    NOT?: TelegramConfigWhereInput | TelegramConfigWhereInput[]
+    id?: IntFilter<"TelegramConfig"> | number
+    botToken?: StringFilter<"TelegramConfig"> | string
+    chatId?: StringFilter<"TelegramConfig"> | string
+    enabled?: BoolFilter<"TelegramConfig"> | boolean
+    notifyDevice?: BoolFilter<"TelegramConfig"> | boolean
+    notifyVpnOnline?: BoolFilter<"TelegramConfig"> | boolean
+    notifyVpnOffline?: BoolFilter<"TelegramConfig"> | boolean
+    createdAt?: DateTimeFilter<"TelegramConfig"> | Date | string
+    updatedAt?: DateTimeFilter<"TelegramConfig"> | Date | string
+  }
+
+  export type TelegramConfigOrderByWithRelationInput = {
+    id?: SortOrder
+    botToken?: SortOrder
+    chatId?: SortOrder
+    enabled?: SortOrder
+    notifyDevice?: SortOrder
+    notifyVpnOnline?: SortOrder
+    notifyVpnOffline?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _relevance?: TelegramConfigOrderByRelevanceInput
+  }
+
+  export type TelegramConfigWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: TelegramConfigWhereInput | TelegramConfigWhereInput[]
+    OR?: TelegramConfigWhereInput[]
+    NOT?: TelegramConfigWhereInput | TelegramConfigWhereInput[]
+    botToken?: StringFilter<"TelegramConfig"> | string
+    chatId?: StringFilter<"TelegramConfig"> | string
+    enabled?: BoolFilter<"TelegramConfig"> | boolean
+    notifyDevice?: BoolFilter<"TelegramConfig"> | boolean
+    notifyVpnOnline?: BoolFilter<"TelegramConfig"> | boolean
+    notifyVpnOffline?: BoolFilter<"TelegramConfig"> | boolean
+    createdAt?: DateTimeFilter<"TelegramConfig"> | Date | string
+    updatedAt?: DateTimeFilter<"TelegramConfig"> | Date | string
+  }, "id">
+
+  export type TelegramConfigOrderByWithAggregationInput = {
+    id?: SortOrder
+    botToken?: SortOrder
+    chatId?: SortOrder
+    enabled?: SortOrder
+    notifyDevice?: SortOrder
+    notifyVpnOnline?: SortOrder
+    notifyVpnOffline?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: TelegramConfigCountOrderByAggregateInput
+    _avg?: TelegramConfigAvgOrderByAggregateInput
+    _max?: TelegramConfigMaxOrderByAggregateInput
+    _min?: TelegramConfigMinOrderByAggregateInput
+    _sum?: TelegramConfigSumOrderByAggregateInput
+  }
+
+  export type TelegramConfigScalarWhereWithAggregatesInput = {
+    AND?: TelegramConfigScalarWhereWithAggregatesInput | TelegramConfigScalarWhereWithAggregatesInput[]
+    OR?: TelegramConfigScalarWhereWithAggregatesInput[]
+    NOT?: TelegramConfigScalarWhereWithAggregatesInput | TelegramConfigScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"TelegramConfig"> | number
+    botToken?: StringWithAggregatesFilter<"TelegramConfig"> | string
+    chatId?: StringWithAggregatesFilter<"TelegramConfig"> | string
+    enabled?: BoolWithAggregatesFilter<"TelegramConfig"> | boolean
+    notifyDevice?: BoolWithAggregatesFilter<"TelegramConfig"> | boolean
+    notifyVpnOnline?: BoolWithAggregatesFilter<"TelegramConfig"> | boolean
+    notifyVpnOffline?: BoolWithAggregatesFilter<"TelegramConfig"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"TelegramConfig"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"TelegramConfig"> | Date | string
   }
 
   export type nasCreateInput = {
@@ -25348,6 +26489,87 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TelegramConfigCreateInput = {
+    botToken: string
+    chatId: string
+    enabled?: boolean
+    notifyDevice?: boolean
+    notifyVpnOnline?: boolean
+    notifyVpnOffline?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TelegramConfigUncheckedCreateInput = {
+    id?: number
+    botToken: string
+    chatId: string
+    enabled?: boolean
+    notifyDevice?: boolean
+    notifyVpnOnline?: boolean
+    notifyVpnOffline?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TelegramConfigUpdateInput = {
+    botToken?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    notifyDevice?: BoolFieldUpdateOperationsInput | boolean
+    notifyVpnOnline?: BoolFieldUpdateOperationsInput | boolean
+    notifyVpnOffline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TelegramConfigUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    botToken?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    notifyDevice?: BoolFieldUpdateOperationsInput | boolean
+    notifyVpnOnline?: BoolFieldUpdateOperationsInput | boolean
+    notifyVpnOffline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TelegramConfigCreateManyInput = {
+    id?: number
+    botToken: string
+    chatId: string
+    enabled?: boolean
+    notifyDevice?: boolean
+    notifyVpnOnline?: boolean
+    notifyVpnOffline?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TelegramConfigUpdateManyMutationInput = {
+    botToken?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    notifyDevice?: BoolFieldUpdateOperationsInput | boolean
+    notifyVpnOnline?: BoolFieldUpdateOperationsInput | boolean
+    notifyVpnOffline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TelegramConfigUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    botToken?: StringFieldUpdateOperationsInput | string
+    chatId?: StringFieldUpdateOperationsInput | string
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    notifyDevice?: BoolFieldUpdateOperationsInput | boolean
+    notifyVpnOnline?: BoolFieldUpdateOperationsInput | boolean
+    notifyVpnOffline?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -26584,6 +27806,56 @@ export namespace Prisma {
   }
 
   export type NetworkTopologySumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type TelegramConfigOrderByRelevanceInput = {
+    fields: TelegramConfigOrderByRelevanceFieldEnum | TelegramConfigOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type TelegramConfigCountOrderByAggregateInput = {
+    id?: SortOrder
+    botToken?: SortOrder
+    chatId?: SortOrder
+    enabled?: SortOrder
+    notifyDevice?: SortOrder
+    notifyVpnOnline?: SortOrder
+    notifyVpnOffline?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TelegramConfigAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type TelegramConfigMaxOrderByAggregateInput = {
+    id?: SortOrder
+    botToken?: SortOrder
+    chatId?: SortOrder
+    enabled?: SortOrder
+    notifyDevice?: SortOrder
+    notifyVpnOnline?: SortOrder
+    notifyVpnOffline?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TelegramConfigMinOrderByAggregateInput = {
+    id?: SortOrder
+    botToken?: SortOrder
+    chatId?: SortOrder
+    enabled?: SortOrder
+    notifyDevice?: SortOrder
+    notifyVpnOnline?: SortOrder
+    notifyVpnOffline?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type TelegramConfigSumOrderByAggregateInput = {
     id?: SortOrder
   }
 
