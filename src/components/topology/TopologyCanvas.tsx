@@ -49,6 +49,17 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
   const [topology, setTopology] = useState<TopologyData>(initialTopology);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string>('all');
+  const [viewMode, setViewMode] = useState<'symbol' | 'card'>('symbol');
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('beeradius_topo_view_mode');
+      if (saved === 'card' || saved === 'symbol') {
+        setViewMode(saved);
+      }
+    } catch {}
+  }, []);
+
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved' | 'error'>('saved');
   const [lastSavedTime, setLastSavedTime] = useState<Date | null>(
@@ -555,17 +566,18 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
     [selectedEdgeId, topology.edges]
   );
 
-  const getDeviceIcon = (t: DeviceType) => {
+  const getDeviceIcon = (t: DeviceType, isLarge = false) => {
+    const sizeCls = isLarge ? 'h-7 w-7' : 'h-4 w-4';
     switch (t) {
-      case 'router': return <FaRoute className="h-4 w-4 text-sky-400" />;
-      case 'home_router': return <FaHome className="h-4 w-4 text-teal-400" />;
-      case 'switch': return <FaNetworkWired className="h-4 w-4 text-emerald-400" />;
-      case 'nvr': return <FaVideo className="h-4 w-4 text-amber-400" />;
-      case 'ap': return <FaWifi className="h-4 w-4 text-purple-400" />;
-      case 'server': return <FaServer className="h-4 w-4 text-indigo-400" />;
-      case 'firewall': return <FaShieldAlt className="h-4 w-4 text-rose-400" />;
-      case 'cctv': return <FaVideo className="h-4 w-4 text-teal-400" />;
-      default: return <FaDesktop className="h-4 w-4 text-blue-400" />;
+      case 'router': return <FaRoute className={`${sizeCls} text-sky-400`} />;
+      case 'home_router': return <FaHome className={`${sizeCls} text-teal-400`} />;
+      case 'switch': return <FaNetworkWired className={`${sizeCls} text-emerald-400`} />;
+      case 'nvr': return <FaVideo className={`${sizeCls} text-amber-400`} />;
+      case 'ap': return <FaWifi className={`${sizeCls} text-purple-400`} />;
+      case 'server': return <FaServer className={`${sizeCls} text-indigo-400`} />;
+      case 'firewall': return <FaShieldAlt className={`${sizeCls} text-rose-400`} />;
+      case 'cctv': return <FaVideo className={`${sizeCls} text-teal-400`} />;
+      default: return <FaDesktop className={`${sizeCls} text-blue-400`} />;
     }
   };
 
@@ -590,9 +602,10 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
       .trim();
   };
 
-  // Card dimensions for port center calculating
-  const NODE_WIDTH = 220;
-  const NODE_HEIGHT = 100;
+  // Card & Symbol dimensions for port center calculating & dynamic cable anchors
+  const isSymbolMode = viewMode === 'symbol';
+  const NODE_WIDTH = isSymbolMode ? 64 : 220;
+  const NODE_HEIGHT = isSymbolMode ? 64 : 100;
 
   return (
     <div className="flex flex-col h-[calc(100vh-13rem)] min-h-[620px] w-full relative overflow-hidden bg-base-100 rounded-2xl border border-primary/10 shadow-2xl">
@@ -654,6 +667,42 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
 
         {/* Right: Action Buttons (Streamlined & Adaptable) */}
         <div className="flex items-center gap-1.5 flex-wrap shrink-0">
+          {/* View Mode Toggle: Simbol vs Kartu */}
+          <div className="join bg-base-200/70 border border-base-300 rounded-xl p-0.5 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                setViewMode('symbol');
+                try { localStorage.setItem('beeradius_topo_view_mode', 'symbol'); } catch {}
+              }}
+              className={`btn btn-xs join-item border-0 gap-1 px-2.5 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'symbol'
+                  ? 'btn-primary font-bold shadow-xs'
+                  : 'btn-ghost text-base-content/70 hover:text-base-content'
+              }`}
+              title="Tampilan Mode Simbol (Ikon Ringkas & Bersih)"
+            >
+              <FaDesktop className="h-3 w-3" />
+              <span>Simbol</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setViewMode('card');
+                try { localStorage.setItem('beeradius_topo_view_mode', 'card'); } catch {}
+              }}
+              className={`btn btn-xs join-item border-0 gap-1 px-2.5 rounded-lg transition-all cursor-pointer ${
+                viewMode === 'card'
+                  ? 'btn-primary font-bold shadow-xs'
+                  : 'btn-ghost text-base-content/70 hover:text-base-content'
+              }`}
+              title="Tampilan Mode Kartu (Detail Spesifikasi)"
+            >
+              <FaEllipsisH className="h-3 w-3" />
+              <span>Kartu</span>
+            </button>
+          </div>
+
           {/* Zoom Controls */}
           <div className="join bg-base-200/70 border border-base-300 rounded-xl overflow-hidden hidden sm:flex">
             <button
@@ -1075,123 +1124,193 @@ export default function TopologyCanvas({ initialTopology }: TopologyCanvasProps)
                   setSelectedNodeId(node.id);
                   setSelectedEdgeId(null);
                 }}
-                className={`absolute pointer-events-auto rounded-2xl border transition-shadow select-none group ${
+                className={`absolute pointer-events-auto transition-all select-none group ${
                   isFiltered ? 'opacity-30' : 'opacity-100'
                 } ${
-                  isSelected
-                    ? 'border-primary ring-2 ring-primary/40 bg-base-100/95 shadow-[0_0_24px_rgba(56,189,248,0.4)] z-30'
-                    : 'border-base-300/80 bg-base-100/90 hover:border-primary/50 shadow-lg hover:shadow-2xl z-20'
+                  isSymbolMode
+                    ? 'flex flex-col items-center cursor-pointer'
+                    : `rounded-2xl border ${
+                        isSelected
+                          ? 'border-primary ring-2 ring-primary/40 bg-base-100/95 shadow-[0_0_24px_rgba(56,189,248,0.4)] z-30'
+                          : 'border-base-300/80 bg-base-100/90 hover:border-primary/50 shadow-lg hover:shadow-2xl z-20'
+                      }`
                 }`}
                 style={{
                   left: `${node.x}px`,
                   top: `${node.y}px`,
                   width: `${NODE_WIDTH}px`,
-                  backdropFilter: 'blur(12px)',
+                  backdropFilter: isSymbolMode ? undefined : 'blur(12px)',
                 }}
               >
-                {/* Node Header */}
-                <div className="p-3 border-b border-base-300/60 flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className="p-1.5 rounded-lg bg-base-200/80 border border-base-300 shadow-xs shrink-0">
-                      {getDeviceIcon(node.type)}
+                {isSymbolMode ? (
+                  <div className="flex flex-col items-center">
+                    {/* Symbol Box (64x64) */}
+                    <div
+                      className={`relative h-16 w-16 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 ${
+                        isSelected
+                          ? 'border-2 border-primary bg-primary/20 shadow-[0_0_24px_rgba(56,189,248,0.5)] scale-105 ring-2 ring-primary/40 z-30'
+                          : 'border border-base-300/80 bg-base-100/90 hover:border-primary/60 hover:scale-105 shadow-md hover:shadow-2xl z-20 backdrop-blur-md'
+                      }`}
+                    >
+                      {/* Centered Device Icon */}
+                      {getDeviceIcon(node.type, true)}
+
+                      {/* Status Dot at Top Right */}
+                      <span
+                        className={`absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-base-100 ${
+                          node.status === 'online'
+                            ? 'bg-emerald-400 shadow-[0_0_8px_#10b981]'
+                            : node.status === 'warning'
+                            ? 'bg-amber-400 shadow-[0_0_8px_#f59e0b]'
+                            : 'bg-rose-500 shadow-[0_0_8px_#ef4444]'
+                        }`}
+                        title={`Status: ${node.status.toUpperCase()}`}
+                      />
+
+                      {/* SNMP Sync Mini Badge at Bottom Left (for switches) */}
+                      {node.type === 'switch' && (node.isSnmpSynced || node.switchDeviceId) && (
+                        <span
+                          className="absolute bottom-1 left-1 px-1 py-0.2 rounded text-[7px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40"
+                          title="Tersinkron SNMP"
+                        >
+                          SNMP
+                        </span>
+                      )}
+
+                      {/* Connected Cable Count Badge at Bottom Right */}
+                      {connectedPortsCount > 0 && (
+                        <span
+                          className="absolute bottom-1 right-1 px-1.5 py-0.2 rounded-full text-[8px] font-mono font-bold bg-base-200/95 text-base-content/80 border border-base-300/80"
+                          title={`${connectedPortsCount} kabel terhubung`}
+                        >
+                          {connectedPortsCount}
+                        </span>
+                      )}
                     </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <h4 className="text-xs font-bold font-mono text-base-content truncate group-hover:text-primary transition-colors">
-                          {node.name}
-                        </h4>
-                        {node.type === 'switch' && (node.isSnmpSynced || node.switchDeviceId) && (
-                          <span
-                            className="badge badge-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono text-[8px] px-1 shrink-0"
-                            title="Tersinkron dengan SNMP Switch VLAN"
-                          >
-                            SNMP
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-[10px] text-base-content/60 font-mono truncate">
-                        {node.ip || 'No IP'}
-                      </p>
-                    </div>
-                  </div>
 
-                  {/* Status Indicator Dot */}
-                  <span
-                    className={`h-2.5 w-2.5 rounded-full shrink-0 ${
-                      node.status === 'online'
-                        ? 'bg-emerald-400 shadow-[0_0_8px_#10b981]'
-                        : node.status === 'warning'
-                        ? 'bg-amber-400 shadow-[0_0_8px_#f59e0b]'
-                        : 'bg-rose-500 shadow-[0_0_8px_#ef4444]'
-                    }`}
-                    title={`Status: ${node.status.toUpperCase()}`}
-                  ></span>
-                </div>
-
-                {/* Node Body Telemetry */}
-                <div className="p-2.5 space-y-1.5 text-[10px]">
-                  <div className="flex items-center justify-between text-base-content/60 font-mono">
-                    <span>Model:</span>
-                    <span className="text-base-content/90 truncate max-w-[120px]">
-                      {node.model || node.brand || '-'}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between text-base-content/60 font-mono">
-                    <span>Lokasi:</span>
-                    <span className="text-base-content/80 truncate max-w-[120px]">
-                      {node.location || 'RSUD NTB'}
-                    </span>
-                  </div>
-
-                  {/* If Switch has VLANs, show count */}
-                  {node.type === 'switch' && node.vlans && node.vlans.length > 0 && (
-                    <div className="flex items-center justify-between text-base-content/70 font-mono">
-                      <span>VLAN:</span>
-                      <span className="badge badge-xs badge-info font-bold text-[9px]">
-                        {node.vlans.length} VLANs
+                    {/* Device Label Underneath Icon */}
+                    <div className="mt-1.5 text-center pointer-events-none flex flex-col items-center w-36 -mx-10">
+                      <span
+                        className="text-[10px] font-bold font-mono text-base-content truncate max-w-[130px] px-1.5 py-0.5 rounded-md bg-base-100/90 backdrop-blur-xs border border-base-300/60 shadow-xs group-hover:text-primary transition-colors"
+                        title={node.name}
+                      >
+                        {node.name}
+                      </span>
+                      <span
+                        className="text-[9px] font-mono text-base-content/60 truncate max-w-[130px] mt-0.5"
+                        title={node.ip || 'No IP'}
+                      >
+                        {node.ip || '-'}
                       </span>
                     </div>
-                  )}
-
-                  <div className="flex items-center justify-between pt-1 border-t border-base-300/40 font-mono">
-                    <span className="text-[9px] uppercase tracking-wider text-base-content/70">
-                      {node.type === 'switch' && node.isSnmpSynced ? 'Port Riil' : 'Port Aktif'}
-                    </span>
-                    <span className="badge badge-xs badge-neutral font-bold text-emerald-600 dark:text-emerald-400">
-                      {connectedPortsCount} kabel / {node.ports?.length || 0}
-                    </span>
                   </div>
-                </div>
+                ) : (
+                  <>
+                    {/* Node Header */}
+                    <div className="p-3 border-b border-base-300/60 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <div className="p-1.5 rounded-lg bg-base-200/80 border border-base-300 shadow-xs shrink-0">
+                          {getDeviceIcon(node.type)}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <h4 className="text-xs font-bold font-mono text-base-content truncate group-hover:text-primary transition-colors">
+                              {node.name}
+                            </h4>
+                            {node.type === 'switch' && (node.isSnmpSynced || node.switchDeviceId) && (
+                              <span
+                                className="badge badge-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono text-[8px] px-1 shrink-0"
+                                title="Tersinkron dengan SNMP Switch VLAN"
+                              >
+                                SNMP
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] text-base-content/60 font-mono truncate">
+                            {node.ip || 'No IP'}
+                          </p>
+                        </div>
+                      </div>
 
-                {/* Quick Action Ribbon on Hover / Selection */}
-                <div className="px-2 pb-2 pt-1 flex items-center justify-between gap-1 border-t border-base-300/40 bg-base-200/40 rounded-b-2xl">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPreselectedSource({ nodeId: node.id });
-                      setIsConnectModalOpen(true);
-                    }}
-                    className="btn btn-xs btn-ghost text-primary text-[10px] p-1 h-6 flex-1 gap-1"
-                    title="Sambung kabel dari perangkat ini"
-                  >
-                    <FaLink className="h-2.5 w-2.5" /> Link
-                  </button>
+                      {/* Status Indicator Dot */}
+                      <span
+                        className={`h-2.5 w-2.5 rounded-full shrink-0 ${
+                          node.status === 'online'
+                            ? 'bg-emerald-400 shadow-[0_0_8px_#10b981]'
+                            : node.status === 'warning'
+                            ? 'bg-amber-400 shadow-[0_0_8px_#f59e0b]'
+                            : 'bg-rose-500 shadow-[0_0_8px_#ef4444]'
+                        }`}
+                        title={`Status: ${node.status.toUpperCase()}`}
+                      ></span>
+                    </div>
 
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditingDevice(node);
-                      setIsDeviceModalOpen(true);
-                    }}
-                    className="btn btn-xs btn-ghost text-base-content/70 hover:text-base-content text-[10px] p-1 h-6 flex-1"
-                    title="Edit spesifikasi perangkat"
-                  >
-                    Edit
-                  </button>
-                </div>
+                    {/* Node Body Telemetry */}
+                    <div className="p-2.5 space-y-1.5 text-[10px]">
+                      <div className="flex items-center justify-between text-base-content/60 font-mono">
+                        <span>Model:</span>
+                        <span className="text-base-content/90 truncate max-w-[120px]">
+                          {node.model || node.brand || '-'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-base-content/60 font-mono">
+                        <span>Lokasi:</span>
+                        <span className="text-base-content/80 truncate max-w-[120px]">
+                          {node.location || 'RSUD NTB'}
+                        </span>
+                      </div>
+
+                      {/* If Switch has VLANs, show count */}
+                      {node.type === 'switch' && node.vlans && node.vlans.length > 0 && (
+                        <div className="flex items-center justify-between text-base-content/70 font-mono">
+                          <span>VLAN:</span>
+                          <span className="badge badge-xs badge-info font-bold text-[9px]">
+                            {node.vlans.length} VLANs
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between pt-1 border-t border-base-300/40 font-mono">
+                        <span className="text-[9px] uppercase tracking-wider text-base-content/70">
+                          {node.type === 'switch' && node.isSnmpSynced ? 'Port Riil' : 'Port Aktif'}
+                        </span>
+                        <span className="badge badge-xs badge-neutral font-bold text-emerald-600 dark:text-emerald-400">
+                          {connectedPortsCount} kabel / {node.ports?.length || 0}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Quick Action Ribbon on Hover / Selection */}
+                    <div className="px-2 pb-2 pt-1 flex items-center justify-between gap-1 border-t border-base-300/40 bg-base-200/40 rounded-b-2xl">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreselectedSource({ nodeId: node.id });
+                          setIsConnectModalOpen(true);
+                        }}
+                        className="btn btn-xs btn-ghost text-primary text-[10px] p-1 h-6 flex-1 gap-1"
+                        title="Sambung kabel dari perangkat ini"
+                      >
+                        <FaLink className="h-2.5 w-2.5" /> Link
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingDevice(node);
+                          setIsDeviceModalOpen(true);
+                        }}
+                        className="btn btn-xs btn-ghost text-base-content/70 hover:text-base-content text-[10px] p-1 h-6 flex-1"
+                        title="Edit spesifikasi perangkat"
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             );
           })}

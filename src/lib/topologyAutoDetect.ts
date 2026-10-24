@@ -142,6 +142,86 @@ function findBestDownlinkPort(ports: DevicePort[], usedPortNames: Set<string>): 
   return ports[0] || { id: "p-default", name: "Port 1", type: "rj45", speed: "1G", status: "up" };
 }
 
+const BUILDING_DICTIONARY: Record<string, string[]> = {
+  igd: ["igd", "emergency", "gawat darurat"],
+  onkologi: ["onko", "onkologi", "cancer"],
+  radioterapi: ["radioterapi", "radio", "linac"],
+  diagnostik: ["diagnostic", "diagnostik", "pkrs"],
+  ibs: ["ibs", "bedah", "operasi"],
+  poli: ["poli", "poliklinik"],
+  gedung_k: ["gedung k", "gedungk", "poli-gedung-k", "irna-k", "irna k"],
+  vip: ["vip", "v.i.p"],
+  fasum: ["fasum", "fasilitas umum"],
+  irna: ["irna b", "irna-b", "irna"],
+  linen: ["linen", "laundry"],
+  ipsrs: ["ipsrs", "gudang ipsrs", "workshop"],
+  gizi: ["gizi", "dapur"],
+  forensik: ["forensik", "jenazah", "kamar mayat"],
+  keperawatan: ["keperawatan", "mangku sakti", "mangkusakti", "tiu kelep", "tiukelep", "mata jitu", "matajitu"],
+  manajemen: ["manajemen", "direksi", "keuangan", "umum", "pelayanan", "perencanaan", "sdm", "diklat", "media_center", "pbj", "aula-rinjani", "aula-graha", "admin"],
+  noc: ["sirs", "noc", "server", "data center", "mainhall", "bank-darah", "bank darah", "rekam-medis", "rekam medis", "rm"],
+  graha: ["graha", "gemilang", "mahaputra"],
+  lab: ["lab", "laboratorium", "hd2", "lab_pa"],
+};
+
+function extractBuilding(text: string, name?: string): string | null {
+  const nameLower = (name || "").toLowerCase();
+  if (nameLower.includes("manajemen")) return "manajemen";
+  if (nameLower.includes("radioterapi")) return "radioterapi";
+  if (nameLower.includes("onkologi") || nameLower.includes("onko")) return "onkologi";
+  if (nameLower.includes("keperawatan") || nameLower.includes("mangku sakti") || nameLower.includes("tiu kelep") || nameLower.includes("mata jitu")) return "keperawatan";
+  if (nameLower.includes("diagnostik") || nameLower.includes("diagnostic")) return "diagnostik";
+  if (nameLower.includes("ibs")) return "ibs";
+  if (nameLower.includes("poli")) return "poli";
+  if (nameLower.includes("gedung k") || nameLower.includes("gedungk")) return "gedung_k";
+  if (nameLower.includes("vip")) return "vip";
+  if (nameLower.includes("fasum")) return "fasum";
+  if (nameLower.includes("irna")) return "irna";
+  if (nameLower.includes("linen")) return "linen";
+  if (nameLower.includes("ipsrs")) return "ipsrs";
+  if (nameLower.includes("gizi")) return "gizi";
+  if (nameLower.includes("forensik")) return "forensik";
+  if (nameLower.includes("igd")) return "igd";
+  if (nameLower.includes("lab")) return "lab";
+  if (nameLower.includes("noc") || nameLower.includes("server") || nameLower.includes("sirs")) return "noc";
+
+  const lower = text.toLowerCase();
+  if (lower.includes("manajemen")) return "manajemen";
+  if (lower.includes("onkologi") || lower.includes("onko")) return "onkologi";
+  if (lower.includes("keperawatan") || lower.includes("mangku sakti") || lower.includes("tiu kelep") || lower.includes("mata jitu")) return "keperawatan";
+  if (lower.includes("radioterapi")) return "radioterapi";
+  if (lower.includes("diagnostik") || lower.includes("diagnostic") || lower.includes("pkrs")) return "diagnostik";
+  if (lower.includes("ibs")) return "ibs";
+  if (lower.includes("poli")) return "poli";
+  if (lower.includes("gedung k") || lower.includes("gedungk")) return "gedung_k";
+  if (lower.includes("vip")) return "vip";
+  if (lower.includes("fasum")) return "fasum";
+  if (lower.includes("irna")) return "irna";
+  if (lower.includes("linen")) return "linen";
+  if (lower.includes("ipsrs")) return "ipsrs";
+  if (lower.includes("gizi")) return "gizi";
+  if (lower.includes("forensik")) return "forensik";
+  if (lower.includes("igd")) return "igd";
+  if (lower.includes("lab")) return "lab";
+  if (lower.includes("noc") || lower.includes("server") || lower.includes("sirs") || lower.includes("mainhall") || lower.includes("bank-darah") || lower.includes("rekam-medis")) return "noc";
+
+  for (const [key, tokens] of Object.entries(BUILDING_DICTIONARY)) {
+    if (tokens.some((t) => lower.includes(t))) return key;
+  }
+  return null;
+}
+
+function extractFloor(text: string): number | null {
+  const lower = text.toLowerCase();
+  const m1 = lower.match(/(?:lantai|lt|floor)[_\s.-]*([1-8])/);
+  if (m1) return parseInt(m1[1], 10);
+  const m2 = lower.match(/\b([1-8])(?:st|nd|rd|th)?\s*(?:floor|lt|lantai)\b/);
+  if (m2) return parseInt(m2[1], 10);
+  const m3 = lower.match(/onko(?:_|\s*)lt(?:_|\s*)([1-8])/i);
+  if (m3) return parseInt(m3[1], 10);
+  return null;
+}
+
 /**
  * Engine Deteksi Otomatis Bentuk & Kabel Topologi Jaringan
  */
@@ -299,7 +379,11 @@ export async function autoDetectTopology(
     });
   }
 
-  // Layer 4: Endpoints Clustered Under Their Parent Switch (Y >= 750)
+  // Switch regional / fallback
+  const igdCoreSwitch = coreSwitches.find((s) => /igd/i.test(s.name)) || primaryCoreSwitch;
+  const manajemenSwitch = accessSwitches.find((s) => /manajemen/i.test(s.name)) || igdCoreSwitch;
+
+  // Layer 4: Endpoints Clustered Under Their Parent Switch (Semantic Building & Floor Matching)
   const switchEndpointsMap = new Map<string, TopologyNode[]>();
   for (let i = 0; i < endpoints.length; i++) {
     const ep = endpoints[i];
@@ -308,20 +392,51 @@ export async function autoDetectTopology(
       if (!switchEndpointsMap.has(swId)) switchEndpointsMap.set(swId, []);
       switchEndpointsMap.get(swId)!.push(ep);
     } else {
-      let targetSwitch = accessSwitches[i % Math.max(1, accessSwitches.length)] || primaryCoreSwitch;
-      if (accessSwitches.length > 1) {
-        const epLoc = (ep.location || "").toLowerCase();
-        const epName = (ep.name || "").toLowerCase();
-        const matched = accessSwitches.find((sw) => {
-          const swLoc = (sw.location || "").toLowerCase();
-          const swName = (sw.name || "").toLowerCase();
-          return (
-            (epLoc && swLoc && (epLoc.includes(swLoc) || swLoc.includes(epLoc))) ||
-            (epName && swName && (epName.includes(swName) || swName.includes(epName)))
-          );
-        });
-        if (matched) targetSwitch = matched;
+      const epText = `${ep.name} ${ep.location || ""}`;
+      const epBld = extractBuilding(epText, ep.name);
+      const epFlr = extractFloor(epText);
+
+      let targetSwitch: TopologyNode | null = null;
+      let bestScore = -1;
+
+      for (const sw of accessSwitches) {
+        const swText = `${sw.name} ${sw.location || ""}`;
+        const swBld = extractBuilding(swText, sw.name);
+        const swFlr = extractFloor(swText);
+
+        let score = 0;
+        if (epBld && swBld && epBld === swBld) {
+          score += 100;
+          if (epFlr !== null && swFlr !== null && epFlr === swFlr) {
+            score += 50;
+          }
+        }
+
+        // Kecocokan sub-ruangan khusus
+        if (epText.toLowerCase().includes("tiu kelep") && swText.toLowerCase().includes("tiukelep")) score += 40;
+        if (epText.toLowerCase().includes("mata jitu") && swText.toLowerCase().includes("mata jitu")) score += 40;
+        if (epText.toLowerCase().includes("mangku sakti") && swText.toLowerCase().includes("mangkusakti")) score += 40;
+
+        if (ep.type === "ap" && /ap/i.test(sw.name)) score += 10;
+        if ((ep.type === "cctv" || ep.type === "nvr") && /cctv/i.test(sw.name)) score += 10;
+
+        if (score > bestScore) {
+          bestScore = score;
+          targetSwitch = sw;
+        }
       }
+
+      if (bestScore < 100) {
+        // Fallback cerdas berdasarkan zona gedung (bukan round-robin acak)
+        if (epBld === "manajemen" || ep.location?.includes("MANAJEMEN")) {
+          targetSwitch = manajemenSwitch || primaryCoreSwitch;
+        } else if (epBld === "igd" || ep.location?.includes("IGD_ONKO_BLIP")) {
+          targetSwitch = igdCoreSwitch || primaryCoreSwitch;
+        } else {
+          targetSwitch = primaryCoreSwitch;
+        }
+      }
+
       if (targetSwitch) {
         if (!switchEndpointsMap.has(targetSwitch.id)) switchEndpointsMap.set(targetSwitch.id, []);
         switchEndpointsMap.get(targetSwitch.id)!.push(ep);
@@ -329,17 +444,19 @@ export async function autoDetectTopology(
     }
   }
 
+  // Tata letak sub-grid rapi di bawah masing-masing switch induk
   switchEndpointsMap.forEach((eps, switchId) => {
     const sw = allNodesList.find((n) => n.id === switchId);
     if (!sw) return;
-    const cols = 2;
-    const colSpacing = 240;
-    const rowSpacing = 160;
+    const cols = eps.length > 10 ? 3 : eps.length === 1 ? 1 : 2;
+    const colSpacing = cols === 3 ? 100 : 130;
+    const rowSpacing = 95;
     eps.forEach((ep, epIdx) => {
       const col = epIdx % cols;
       const row = Math.floor(epIdx / cols);
-      ep.x = Math.round(sw.x + (col - 0.5) * colSpacing);
-      ep.y = Math.round(sw.y + 200 + row * rowSpacing);
+      const colOffset = cols === 1 ? 0 : (col - (cols - 1) / 2) * colSpacing;
+      ep.x = Math.round(sw.x + colOffset);
+      ep.y = Math.round(sw.y + 140 + row * rowSpacing);
     });
   });
 
@@ -488,42 +605,24 @@ export async function autoDetectTopology(
     }
   }
 
-  // LINK 4: Access Switch / Core Switch <-> Endpoints (AP, NVR, Server)
-  for (let i = 0; i < endpoints.length; i++) {
-    const ep = endpoints[i];
-    // Jika endpoint adalah Server, sambungkan ke Core Switch
-    if (ep.type === "server" && primaryCoreSwitch) {
-      createEdge(
-        primaryCoreSwitch,
-        ep,
-        "fiber",
-        "10 Gbps",
-        "VLAN 10 (SIMRS/Data Center)",
-        "Server Farm Link"
-      );
-    } else {
-      // Hubungkan ke switch akses terdistribusi (atau berdasarkan kemiripan lokasi/gedung)
-      let targetSwitch = accessSwitches[i % Math.max(1, accessSwitches.length)] || primaryCoreSwitch;
-      if (accessSwitches.length > 1) {
-        const epLoc = (ep.location || "").toLowerCase();
-        const epName = (ep.name || "").toLowerCase();
-        const matched = accessSwitches.find((sw) => {
-          const swLoc = (sw.location || "").toLowerCase();
-          const swName = (sw.name || "").toLowerCase();
-          return (
-            (epLoc && swLoc && (epLoc.includes(swLoc) || swLoc.includes(epLoc))) ||
-            (epName && swName && (epName.includes(swName) || swName.includes(epName)))
-          );
-        });
-        if (matched) {
-          targetSwitch = matched;
-        }
-      }
-
-      if (targetSwitch) {
+  // LINK 5: Access Switch / Core Switch <-> Endpoints (Kabel tepat ke switch induk masing-masing)
+  switchEndpointsMap.forEach((eps, switchId) => {
+    const parentSwitch = allNodesList.find((n) => n.id === switchId);
+    if (!parentSwitch) return;
+    for (const ep of eps) {
+      if (ep.type === "server") {
+        createEdge(
+          parentSwitch,
+          ep,
+          "fiber",
+          "10 Gbps",
+          "VLAN 10 (SIMRS/Data Center)",
+          "Server Farm Link"
+        );
+      } else {
         const isPoE = ep.type === "ap" || ep.type === "cctv";
         createEdge(
-          targetSwitch,
+          parentSwitch,
           ep,
           isPoE ? "poe" : "copper",
           "1 Gbps",
@@ -532,7 +631,7 @@ export async function autoDetectTopology(
         );
       }
     }
-  }
+  });
 
   // Preservasi kabel manual lama jika dipilih
   const finalEdges = [...generatedEdges];
