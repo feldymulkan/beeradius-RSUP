@@ -603,7 +603,7 @@ export default function DevicesPage() {
               <span className="text-xs text-base-content/60 font-mono">Access Point</span>
             </div>
             <p className="text-[11px] text-base-content/60 mt-0.5">
-              {metrics.ruijieCloudCount} tersinkron Ruijie Cloud
+              {metrics.ruijieCloudCount} perangkat Ruijie Cloud ({metrics.apsCount} AP • {metrics.homeRoutersCount} HR • {devices.filter((s) => s.connMethod === "cloud" && s.deviceType === "router").length} GW)
             </p>
           </div>
         </div>

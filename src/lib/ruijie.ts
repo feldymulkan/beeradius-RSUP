@@ -944,7 +944,8 @@ function refreshRuijieWifiReport(forceRefresh: boolean): Promise<RuijieWifiRepor
 
           const aps: RuijieApDevice[] = [];
           for (const d of rawAps) {
-            if (d.commonType === "GW") continue; // Lewati Gateway core jika ada
+            const isGw = d.commonType === "GW" || d.commonType === "GATEWAY" || (d.productClass || "").includes("NBR");
+            if (isGw) continue; // Lewati Gateway core jika ada
 
             const isAp = d.commonType === "AP" || !d.commonType;
             const isWr = d.commonType === "WR";
@@ -1227,11 +1228,14 @@ export async function syncRuijieCloudDevicesToDb(): Promise<{
 
       for (const p of hierarchy) {
         let page = 1;
+        let projectCount = 0;
+        let reportedTotal = 0;
         while (true) {
           try {
             const res = await fetchRuijie<{ code: number; totalCount?: number; deviceList?: any[] }>(
               `/service/api/maint/devices?group_id=${p.groupId}&page=${page}&per_page=100`
             );
+            if (res.totalCount) reportedTotal = res.totalCount;
             const list = Array.isArray(res.deviceList) ? res.deviceList : [];
             list.forEach((d) => {
               rawDevices.push({
@@ -1239,7 +1243,8 @@ export async function syncRuijieCloudDevicesToDb(): Promise<{
                 projectName: p.name,
               });
             });
-            if (list.length < 100 || rawDevices.length >= (res.totalCount || 0)) break;
+            projectCount += list.length;
+            if (list.length < 100 || (reportedTotal > 0 && projectCount >= reportedTotal)) break;
             page++;
           } catch {
             break;
@@ -1251,35 +1256,83 @@ export async function syncRuijieCloudDevicesToDb(): Promise<{
       let updated = 0;
       const syncedList: any[] = [];
 
+      // Ambil seluruh perangkat cloud eksisting untuk pencocokan presisi berbasis Serial Number & IP
+      const existingCloudDevices = await prisma.switchDevice.findMany({
+        where: { connMethod: "cloud" },
+      });
+
+      // Peta memori untuk Serial Number dan IP
+      const snMap = new Map<string, (typeof existingCloudDevices)[0]>();
+      const ipMap = new Map<string, (typeof existingCloudDevices)[0]>();
+
+      for (const dev of existingCloudDevices) {
+        ipMap.set(dev.ip, dev);
+        const match = (dev.sysDescr || "").match(/SN:\s*([A-Za-z0-9]+)/);
+        const sn = match ? match[1] : (dev.ip.startsWith("ruijie-") ? dev.ip.replace("ruijie-", "") : null);
+        if (sn) {
+          snMap.set(sn, dev);
+        }
+      }
+
+      const processedIds = new Set<number>();
+      const processedSNs = new Set<string>();
+
       for (const dev of rawDevices) {
+        const sn = (dev.serialNumber || "").trim();
+        if (sn && processedSNs.has(sn)) {
+          // Lewati jika serial number yang sama muncul lebih dari satu kali dari API
+          continue;
+        }
+        if (sn) processedSNs.add(sn);
+
         const rawIp = (dev.localIp || "").trim();
         const validIp =
           rawIp && rawIp !== "-" && !rawIp.startsWith("0.0")
             ? rawIp
-            : (dev.cpeIp || `ruijie-${dev.serialNumber}`);
+            : (dev.cpeIp || (sn ? `ruijie-${sn}` : `ruijie-${Date.now()}`));
+
         const name = dev.aliasName || dev.name || dev.serialNumber || `Ruijie Device`;
         const brand = "Ruijie Networks";
         const model = dev.productClass || dev.productType || "Ruijie Device";
         const isWr = dev.commonType === "WR";
-        const isGw = dev.commonType === "GW";
+        const isGw =
+          dev.commonType === "GW" ||
+          dev.commonType === "GATEWAY" ||
+          (dev.productClass || "").includes("NBR") ||
+          (dev.model || "").includes("NBR");
         const deviceType = isWr ? "home_router" : isGw ? "router" : "ap";
         const connMethod = "cloud";
         const status = dev.onlineStatus === "ON" ? "online" : "offline";
         const location = `${dev.projectName} > ${dev.groupName || "Ruangan"}`;
-        const sysDescr = `Ruijie Cloud ${isWr ? "Home Router" : isGw ? "Gateway" : "AP"} (${model}) - SN: ${dev.serialNumber} - Firmware: ${dev.softwareVersion || "-"} - Klien Aktif: ${dev.staNums || 0}`;
+        const sysDescr = `Ruijie Cloud ${isWr ? "Home Router" : isGw ? "Gateway" : "AP"} (${model}) - SN: ${dev.serialNumber || "-"} - Firmware: ${dev.softwareVersion || "-"} - Klien Aktif: ${dev.staNums || 0}`;
         const uptime = dev.onlineStatus === "ON" ? "Online di Ruijie Cloud" : "Offline";
         const now = new Date();
 
         try {
-          const existing = await prisma.switchDevice.findUnique({
-            where: { ip: validIp },
-          });
+          // Cari record eksisting: perangkat cloud diidentifikasi secara unik via Serial Number
+          const existing = sn ? snMap.get(sn) : ipMap.get(validIp);
 
           if (existing) {
+            let targetIp = validIp;
+            if (existing.ip !== validIp) {
+              const clash = await prisma.switchDevice.findUnique({ where: { ip: validIp } });
+              if (clash && clash.id !== existing.id) {
+                const clashSnMatch = (clash.sysDescr || "").match(/SN:\s*([A-Za-z0-9]+)/);
+                const clashSn = clashSnMatch ? clashSnMatch[1] : null;
+                if (clashSn && sn && clashSn !== sn) {
+                  targetIp = existing.ip.startsWith("ruijie-") ? existing.ip : (sn ? `ruijie-${sn}` : targetIp);
+                } else {
+                  await prisma.switchDevice.delete({ where: { id: clash.id } });
+                  ipMap.delete(validIp);
+                }
+              }
+            }
+
             const updatedDev = await prisma.switchDevice.update({
               where: { id: existing.id },
               data: {
                 name,
+                ip: targetIp,
                 brand,
                 model,
                 deviceType: existing.deviceType === "switch" ? "switch" : deviceType,
@@ -1293,30 +1346,85 @@ export async function syncRuijieCloudDevicesToDb(): Promise<{
             });
             updated++;
             syncedList.push(updatedDev);
+            processedIds.add(existing.id);
+            ipMap.set(targetIp, updatedDev);
+            if (sn) snMap.set(sn, updatedDev);
           } else {
-            const newDev = await prisma.switchDevice.create({
-              data: {
-                name,
-                ip: validIp,
-                brand,
-                model,
-                deviceType,
-                connMethod,
-                status,
-                location,
-                sysDescr,
-                uptime,
-                community: "public",
-                snmpVersion: "2c",
-                port: 161,
-                lastPolled: now,
-              },
-            });
-            created++;
-            syncedList.push(newDev);
+            // Cek apakah IP bentrok sebelum insert
+            let targetIp = validIp;
+            const clash = await prisma.switchDevice.findUnique({ where: { ip: validIp } });
+            if (clash) {
+              const clashSnMatch = (clash.sysDescr || "").match(/SN:\s*([A-Za-z0-9]+)/);
+              const clashSn = clashSnMatch ? clashSnMatch[1] : (clash.ip.startsWith("ruijie-") ? clash.ip.replace("ruijie-", "") : null);
+              if (clashSn && sn && clashSn !== sn) {
+                targetIp = `ruijie-${sn}`;
+              }
+            }
+
+            const existingClash = await prisma.switchDevice.findUnique({ where: { ip: targetIp } });
+            if (existingClash) {
+              const updatedDev = await prisma.switchDevice.update({
+                where: { id: existingClash.id },
+                data: {
+                  name,
+                  brand,
+                  model,
+                  deviceType,
+                  connMethod: "cloud",
+                  status,
+                  location,
+                  sysDescr,
+                  uptime,
+                  lastPolled: now,
+                },
+              });
+              updated++;
+              syncedList.push(updatedDev);
+              processedIds.add(existingClash.id);
+              ipMap.set(targetIp, updatedDev);
+              if (sn) snMap.set(sn, updatedDev);
+            } else {
+              const newDev = await prisma.switchDevice.create({
+                data: {
+                  name,
+                  ip: targetIp,
+                  brand,
+                  model,
+                  deviceType,
+                  connMethod,
+                  status,
+                  location,
+                  sysDescr,
+                  uptime,
+                  community: "public",
+                  snmpVersion: "2c",
+                  port: 161,
+                  lastPolled: now,
+                },
+              });
+              created++;
+              syncedList.push(newDev);
+              processedIds.add(newDev.id);
+              ipMap.set(targetIp, newDev);
+              if (sn) snMap.set(sn, newDev);
+            }
           }
         } catch (e: any) {
           console.error(`Gagal sync perangkat Ruijie ${name} (${validIp}):`, e.message);
+        }
+      }
+
+      // Bersihkan record cloud duplikat/usang yang memiliki serial number yang sama
+      for (const dev of existingCloudDevices) {
+        if (!processedIds.has(dev.id)) {
+          const match = (dev.sysDescr || "").match(/SN:\s*([A-Za-z0-9]+)/);
+          const sn = match ? match[1] : (dev.ip.startsWith("ruijie-") ? dev.ip.replace("ruijie-", "") : null);
+          if (sn && processedSNs.has(sn)) {
+            try {
+              await prisma.switchDevice.delete({ where: { id: dev.id } });
+              console.log(`[Ruijie Sync] Menghapus record duplikat lama: ${dev.name} (${dev.ip}, SN: ${sn})`);
+            } catch {}
+          }
         }
       }
 
